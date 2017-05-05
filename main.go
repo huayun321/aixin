@@ -10,7 +10,7 @@ import (
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("hello")
-	fmt.Fprintf(w, "Welcome to the home page!")
+	fmt.Fprintf(w, "hello there")
 }
 
 func main() {
