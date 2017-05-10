@@ -15,6 +15,12 @@
 			"revisionTime": "2017-02-28T22:43:54Z"
 		},
 		{
+			"checksumSHA1": "cfzucV4FcTJqEKZiEu7Si7Y4iKM=",
+			"path": "github.com/mholt/binding",
+			"revision": "52f4dd97beda465aa7e5a6db461ede3a22065048",
+			"revisionTime": "2017-05-01T02:24:34Z"
+		},
+		{
 			"checksumSHA1": "ezZyPBDiKHM5y+YmlIhrWIzgbfw=",
 			"path": "github.com/urfave/negroni",
 			"revision": "c0db5feaa33826cd5117930c8f4ee5c0f565eec6",
