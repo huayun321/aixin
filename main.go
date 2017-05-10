@@ -1,23 +1,27 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
+	"fmt"
 	"github.com/urfave/negroni"
 	"net/http"
-	"fmt"
+	"github.com/gorilla/mux"
 	"os"
 )
-//test add mongo
+
+var port = os.Getenv("PORT")
+
+//test
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("hello")
-	fmt.Fprintf(w, "hello there")
+	fmt.Fprintln(w, "hello from heroku")
 }
 
 func main() {
-	port := os.Getenv("PORT")
+	n := negroni.Classic()
+
 	router := mux.NewRouter()
 	router.HandleFunc("/", helloHandler).Methods("GET")
-	n := negroni.Classic()
+
 	n.UseHandler(router)
-	n.Run(":" +port)
+	n.Run(":" + port)
 }
