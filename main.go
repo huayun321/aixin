@@ -16,8 +16,8 @@ import (
 
 var (
 	port   = os.Getenv("PORT")
-	dbURL  = os.Getenv("DATABASE_URL")
-	dbName = os.Getenv("DATABASE_NAME")
+	dbURL  = os.Getenv("DATABASE_URI")
+	dbName = "heroku_90v42m0v"
 	dbColl = "user"
 )
 
