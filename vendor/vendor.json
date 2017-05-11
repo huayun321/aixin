@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "NQWrITjQCpJdsRzaPQIsfClTF6M=",
+			"path": "github.com/codegangsta/negroni",
+			"revision": "1d8981a52d6bda4467a9faacf3fdddd38222dfc4",
+			"revisionTime": "2017-05-06T02:27:41Z"
+		},
+		{
 			"checksumSHA1": "g/V4qrXjUGG9B+e3hB+4NAYJ5Gs=",
 			"path": "github.com/gorilla/context",
 			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
@@ -15,6 +21,12 @@
 			"revisionTime": "2017-02-28T22:43:54Z"
 		},
 		{
+			"checksumSHA1": "3+fi9McAeZ6zpvuB3U2OmPZ9iFE=",
+			"path": "github.com/joeljames/nigroni-mgo-session",
+			"revision": "135786242691a122820b82b129b7262b3f0c7362",
+			"revisionTime": "2017-05-10T03:13:22Z"
+		},
+		{
 			"checksumSHA1": "cfzucV4FcTJqEKZiEu7Si7Y4iKM=",
 			"path": "github.com/mholt/binding",
 			"revision": "52f4dd97beda465aa7e5a6db461ede3a22065048",
@@ -25,6 +37,36 @@
 			"path": "github.com/urfave/negroni",
 			"revision": "c0db5feaa33826cd5117930c8f4ee5c0f565eec6",
 			"revisionTime": "2017-02-26T00:53:33Z"
+		},
+		{
+			"checksumSHA1": "1D8GzeoFGUs5FZOoyC2DpQg8c5Y=",
+			"path": "gopkg.in/mgo.v2",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "YsB2DChSV9HxdzHaKATllAUKWSI=",
+			"path": "gopkg.in/mgo.v2/bson",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "XQsrqoNT1U0KzLxOFcAZVvqhLfk=",
+			"path": "gopkg.in/mgo.v2/internal/json",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "LEvMCnprte47qdAxWvQ/zRxVF1U=",
+			"path": "gopkg.in/mgo.v2/internal/sasl",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "+1WDRPaOphSCmRMxVPIPBV4aubc=",
+			"path": "gopkg.in/mgo.v2/internal/scram",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
 		}
 	],
 	"rootPath": "bitbucket.org/huayun321/test-heroku"
