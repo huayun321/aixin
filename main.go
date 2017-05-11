@@ -7,6 +7,8 @@ import (
 
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
 
+	"encoding/json"
+
 	"github.com/gorilla/mux"
 	"github.com/mholt/binding"
 	"github.com/urfave/negroni"
@@ -23,8 +25,8 @@ var (
 // First define a type to hold the data
 // (If the data comes from JSON, see: http://mholt.github.io/json-to-go)
 type LoginForm struct {
-	Username string
-	Password string
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 // Then provide a field mapping (pointer receiver is vital)
@@ -78,6 +80,15 @@ func signInHandler(resp http.ResponseWriter, req *http.Request) {
 	nms.DB.C(dbColl).Insert(&lf)
 }
 
+func usersHandler(resp http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	list := []LoginForm{}
+	nms.DB.C(dbColl).Find(nil).All(&list)
+	json.NewEncoder(resp).Encode(&list)
+}
+
 //test
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("hello")
@@ -96,6 +107,7 @@ func main() {
 	router.HandleFunc("/", helloHandler).Methods("GET")
 	router.HandleFunc("/binding", bindingHandler).Methods("POST")
 	router.HandleFunc("/sign-in", signInHandler).Methods("POST")
+	router.HandleFunc("/users", usersHandler).Methods("GET")
 
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.UseHandler(router)
