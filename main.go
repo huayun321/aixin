@@ -16,7 +16,7 @@ import (
 
 var (
 	port   = os.Getenv("PORT")
-	dbURL  = os.Getenv("DATABASE_URI")
+	dbURL  = os.Getenv("MONGODB_URI")
 	dbName = "heroku_90v42m0v"
 	dbColl = "user"
 )
