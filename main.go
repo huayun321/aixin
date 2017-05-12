@@ -6,8 +6,7 @@ import (
 	"os"
 
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
-
-	"encoding/json"
+	"github.com/unrolled/render"
 
 	"github.com/gorilla/mux"
 	"github.com/mholt/binding"
@@ -19,6 +18,7 @@ var (
 	dbURL  = os.Getenv("MONGODB_URI")
 	dbName = "heroku_90v42m0v"
 	dbColl = "user"
+	ren    = render.New(render.Options{IndentJSON: true, StreamingJSON: true, IsDevelopment: true})
 )
 
 //===================== binding
@@ -86,7 +86,9 @@ func usersHandler(resp http.ResponseWriter, req *http.Request) {
 
 	list := []LoginForm{}
 	nms.DB.C(dbColl).Find(nil).All(&list)
-	json.NewEncoder(resp).Encode(&list)
+	ren.JSON(resp, http.StatusOK, struct {
+		Users []LoginForm `json:"users"`
+	}{list})
 }
 
 //test
