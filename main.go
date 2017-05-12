@@ -1,3 +1,10 @@
+// @APIVersion 1.0.0
+// @APITitle My Cool API
+// @APIDescription My API usually works as expected.
+// @Contact huayun321@gmail.com
+// @TermsOfServiceUrl http://pandariel.com
+// @BasePath http://localhost:3000
+
 package main
 
 import (
@@ -22,6 +29,11 @@ var (
 	dbColl = "user"
 	ren    = render.New(render.Options{IndentJSON: true, StreamingJSON: true, IsDevelopment: true})
 )
+
+type ErrorResp struct {
+	Code int
+	Msg  string
+}
 
 //===================== binding
 // First define a type to hold the data
@@ -70,10 +82,17 @@ func bindingHandler(resp http.ResponseWriter, req *http.Request) {
 //===================== binding end
 
 //===================== nms start
+
+// @Title signIn
+// @Description login and get token
+// @Accept  json
+// @Param   username        query   string  true        "username should not less than 6 characters"
+// @Param   password        query   string  true        "password should not less than 6 characters"
+// @Router /sign-in [post]
 func signInHandler(resp http.ResponseWriter, req *http.Request) {
 	lf := new(LoginForm)
 	if errs := binding.Bind(req, lf); errs != nil {
-		http.Error(resp, errs.Error(), http.StatusBadRequest)
+		ren.JSON(resp, http.StatusBadRequest, ErrorResp{0001, "bad req"})
 		return
 	}
 	fmt.Fprintf(resp, "From:    %d\n", lf.Username)
@@ -84,6 +103,9 @@ func signInHandler(resp http.ResponseWriter, req *http.Request) {
 	nms.DB.C(dbColl).Insert(&lf)
 }
 
+// @Title get users
+// @Description get all users
+// @Router /users [get]
 func usersHandler(resp http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
