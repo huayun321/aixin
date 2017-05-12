@@ -109,8 +109,10 @@ func jwtLoginHandler(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	fmt.Println(lf)
+
 	//check username password
-	if lf.Username != "admin" && lf.Password != "admin123" {
+	if lf.Username != "admin123" || lf.Password != "admin123" {
 		ren.JSON(resp, http.StatusBadRequest, map[string]interface{}{"code": 001, "msg": "用户名或密码错误", "err": "username password not match"})
 		return
 	}
