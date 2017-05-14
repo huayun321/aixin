@@ -45,6 +45,18 @@
 			"revisionTime": "2017-05-01T02:24:34Z"
 		},
 		{
+			"checksumSHA1": "naf+sai8rdVYJ9ozLllNMMwE9aY=",
+			"path": "github.com/rs/cors",
+			"revision": "2d7dd2a10331137ae3f931ba08c21fd00cbf208d",
+			"revisionTime": "2017-04-20T18:42:42Z"
+		},
+		{
+			"checksumSHA1": "hCRfPlNpqv8tvVivLzmXsoUOf1c=",
+			"path": "github.com/rs/xhandler",
+			"revision": "ed27b6fd65218132ee50cd95f38474a3d8a2cd12",
+			"revisionTime": "2016-06-18T19:32:21Z"
+		},
+		{
 			"checksumSHA1": "XQ2GsdTmZgUO2xycRg02vxBYi50=",
 			"path": "github.com/unrolled/render",
 			"revision": "50716a0a853771bb36bfce61a45cdefdb98c2e6e",
@@ -55,6 +67,12 @@
 			"path": "github.com/urfave/negroni",
 			"revision": "c0db5feaa33826cd5117930c8f4ee5c0f565eec6",
 			"revisionTime": "2017-02-26T00:53:33Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"path": "golang.org/x/net/context",
+			"revision": "84f0e6f92b10139f986b1756e149a7d9de270cdc",
+			"revisionTime": "2017-05-12T21:27:43Z"
 		},
 		{
 			"checksumSHA1": "1D8GzeoFGUs5FZOoyC2DpQg8c5Y=",
@@ -87,5 +105,5 @@
 			"revisionTime": "2016-08-18T02:01:20Z"
 		}
 	],
-	"rootPath": "bitbucket.org/huayun321/test-heroku"
+	"rootPath": "immense-lowlands-91960"
 }
