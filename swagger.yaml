@@ -1,0 +1,47 @@
+swagger: "2.0"
+info:
+  description: "艾心健康接口文档"
+  version: "1.0.0"
+  title: "💗艾心健康"
+  termsOfService: "http://pandariel.com"
+  contact:
+    email: "huayun321@gmail.com"
+host: "https://immense-lowlands-91960.herokuapp.com"
+basePath: "/v1"
+tags:
+- name: "users"
+  description: "用户的所有接口"
+  externalDocs:
+    description: "Find out more"
+    url: "https://immense-lowlands-91960.herokuapp.com"
+schemes:
+- "http"
+paths:
+  /users:
+      get:
+      tags:
+      - "users"
+      summary: "find all users"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+         200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      username:
+        type: "string"
+      password:
+        type: "string"
+    json:
+      name: "User"

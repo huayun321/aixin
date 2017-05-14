@@ -20,6 +20,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/mholt/binding"
 	"github.com/urfave/negroni"
+	"github.com/rs/cors"
 )
 
 var (
@@ -196,6 +197,11 @@ func main() {
 		panic(err)
 	}
 
+	//cors 
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+	})
+
 	router := mux.NewRouter()
 	router.HandleFunc("/", helloHandler).Methods("GET")
 	router.HandleFunc("/binding", bindingHandler).Methods("POST")
@@ -208,6 +214,7 @@ func main() {
 	))
 
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
+	n.Use(c)
 	n.UseHandler(router)
 	n.Run(":" + port)
 }

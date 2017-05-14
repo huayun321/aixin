@@ -1,0 +1,50 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "艾心健康接口文档",
+        "version": "1.0.0",
+        "title": "艾心健康",
+        "termsOfService": "http://pandariel.com",
+        "contact": {
+            "email": "huayun321@gmail.com"
+        }
+    },
+    "host": "immense-lowlands-91960.herokuapp.com",
+    "basePath": "/",
+    "tags": [{
+        "name": "users",
+        "description": "Operations about user",
+        "externalDocs": {
+            "description": "Find out more about our store",
+            "url": "https://immense-lowlands-91960.herokuapp.com"
+        }
+    }],
+    "schemes": [
+        "https"
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find all users",
+                "description": "",
+                "operationId": "getUsers",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array"
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
