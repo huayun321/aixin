@@ -9,6 +9,7 @@ package main
 
 import (
 	"fmt"
+	"immense-lowlands-91960/handler"
 	"net/http"
 	"os"
 
@@ -19,8 +20,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mholt/binding"
-	"github.com/urfave/negroni"
 	"github.com/rs/cors"
+	"github.com/urfave/negroni"
 )
 
 var (
@@ -197,7 +198,7 @@ func main() {
 		panic(err)
 	}
 
-	//cors 
+	//cors
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 	})
@@ -212,6 +213,8 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(jwtSecuredHandler)),
 	))
+	router.HandleFunc("/user/verify", handler.GetVerifyCode).Methods("POST")
+	router.HandleFunc("/user/index", handler.EnsureIndex).Methods("GET")
 
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)

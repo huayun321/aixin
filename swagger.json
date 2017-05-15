@@ -1,9 +1,9 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "艾心健康接口文档",
+        "description": "ai",
         "version": "1.0.0",
-        "title": "艾心健康",
+        "title": "ai",
         "termsOfService": "http://pandariel.com",
         "contact": {
             "email": "huayun321@gmail.com"
