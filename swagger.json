@@ -11,14 +11,32 @@
     },
     "host": "immense-lowlands-91960.herokuapp.com",
     "basePath": "/",
-    "tags": [{
-        "name": "users",
-        "description": "Operations about user",
-        "externalDocs": {
-            "description": "Find out more about our store",
-            "url": "https://immense-lowlands-91960.herokuapp.com"
+    "tags": [
+        {
+            "name": "admin",
+            "description": "admin",
+            "externalDocs": {
+                "description": "Find out more about our store",
+                "url": "https://immense-lowlands-91960.herokuapp.com"
+            }
+        },
+        {
+            "name": "client",
+            "description": "client",
+            "externalDocs": {
+                "description": "Find out more about our store",
+                "url": "https://immense-lowlands-91960.herokuapp.com"
+            }
+        },
+        {
+            "name": "user",
+            "description": "Operations about user",
+            "externalDocs": {
+                "description": "Find out more about our store",
+                "url": "https://immense-lowlands-91960.herokuapp.com"
+            }
         }
-    }],
+    ],
     "schemes": [
         "https"
     ],
@@ -26,7 +44,8 @@
         "/users": {
             "get": {
                 "tags": [
-                    "users"
+                    "user",
+                    "admin"
                 ],
                 "summary": "Find all users",
                 "description": "",
@@ -44,7 +63,93 @@
                     }
                 }
             }
-
+        },
+        "/user/verify": {
+            "post": {
+                "tags": [
+                    "user",
+                    "client"
+                ],
+                "summary": "请求手机验证码",
+                "description": "发送手机号，获取验证码",
+                "operationId": "getVerify",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "phone number",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/VerifySuccessModel"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "VerifySuccessModel": {
+            "type": "object",
+            "required": [
+                "message",
+                "code",
+                "verify_code"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 600
+                },
+                "verify_code": {
+                    "type": "string",
+                    "length": 6
+                }
+            }
+        },
+        "ErrorModel": {
+            "type": "object",
+            "required": [
+                "message",
+                "code"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 600
+                }
+            }
         }
     }
 }
