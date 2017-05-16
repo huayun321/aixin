@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"fmt"
 )
 
 type requestBinder func(req *http.Request, userStruct FieldMapper) Errors
@@ -150,6 +151,7 @@ func defaultJsonBinder(req *http.Request, userStruct FieldMapper) Errors {
 	if req.Body != nil {
 		defer req.Body.Close()
 		err := json.NewDecoder(req.Body).Decode(userStruct)
+		fmt.Println("defaultJsonBinder userStruct:", userStruct)
 		if err != nil && err != io.EOF {
 			errs.Add([]string{}, DeserializationError, err.Error())
 			return errs
@@ -181,9 +183,10 @@ func Validate(req *http.Request, userStruct FieldMapper) error {
 
 func validate(errs Errors, req *http.Request, userStruct FieldMapper) Errors {
 	fm := userStruct.FieldMap(req)
-
+	fmt.Println("validate: fm", fm)
 	for fieldPointer, fieldNameOrSpec := range fm {
 		fieldSpec, err := fieldSpecification(fieldNameOrSpec)
+		fmt.Println("fieldSpec: ", fieldSpec)
 		if err != nil {
 			continue
 		}
@@ -382,6 +385,7 @@ func validate(errs Errors, req *http.Request, userStruct FieldMapper) Errors {
 		}
 	}
 
+	fmt.Println("binding after fieldmap userStruct:", userStruct)
 	if validator, ok := userStruct.(Validator); ok {
 		err := validator.Validate(req)
 		if err != nil {
@@ -395,6 +399,8 @@ func validate(errs Errors, req *http.Request, userStruct FieldMapper) Errors {
 			}
 		}
 	}
+	fmt.Println("binding after Validator userStruct:", userStruct)
+
 
 	if len(errs) > 0 {
 		return errs
