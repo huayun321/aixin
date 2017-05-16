@@ -12,8 +12,6 @@ import (
 
 	"encoding/json"
 
-	"strconv"
-
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
 	"github.com/mholt/binding"
 	"gopkg.in/mgo.v2"
@@ -31,28 +29,27 @@ func getRandomString(l int) string {
 	return string(result)
 }
 
-func sendSMS(code, phone string) {
-	iph, err := strconv.Atoi(phone)
-	if err != nil {
-		fmt.Println("sendSMS Atoi err:", err)
-	}
+func sendSMS(code, phone string) error {
 	url := "https://limitless-spire-42314.herokuapp.com/sms"
-	j, err := json.Marshal(struct {
-		Phone int
-		Code  string
-	}{iph, code})
+	sq := model.SMSQuery{Phone: phone, Code: code}
+	jsq, err := json.Marshal(sq)
 	if err != nil {
 		fmt.Println("sendSMS Marshal err:", err)
+		return err
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(j))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsq))
 	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		fmt.Println("sendSMS NewRequest err:", err)
+		return err
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("post api err :", err)
-		return
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -60,6 +57,8 @@ func sendSMS(code, phone string) {
 	fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("response Body:", string(body))
+
+	return nil
 }
 
 //GetVerifyCode 获得手机验证码

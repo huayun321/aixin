@@ -21,6 +21,7 @@ type User struct {
 	UserInfo      userInfo `json:"user_info"`
 }
 
+//定义微信信息
 type userInfo struct {
 	OpenID     string `json:"openid"`
 	Nickname   string `json:"nickname"`
@@ -71,4 +72,8 @@ func (vc VerifyCode) Validate(req *http.Request) error {
 	return nil
 }
 
-//todo index
+//SMSQuery 向短息服务发送到信息格式
+type SMSQuery struct {
+	Phone string `json:"phone"`
+	Code  string `json:"code"`
+}
