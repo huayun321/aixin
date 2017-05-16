@@ -109,7 +109,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	now := time.Now().Unix()
 	tsr := now - vc.VerifyTimestamp
 	if tsr < 60 {
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 102, "message": "GetVerifyCode 我记住你的ip了，不要跑！"})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 102, "message": "GetVerifyCode 一分钟后才能发送！"})
 		return
 	}
 
@@ -123,7 +123,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		}
 		//时间是同一天，次数有剩余
 		change := mgo.Change{
-			Update:    bson.M{"$inc": bson.M{"timesremainday": -1}, "$set": bson.M{"verifytimestamp": tsr}},
+			Update:    bson.M{"$inc": bson.M{"timesremainday": -1}, "$set": bson.M{"verifytimestamp": now}},
 			ReturnNew: false,
 		}
 		vcr := model.VerifyCode{}
@@ -136,7 +136,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		//时间不是同一天，剩余次数和日期重制
 		vc.TimesRemainDay = 4
 		change := mgo.Change{
-			Update:    bson.M{"$inc": bson.M{"timesremainday": 4}, "$set": bson.M{"lastverifyday": now}},
+			Update:    bson.M{"$inc": bson.M{"timesremainday": 4}, "$set": bson.M{"lastverifyday": now, "verifytimestamp": now}},
 			ReturnNew: false,
 		}
 		vcr := model.VerifyCode{}
