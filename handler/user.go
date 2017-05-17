@@ -16,6 +16,7 @@ import (
 	"github.com/mholt/binding"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"immense-lowlands-91960/form"
 )
 
 func getRandomString(l int) string {
@@ -160,7 +161,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 //SignInWithPhone 通过手机号注册
 func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 	// check params
-	uf := new(model.User)
+	uf := new(form.SignInPhoneForm)
 
 	if errs := binding.Bind(r, uf); errs != nil {
 		fmt.Println("SignInWithPhone: bind err: ", errs)
@@ -202,11 +203,17 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uf.CreateTime = now
+	u := model.User{}
+	u.Phone = uf.Phone
+	u.Password = uf.Password
+	u.Avatar = uf.Avatar
+	u.Nickname = uf.Nickname
+	u.IsFrozen = false
+	u.CreateTime = now
 
 	//store to db
-	fmt.Println("pre insert uf: ", uf)
-	err = nms.DB.C("user").Insert(&uf)
+	fmt.Println("pre insert user: ", u)
+	err = nms.DB.C("user").Insert(&u)
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
@@ -217,6 +224,7 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功"})
 	return
 }
+
 
 //EnsureIndex 声明索引
 func EnsureIndex(w http.ResponseWriter, r *http.Request) {
