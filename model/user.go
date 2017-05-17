@@ -12,14 +12,14 @@ import (
 
 //User 定义用户信息
 type User struct {
-	Phone         string     `json:"phone"`
-	Password      string     `json:"password"`
-	Avatar        string     `json:"avatar"`
-	Nickname      string     `json:"nickname"`
+	Phone         string     `json:"phone" bson:"phone,omitempty"`
+	Password      string     `json:"password" bson:"password,omitempty"`
+	Avatar        string     `json:"avatar" bson:"avatar,omitempty"`
+	Nickname      string     `json:"nickname" bson:"nickname,omitempty"`
 	OpenID        string     `json:"openid,omitempty" bson:"openid,omitempty"`
 	WxUserInfo    wxUserInfo `json:"wx_user_info,omitempty" bson:"wx_user_info,omitempty"`
-	IsFrozen      bool       `json:"is_frozen" bson:"is_frozen"`
-	CreateTime    int64      `json:"create_time,omitempty" bson:"create_time"`
+	IsFrozen      bool       `json:"is_frozen" bson:"is_frozen,omitempty"`
+	CreateTime    int64      `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	LastLoginTime int64      `json:"last_login_time,omitempty" bson:"last_login_time,omitempty"`
 }
 
@@ -40,7 +40,7 @@ type wxUserInfo struct {
 //VerifyCode 用于存储用户手机验证信息
 type VerifyCode struct {
 	Phone           string `json:"phone"`
-	VerifyCode      string `json:"verify_code" bson:"verify_code"`           //验证码
+	VerifyCode      string `json:"verify_code" bson:"verify_code"`                     //验证码
 	VerifyTimestamp int64  `json:"verify_timestamp,omitempty" bson:"verify_timestamp"` //验证码时间戳
 	TimesRemainDay  int    `bson:"times_remain_day,omitempty"`                         //每天限制发五条
 	LastVerifyDay   int64  `bson:"last_verify_day,omitempty"`                          //如果是新的一天则重制每天剩余条数

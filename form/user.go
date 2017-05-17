@@ -1,19 +1,116 @@
 package form
 
 import (
-	"regexp"
 	"github.com/mholt/binding"
 	"net/http"
+	"regexp"
 )
+
+//==============================================================微信注册表单
+
+//SignWxForm 微信注册登陆表单
+type SignWxForm struct {
+	Phone        string `json:"phone"`
+	Password     string `json:"password"`
+	Code         string `json:"verify_code"`
+	WxOpenID     string `json:"openid"`
+	WxNickname   string `json:"nickname"`
+	WxSex        uint8  `json:"sex"`
+	WxProvince   string `json:"province"`
+	WxCity       string `json:"city"`
+	WxCountry    string `json:"country"`
+	WxHeadimgurl string `json:"headimgurl"`
+	WxUnionid    string `json:"unionid"`
+}
+
+// FieldMap 数据绑定
+func (o *SignWxForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.Phone: binding.Field{
+			Form:         "phone",
+		},
+		&o.Password: binding.Field{
+			Form:         "password",
+		},
+		&o.Code: binding.Field{
+			Form:         "verify_code",
+		},
+		&o.WxOpenID: binding.Field{
+			Form:         "openid",
+			Required:     true,
+			ErrorMessage: "请提交 openid",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o SignWxForm) Validate(req *http.Request) error {
+	//检查手机号长度
+	if o.Phone != "" && o.Password != "" && o.Code != "" {
+		if len(o.Phone) < 11 || len(o.Phone) > 11 {
+			return binding.Errors{
+				binding.NewError([]string{"phone"}, "LengthError", "手机号必须是11位."),
+			}
+		}
+		//检查手机号格式
+		var validPhone = regexp.MustCompile(`^1[\d]{10}$`)
+		iv := validPhone.MatchString(o.Phone)
+		if !iv {
+			return binding.Errors{
+				binding.NewError([]string{"phone"}, "FormatError", "手机号格式不正确,必须是11位1开头数字。"),
+			}
+		}
+
+		//检查密码长度
+		if len(o.Password) < 6 || len(o.Password) > 30 {
+			return binding.Errors{
+				binding.NewError([]string{"password"}, "LengthError", "用户密码长度必须大于等于6位，小于等于30位."),
+			}
+		}
+
+		//检查密码格式
+		var validPassword = regexp.MustCompile(`^[[:graph:]]{6,30}$`)
+		ivp := validPassword.MatchString(o.Password)
+		if !ivp {
+			return binding.Errors{
+				binding.NewError([]string{"password"}, "FormatError", "密码格式不正确，必须是6至30位alphabetic字母数字或者特殊字符。"),
+			}
+		}
+
+		//检查验证码长度
+		if len(o.Code) != 6 {
+			return binding.Errors{
+				binding.NewError([]string{"password"}, "LengthError", "用户验证码必须等于6位."),
+			}
+		}
+
+		//检查验证码格式
+		var validCode = regexp.MustCompile(`^[0-9a-z]{6}$`)
+		ivc := validCode.MatchString(o.Code)
+		if !ivc {
+			return binding.Errors{
+				binding.NewError([]string{"code"}, "FormatError", "验证码格式不正确，必须是6位[0-9a-z]"),
+			}
+		}
+	}
+
+	return nil
+}
+
+
+
+
+
+
 //==============================================================用户手机注册表单
 
 //SignInPhoneForm 用户手机注册表单
 type SignInPhoneForm struct {
-	Phone         string     `json:"phone"`
-	Password      string     `json:"password"`
-	Avatar        string     `json:"avatar"`
-	Nickname      string     `json:"nickname"`
-	Code          string     `json:"verify_code" bson:"verify_code"`
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+	Avatar   string `json:"avatar"`
+	Nickname string `json:"nickname"`
+	Code     string `json:"verify_code" bson:"verify_code"`
 }
 
 // FieldMap 数据绑定
@@ -129,3 +226,4 @@ func (o SignInPhoneForm) Validate(req *http.Request) error {
 	}
 	return nil
 }
+
