@@ -104,8 +104,8 @@ func (o SignWxForm) Validate(req *http.Request) error {
 
 //==============================================================用户手机注册表单
 
-//SignInPhoneForm 用户手机注册表单
-type SignInPhoneForm struct {
+//SignUpPhoneForm 用户手机注册表单
+type SignUpPhoneForm struct {
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
 	Avatar   string `json:"avatar"`
@@ -114,7 +114,7 @@ type SignInPhoneForm struct {
 }
 
 // FieldMap 数据绑定
-func (o *SignInPhoneForm) FieldMap(req *http.Request) binding.FieldMap {
+func (o *SignUpPhoneForm) FieldMap(req *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&o.Phone: binding.Field{
 			Form:         "phone",
@@ -145,7 +145,7 @@ func (o *SignInPhoneForm) FieldMap(req *http.Request) binding.FieldMap {
 }
 
 //Validate 数据格式验证
-func (o SignInPhoneForm) Validate(req *http.Request) error {
+func (o SignUpPhoneForm) Validate(req *http.Request) error {
 	//检查手机号长度
 	if len(o.Phone) < 11 || len(o.Phone) > 11 {
 		return binding.Errors{

@@ -158,10 +158,10 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-//SignInWithPhone 通过手机号注册
-func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
+//SignUpWithPhone 通过手机号注册
+func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 	// check params
-	uf := new(form.SignInPhoneForm)
+	uf := new(form.SignUpPhoneForm)
 
 	if errs := binding.Bind(r, uf); errs != nil {
 		fmt.Println("SignInWithPhone: bind err: ", errs)
