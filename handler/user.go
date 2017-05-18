@@ -241,7 +241,8 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 
 	//store to db
 	fmt.Println("pre insert user: ", u)
-	err = nms.DB.C("user").Insert(&u)
+	upsertdata := bson.M{"$set": u}
+	_, err = nms.DB.C("user").Upsert(bson.M{"phone": u.Phone}, upsertdata)
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
@@ -266,8 +267,13 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("=======SignWithWx 处理开始")
+	fmt.Println("=======SignWithWx 参数:", swf)
+
 	ctx := r.Context()
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	fmt.Println("=======SignWithWx 获得nms")
 
 	//define user
 	u := model.User{}
@@ -284,23 +290,27 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 
 	// check if verify code match
 	if swf.Phone != "" && swf.Password != "" && swf.Code != "" {
+		fmt.Println("=======SignWithWx 带有电话密码验证码字段")
+		u.Phone = swf.Phone
+		u.Password = swf.Password
+		fmt.Println("=======SignWithWx 查询验证码")
 		vc := model.VerifyCode{}
 		err := nms.DB.C("verifycode").Find(bson.M{"phone": swf.Phone}).One(&vc)
 		// got err
 		if err != nil && err != mgo.ErrNotFound {
-			fmt.Println("SignWithWx err:", err)
+			fmt.Println("=======SignWithWx 查询验证码 失败err：", err)
 			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10302, "message": "查询数据库时遇到内部错误", "err": err})
 			return
 		}
 
 		if err != nil && err == mgo.ErrNotFound {
-			fmt.Println("SignWithWx err:", err)
+			fmt.Println("=======SignWithWx 查询验证码 验证码不存在：", err)
 			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10303, "message": "数据库中并没有此电话的验证码", "err": err})
 			return
 		}
 
 		if swf.Code != vc.VerifyCode {
-			fmt.Println("SignWithWx 验证码与存储的验证码不匹配:")
+			fmt.Println("=======SignWithWx 查询验证码 验证码与存储的验证码不匹配")
 			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10304, "message": "验证码与存储的验证码不匹配"})
 			return
 		}
@@ -310,58 +320,69 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		now := time.Now().Unix()
 		st := now - vc.VerifyTimestamp
 		if st > 60*60 {
-			fmt.Println("SignWithWx 验证码已超过一小时:", err)
+			fmt.Println("=======SignWithWx 验证码已超过一小时：")
 			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10305, "message": "验证码已超过一小时"})
 			return
 		}
 
 		//check if phone has signed
 		udbp := model.User{}
+		fmt.Println("=======SignWithWx 检查电话是否已被注册：")
+		fmt.Println("=======SignWithWx 如果已注册则upsert by phone：")
 
 		err = nms.DB.C("user").Find(bson.M{"phone": swf.Phone}).One(&udbp)
 		if err != nil && err != mgo.ErrNotFound {
-			fmt.Println("SignWithWx err:", err)
+			fmt.Println("=======SignWithWx 查询电话遇到错误 err：", err)
 			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10306, "message": "查询数据库时遇到内部错误", "err": err})
 			return
 		}
 
 		if err != nil && err == mgo.ErrNotFound {
-			fmt.Println("SignWithWx info phone user not found")
-			u.Phone = swf.Phone
+			fmt.Println("=======SignWithWx 未查到电话 ")
 		}
 
-		//允许微信登陆更改密码
-		u.Password = swf.Password
+		fmt.Println("=======SignWithWx 查到电话 phone：", udbp)
+
+		if udbp.IsFrozen {
+			fmt.Println("SignWithWx phone user is frozen")
+			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10308, "message": "该用户已被冻结，请联系管理人员"})
+			return
+		}
+
+
+		////允许微信登陆更改密码
+		//u.Phone = swf.Phone
+		//u.Password = swf.Password
 
 		if err == nil {
 			//check if openid exist
 			//更换微信号
 			//添加微信号
 			if udbp.OpenID != swf.WxOpenID {
+				fmt.Printf("=======SignWithWx 微信号不相同，更改微信号：old %v new %v \n", udbp.OpenID, swf.WxOpenID)
+				fmt.Println("=======SignWithWx 微信号不相同，删除所提交微信号的 已注册数据：")
 				err = nms.DB.C("user").Remove(bson.M{"openid": swf.WxOpenID})
 				if err != nil && err != mgo.ErrNotFound {
-					fmt.Println("SignWithWx err:", err)
+					fmt.Println("=======SignWithWx 微信号不相同，删除旧微信号数据 遇到错误err：", err)
 					util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10307, "message": "查询数据库时遇到内部错误", "err": err})
 					return
 				}
 			}
-
-			if udbp.IsFrozen {
-				fmt.Println("SignWithWx phone user is frozen")
-				util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10308, "message": "该用户已被冻结，请联系管理人员"})
-				return
-			}
+			fmt.Println("=======SignWithWx upsert by phone old: ", udbp)
+			fmt.Println("=======SignWithWx upsert by phone new: ", u)
 
 			//update
 			upsertdata := bson.M{"$set": u}
 			_, err := nms.DB.C("user").Upsert(bson.M{"phone": u.Phone}, upsertdata)
 			if err != nil {
+				fmt.Println("=======SignWithWx upsert by phone 遇到错误 err: ", err)
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10309, "message": "插入数据库时遇到内部错误!"})
 				return
 			}
 
 			tk, err := jwtSign(swf.Phone, "", "user", time.Now().Unix()+JWTEXP)
 			if err != nil {
+				fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10310, "message": "生成token遇到错误!", "err": err})
 				return
 			}
@@ -371,39 +392,42 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//todo 最后应该把各流程画个流程图
+	fmt.Println("=======SignWithWx 通过openid检测 是否已经注册: ")
 
 	//check if is sign
 	udb := model.User{}
 
 	err := nms.DB.C("user").Find(bson.M{"openid": swf.WxOpenID}).One(&udb)
 	if err != nil && err != mgo.ErrNotFound {
-		fmt.Println("SignWithWx err:", err)
+		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 遇到错误 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10311, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
 	if err != nil && err == mgo.ErrNotFound {
-		fmt.Println("SignWithWx info wx user not found")
+		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 未注册")
 		u.CreateTime = udb.CreateTime
 	}
 
 	if udb.IsFrozen {
-		fmt.Println("SignWithWx user is frozen")
+		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 用于已冻结")
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10312, "message": "该用户已被冻结，请联系管理人员"})
 		return
 	}
 
 	//upsert to db
-	fmt.Println("pre insert user: ", u)
+	fmt.Println("=======SignWithWx upsert by openid")
 	upsertdata := bson.M{"$set": u}
 	_, err = nms.DB.C("user").Upsert(bson.M{"openid": u.OpenID}, upsertdata)
 	if err != nil {
+		fmt.Println("=======SignWithWx upsert by openid err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10313, "message": "插入数据库时遇到内部错误!"})
 		return
 	}
 
 	tk, err := jwtSign("", swf.WxOpenID, "user", time.Now().Unix()+JWTEXP)
 	if err != nil {
+		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10314, "message": "生成token遇到错误!", "err": err})
 		return
 	}
@@ -416,12 +440,59 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
-	err := nms.DB.C("verifycode").EnsureIndexKey("phone")
+
+	//err := nms.DB.C("verifycode").DropIndex("phone")
+	//if err != nil {
+	//	fmt.Println("drop verifycode index phone err:", err)
+	//	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "删除索引遇到错误"})
+	//	return
+	//}
+
+	ivc := mgo.Index{
+		Key: []string{"phone"},
+		Unique: true,
+		DropDups: true,
+	}
+	err := nms.DB.C("verifycode").EnsureIndex(ivc)
 	if err != nil {
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "声明索引时遇到错误"})
 		return
 	}
-	err = nms.DB.C("user").EnsureIndexKey("phone", "openid")
+
+
+
+	//user index
+	//err = nms.DB.C("user").DropIndex("phone")
+	//if err != nil {
+	//	fmt.Println("drop user index phone err:", err)
+	//
+	//	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "删除索引遇到错误"})
+	//	return
+	//}
+	//
+	//err = nms.DB.C("user").DropIndex("openid")
+	//if err != nil {
+	//	fmt.Println("drop user index openid err:", err)
+	//	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "删除索引遇到错误"})
+	//	return
+	//}
+
+	iup := mgo.Index{
+		Key: []string{"phone"},
+		Unique: true,
+		DropDups: true,
+	}
+	err = nms.DB.C("user").EnsureIndex(iup)
+	if err != nil {
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "声明索引时遇到错误"})
+		return
+	}
+	iuo := mgo.Index{
+		Key: []string{"openid"},
+		Unique: true,
+		DropDups: true,
+	}
+	err = nms.DB.C("user").EnsureIndex(iuo)
 	if err != nil {
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "声明索引时遇到错误"})
 		return

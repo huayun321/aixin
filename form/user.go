@@ -8,11 +8,11 @@ import (
 
 //==============================================================微信注册表单
 
-//SignWxForm 微信注册登陆表单
+//SignInWxForm 微信注册登陆表单
 type SignWxForm struct {
 	Phone        string `json:"phone"`
 	Password     string `json:"password"`
-	Code         string `json:"verify_code"`
+	Code         string `json:"verify_code" bson:"verify_code"`
 	WxOpenID     string `json:"openid"`
 	WxNickname   string `json:"nickname"`
 	WxSex        uint8  `json:"sex"`
