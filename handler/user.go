@@ -20,7 +20,10 @@ import (
 	"immense-lowlands-91960/form"
 )
 
-const JWTEXP  = 60 * 60 * 24 * 30
+const (
+	JWTEXP = 60 * 60 * 24 * 30
+	SMSURL = "https://limitless-spire-42314.herokuapp.com/sms"
+)
 
 func getRandomString(l int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
@@ -36,10 +39,10 @@ func getRandomString(l int) string {
 func jwtSign(phone, openid, role string, exp int64) (string, error) {
 	// Claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"phone": phone,
+		"phone":  phone,
 		"openid": openid,
-		"role":  role,
-		"exp":   exp,
+		"role":   role,
+		"exp":    exp,
 	})
 
 	// Headers
@@ -57,7 +60,6 @@ func jwtSign(phone, openid, role string, exp int64) (string, error) {
 }
 
 func sendSMS(code, phone string) error {
-	url := "https://limitless-spire-42314.herokuapp.com/sms"
 	sq := model.SMSQuery{Phone: phone, Code: code}
 	jsq, err := json.Marshal(sq)
 	if err != nil {
@@ -65,7 +67,7 @@ func sendSMS(code, phone string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsq))
+	req, err := http.NewRequest("POST", SMSURL, bytes.NewBuffer(jsq))
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		fmt.Println("sendSMS NewRequest err:", err)
@@ -358,12 +360,12 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			tk, err := jwtSign(swf.Phone, "", "user", time.Now().Unix() + JWTEXP)
+			tk, err := jwtSign(swf.Phone, "", "user", time.Now().Unix()+JWTEXP)
 			if err != nil {
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10310, "message": "生成token遇到错误!", "err": err})
 				return
 			}
-			util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token":tk })
+			util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk})
 			return
 		}
 	}
@@ -400,13 +402,13 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tk, err := jwtSign("", swf.WxOpenID, "user", time.Now().Unix() + JWTEXP)
+	tk, err := jwtSign("", swf.WxOpenID, "user", time.Now().Unix()+JWTEXP)
 	if err != nil {
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10314, "message": "生成token遇到错误!", "err": err})
 		return
 	}
 
-	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token":tk})
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk})
 	return
 }
 
