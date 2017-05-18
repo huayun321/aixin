@@ -16,6 +16,13 @@ type User struct {
 	Password      string     `json:"password" bson:"password,omitempty"`
 	Avatar        string     `json:"avatar" bson:"avatar,omitempty"`
 	Nickname      string     `json:"nickname" bson:"nickname,omitempty"`
+	Sex           uint8      `json:"sex" bson:"sex,omitempty"`
+	Birthday      string     `json:"birthday" bson:"birthday,omitempty"`
+	Signature     string     `json:"signature" bson:"signature,omitempty"`
+	City          string     `json:"city" bson:"city,omitempty"`
+	Height        string     `json:"height" bson:"height,omitempty"`
+	Weight        string     `json:"weight" bson:"weight,omitempty"`
+	BMI           string     `json:"bmi" bson:"bmi,omitempty"`
 	OpenID        string     `json:"openid,omitempty" bson:"openid,omitempty"`
 	WxUserInfo    wxUserInfo `json:"wx_user_info,omitempty" bson:"wx_user_info,omitempty"`
 	IsFrozen      bool       `json:"is_frozen" bson:"is_frozen,omitempty"`
