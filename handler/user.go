@@ -18,6 +18,8 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"immense-lowlands-91960/form"
+	"crypto/md5"
+	"io"
 )
 
 const (
@@ -247,11 +249,15 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 
 	u := model.User{}
 	u.Phone = uf.Phone
-	u.Password = uf.Password
+	//u.Password = uf.Password
 	u.Avatar = uf.Avatar
 	u.Nickname = uf.Nickname
 	u.IsFrozen = false
 	u.CreateTime = now
+
+	h := md5.New()
+	io.WriteString(h, uf.Password)
+	u.Password = fmt.Sprintf("%x", h.Sum(nil))
 
 	//store to db
 	err = nms.DB.C("user").Insert(u)
@@ -304,7 +310,10 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	if swf.Phone != "" && swf.Password != "" && swf.Code != "" {
 		fmt.Println("=======SignWithWx 带有电话密码验证码字段")
 		u.Phone = swf.Phone
-		u.Password = swf.Password
+		h := md5.New()
+		io.WriteString(h, swf.Password)
+		u.Password = fmt.Sprintf("%x", h.Sum(nil))
+
 		fmt.Println("=======SignWithWx 查询验证码")
 		vc := model.VerifyCode{}
 		err := nms.DB.C("verifycode").Find(bson.M{"phone": swf.Phone}).One(&vc)
