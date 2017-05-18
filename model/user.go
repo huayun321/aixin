@@ -32,14 +32,14 @@ type User struct {
 
 //定义微信信息
 type wxUserInfo struct {
-	OpenID     string `json:"openid"`
-	Nickname   string `json:"nickname"`
-	Sex        uint8  `json:"sex"`
-	Province   string `json:"province"`
-	City       string `json:"city"`
-	Country    string `json:"country"`
-	Headimgurl string `json:"headimgurl"`
-	Unionid    string `json:"unionid"`
+	OpenID     string `json:"openid" bson:"openid,omitempty"`
+	Nickname   string `json:"nickname"  bson:"nickname,omitempty"`
+	Sex        uint8  `json:"sex"  bson:"sex,omitempty"`
+	Province   string `json:"province"  bson:"province,omitempty"`
+	City       string `json:"city"  bson:"city,omitempty"`
+	Country    string `json:"country"  bson:"country,omitempty"`
+	Headimgurl string `json:"headimgurl"  bson:"headimgurl,omitempty"`
+	Unionid    string `json:"unionid"  bson:"unionid,omitempty"`
 }
 
 //===========================================验证码部分
