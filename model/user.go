@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/mholt/binding"
+	"gopkg.in/mgo.v2/bson"
 )
 
 //===========================================用户信息部分
@@ -12,22 +13,23 @@ import (
 
 //User 定义用户信息
 type User struct {
-	Phone         string     `json:"phone" bson:"phone,omitempty"`
-	Password      string     `json:"password" bson:"password,omitempty"`
-	Avatar        string     `json:"avatar" bson:"avatar,omitempty"`
-	Nickname      string     `json:"nickname" bson:"nickname,omitempty"`
-	Sex           uint8      `json:"sex" bson:"sex,omitempty"`
-	Birthday      string     `json:"birthday" bson:"birthday,omitempty"`
-	Signature     string     `json:"signature" bson:"signature,omitempty"`
-	City          string     `json:"city" bson:"city,omitempty"`
-	Height        string     `json:"height" bson:"height,omitempty"`
-	Weight        string     `json:"weight" bson:"weight,omitempty"`
-	BMI           string     `json:"bmi" bson:"bmi,omitempty"`
-	OpenID        string     `json:"openid,omitempty" bson:"openid,omitempty"`
-	WxUserInfo    wxUserInfo `json:"wx_user_info,omitempty" bson:"wx_user_info,omitempty"`
-	IsFrozen      bool       `json:"is_frozen" bson:"is_frozen,omitempty"`
-	CreateTime    int64      `json:"create_time,omitempty" bson:"create_time,omitempty"`
-	LastLoginTime int64      `json:"last_login_time,omitempty" bson:"last_login_time,omitempty"`
+	ID            bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	Phone         string        `json:"phone" bson:"phone,omitempty"`
+	Password      string        `json:"password,omitempty" bson:"password,omitempty"`
+	Avatar        string        `json:"avatar" bson:"avatar,omitempty"`
+	Nickname      string        `json:"nickname" bson:"nickname,omitempty"`
+	Sex           uint8         `json:"sex" bson:"sex,omitempty"`
+	Birthday      string        `json:"birthday" bson:"birthday,omitempty"`
+	Signature     string        `json:"signature" bson:"signature,omitempty"`
+	City          string        `json:"city" bson:"city,omitempty"`
+	Height        string        `json:"height" bson:"height,omitempty"`
+	Weight        string        `json:"weight" bson:"weight,omitempty"`
+	BMI           string        `json:"bmi" bson:"bmi,omitempty"`
+	OpenID        string        `json:"openid,omitempty" bson:"openid,omitempty"`
+	WxUserInfo    wxUserInfo    `json:"wx_user_info,omitempty" bson:"wx_user_info,omitempty"`
+	IsFrozen      bool          `json:"is_frozen" bson:"is_frozen,omitempty"`
+	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
+	LastLoginTime int64         `json:"last_login_time,omitempty" bson:"last_login_time,omitempty"`
 }
 
 //定义微信信息
@@ -73,7 +75,7 @@ func (vc VerifyCode) Validate(req *http.Request) error {
 		}
 	}
 	//检查手机号格式
-	var validPhone = regexp.MustCompile(`^1{1}[\d]{10}$`)
+	var validPhone = regexp.MustCompile(`^1[\d]{10}$`)
 	iv := validPhone.MatchString(vc.Phone)
 	if !iv {
 		return binding.Errors{

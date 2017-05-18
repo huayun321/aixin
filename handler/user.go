@@ -231,6 +231,20 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	udb := model.User{}
+	err = nms.DB.C("user").Find(bson.M{"phone": uf.Phone}).One(&udb)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("SignInWithPhone err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10206, "message": "SignInWithPhone 查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err == nil {
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10208, "message": "SignInWithPhone 手机号已被注册"})
+		return
+	}
+
 	u := model.User{}
 	u.Phone = uf.Phone
 	u.Password = uf.Password
@@ -240,9 +254,7 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 	u.CreateTime = now
 
 	//store to db
-	fmt.Println("pre insert user: ", u)
-	upsertdata := bson.M{"$set": u}
-	_, err = nms.DB.C("user").Upsert(bson.M{"phone": u.Phone}, upsertdata)
+	err = nms.DB.C("user").Insert(u)
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
@@ -387,6 +399,8 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			udbp.OpenID = u.OpenID
+			udbp.WxUserInfo = u.WxUserInfo
 			result := map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk, "user": udbp}
 			fmt.Println("=======SignWithWx 成功返回: result", result)
 			util.Ren.JSON(w, http.StatusOK, result)
@@ -407,18 +421,23 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err == nil {
+		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 已注册 user: ", udb)
+		if udb.IsFrozen {
+			fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 用户已冻结")
+			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10312, "message": "该用户已被冻结，请联系管理人员"})
+			return
+		}
+	}
+
 	if err != nil && err == mgo.ErrNotFound {
 		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 未注册")
 		u.CreateTime = time.Now().Unix()
+		u.ID = bson.NewObjectId()
+		fmt.Println("=======SignWithWx  新用户id: ", u.ID)
+		udb = u
 	}
 
-	fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 已注册 user: ", udb)
-
-	if udb.IsFrozen {
-		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 用于已冻结")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10312, "message": "该用户已被冻结，请联系管理人员"})
-		return
-	}
 
 	//upsert to db
 	fmt.Println("=======SignWithWx upsert by openid")
@@ -437,6 +456,8 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//udb.LastLoginTime = udb.LastLoginTime * 1000
+	udb.WxUserInfo = u.WxUserInfo
 	result := map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk, "user": udb}
 	fmt.Println("=======SignWithWx 成功返回: result", result)
 	util.Ren.JSON(w, http.StatusOK, result)
