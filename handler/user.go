@@ -386,7 +386,10 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10310, "message": "生成token遇到错误!", "err": err})
 				return
 			}
-			util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk})
+
+			result := map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk, "user": udbp}
+			fmt.Println("=======SignWithWx 成功返回: result", result)
+			util.Ren.JSON(w, http.StatusOK, result)
 			return
 		}
 	}
@@ -406,7 +409,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err == mgo.ErrNotFound {
 		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 未注册")
-		u.CreateTime = udb.CreateTime
+		u.CreateTime = time.Now().Unix()
 	}
 
 	fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 已注册 user: ", udb)
@@ -434,7 +437,9 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk})
+	result := map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk, "user": udb}
+	fmt.Println("=======SignWithWx 成功返回: result", result)
+	util.Ren.JSON(w, http.StatusOK, result)
 	return
 }
 
