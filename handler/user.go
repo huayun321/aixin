@@ -12,12 +12,15 @@ import (
 
 	"encoding/json"
 
+	"github.com/dgrijalva/jwt-go"
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
 	"github.com/mholt/binding"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"immense-lowlands-91960/form"
 )
+
+const JWTEXP  = 60 * 60 * 24 * 30
 
 func getRandomString(l int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
@@ -28,6 +31,29 @@ func getRandomString(l int) string {
 		result = append(result, bytes[r.Intn(len(bytes))])
 	}
 	return string(result)
+}
+
+func jwtSign(phone, openid, role string, exp int64) (string, error) {
+	// Claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"phone": phone,
+		"openid": openid,
+		"role":  role,
+		"exp":   exp,
+	})
+
+	// Headers
+	token.Header["alg"] = "HS256"
+	token.Header["typ"] = "JWT"
+
+	//sign
+	tokenString, err := token.SignedString([]byte("My Secret"))
+	if err != nil {
+		fmt.Printf("token err: %v \n", err)
+		return "", err
+	}
+
+	return tokenString, nil
 }
 
 func sendSMS(code, phone string) error {
@@ -197,7 +223,7 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 	// 验证码超过1小时为过期
 	now := time.Now().Unix()
 	st := now - vc.VerifyTimestamp
-	if st > 60 * 60 {
+	if st > 60*60 {
 		fmt.Println("SignInWithPhone 验证码已超过一小时:", err)
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10205, "message": "SignInWithPhone 验证码已超过一小时"})
 		return
@@ -225,6 +251,7 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//todo add user ad
 
 //SignInWithWx 通过微信登陆或者注册
 func SignWithWx(w http.ResponseWriter, r *http.Request) {
@@ -280,7 +307,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		// 验证码超过1小时为过期
 		now := time.Now().Unix()
 		st := now - vc.VerifyTimestamp
-		if st > 60 * 60 {
+		if st > 60*60 {
 			fmt.Println("SignWithWx 验证码已超过一小时:", err)
 			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10305, "message": "验证码已超过一小时"})
 			return
@@ -324,12 +351,20 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 			}
 
 			//update
-			upsertdata := bson.M{ "$set": u}
-			_ , err := nms.DB.C("user").Upsert( bson.M{ "phone": u.Phone}, upsertdata )
+			upsertdata := bson.M{"$set": u}
+			_, err := nms.DB.C("user").Upsert(bson.M{"phone": u.Phone}, upsertdata)
 			if err != nil {
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10309, "message": "插入数据库时遇到内部错误!"})
 				return
 			}
+
+			tk, err := jwtSign(swf.Phone, "", "user", time.Now().Unix() + JWTEXP)
+			if err != nil {
+				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10310, "message": "生成token遇到错误!", "err": err})
+				return
+			}
+			util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token":tk })
+			return
 		}
 	}
 
@@ -341,7 +376,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	err := nms.DB.C("user").Find(bson.M{"openid": swf.WxOpenID}).One(&udb)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("SignWithWx err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10310, "message": "查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10311, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -352,22 +387,28 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 
 	if udb.IsFrozen {
 		fmt.Println("SignWithWx user is frozen")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10311, "message": "该用户已被冻结，请联系管理人员"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10312, "message": "该用户已被冻结，请联系管理人员"})
 		return
 	}
 
 	//upsert to db
 	fmt.Println("pre insert user: ", u)
-	upsertdata := bson.M{ "$set": u}
-	_ , err = nms.DB.C("user").Upsert( bson.M{ "openid": u.OpenID}, upsertdata )
+	upsertdata := bson.M{"$set": u}
+	_, err = nms.DB.C("user").Upsert(bson.M{"openid": u.OpenID}, upsertdata)
 	if err != nil {
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10312, "message": "插入数据库时遇到内部错误!"})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10313, "message": "插入数据库时遇到内部错误!"})
 		return
 	}
-	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功"})
+
+	tk, err := jwtSign("", swf.WxOpenID, "user", time.Now().Unix() + JWTEXP)
+	if err != nil {
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10314, "message": "生成token遇到错误!", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token":tk})
 	return
 }
-
 
 //EnsureIndex 声明索引
 func EnsureIndex(w http.ResponseWriter, r *http.Request) {
