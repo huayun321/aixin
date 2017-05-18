@@ -409,6 +409,8 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		u.CreateTime = udb.CreateTime
 	}
 
+	fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 已注册 user: ", udb)
+
 	if udb.IsFrozen {
 		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 用于已冻结")
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10312, "message": "该用户已被冻结，请联系管理人员"})
