@@ -6,13 +6,13 @@ package binding
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-	"fmt"
 )
 
 type requestBinder func(req *http.Request, userStruct FieldMapper) Errors
@@ -400,7 +400,6 @@ func validate(errs Errors, req *http.Request, userStruct FieldMapper) Errors {
 		}
 	}
 	fmt.Println("binding after Validator userStruct:", userStruct)
-
 
 	if len(errs) > 0 {
 		return errs

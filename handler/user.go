@@ -535,14 +535,14 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// 获取所有用户
+//GetUsers 获取所有用户
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	// check params
 	f := new(form.UserListForm)
 
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10501, "message": "用户数据格式错误", "err": errs})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10501, "message": "数据格式错误", "err": errs})
 		return
 	}
 
@@ -581,7 +581,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	l := []model.User{}
-	err := nms.DB.C("user").Find(q).Sort("create_time").Skip((page-1) * pageSize).Limit(pageSize).All(&l)
+	err := nms.DB.C("user").Find(q).Sort("create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======GetUsers 获取用户列表 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10502, "message": "查询数据库时遇到内部错误", "err": err})
@@ -603,7 +603,41 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		l[i].Password = ""
 	}
 
-	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total":c})
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": c})
+	return
+}
+
+//FrozeUser 冻结用户
+func FrozeUser(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.FrozeForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10601, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("=======SignWithWx 获得nms")
+
+	upsertdata := bson.M{"$set": bson.M{"is_frozen": true, "froze_time":time.Now().Unix()}}
+	err := nms.DB.C("user").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
+
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======FrozeUser update err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10602, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======FrozeUser not found user: ")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10603, "message": "不存在此条数据", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
 

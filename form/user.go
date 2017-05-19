@@ -4,6 +4,7 @@ import (
 	"github.com/mholt/binding"
 	"net/http"
 	"regexp"
+	"gopkg.in/mgo.v2/bson"
 )
 
 //todo password md5
@@ -373,6 +374,35 @@ func (o UserListForm) Validate(req *http.Request) error {
 			return binding.Errors{
 				binding.NewError([]string{"nickname"}, "FormatError", "昵称格式不正确，正确地址例子：a_bc汉子_汉789字"),
 			}
+		}
+	}
+
+	return nil
+}
+
+//==============================================================冻结解冻用户表单
+
+//FrozeForm 冻结解冻用户表单
+type FrozeForm struct {
+	ID string `json:"id"`
+}
+
+// FieldMap 数据绑定
+func (o *FrozeForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.ID: binding.Field{
+			Form:         "id",
+			Required:     true,
+			ErrorMessage: "请提交用户id",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o FrozeForm) Validate(req *http.Request) error {
+	if !bson.IsObjectIdHex(o.ID) {
+		return binding.Errors{
+			binding.NewError([]string{"id"}, "format error", "id 格式不正确."),
 		}
 	}
 

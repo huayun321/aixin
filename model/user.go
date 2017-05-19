@@ -30,6 +30,7 @@ type User struct {
 	IsFrozen      bool          `json:"is_frozen" bson:"is_frozen,omitempty"`
 	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	LastLoginTime int64         `json:"last_login_time,omitempty" bson:"last_login_time,omitempty"`
+	FrozeTime     int64         `json:"froze_time,omitempty" bson:"froze_time,omitempty"`
 	Role          string        `json:"role,omitempty" bson:"role,omitempty"`
 }
 
