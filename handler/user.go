@@ -38,11 +38,11 @@ func getRandomString(l int) string {
 	return string(result)
 }
 
-func jwtSign(phone, openid, role string, exp int64) (string, error) {
+func jwtSign(id, nickname, role string, exp int64) (string, error) {
 	// Claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"phone":  phone,
-		"openid": openid,
+		"id":  id,
+		"nickname": nickname,
 		"role":   role,
 		"exp":    exp,
 	})
@@ -323,7 +323,7 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//token
-	tk, err := jwtSign(uf.Phone, "", "user", time.Now().Unix()+JWTEXP)
+	tk, err := jwtSign(udb.ID.String(), udb.Nickname, udb.Role, time.Now().Unix()+JWTEXP)
 	if err != nil {
 		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10406, "message": "生成token遇到错误!", "err": err})
@@ -462,7 +462,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			tk, err := jwtSign(swf.Phone, "", "user", time.Now().Unix()+JWTEXP)
+			tk, err := jwtSign(udbp.ID.String(), udbp.Nickname, udbp.Role, time.Now().Unix()+JWTEXP)
 			if err != nil {
 				fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10310, "message": "生成token遇到错误!", "err": err})
@@ -502,7 +502,8 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err == mgo.ErrNotFound {
 		fmt.Println("=======SignWithWx 通过openid检测 是否已经注册 未注册")
-		u.CreateTime = time.Now().Unix()
+		now := time.Now().Unix()
+		u.CreateTime = now
 		u.ID = bson.NewObjectId()
 		fmt.Println("=======SignWithWx  新用户id: ", u.ID)
 		udb = u
@@ -518,7 +519,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tk, err := jwtSign("", swf.WxOpenID, "user", time.Now().Unix()+JWTEXP)
+	tk, err := jwtSign(udb.ID.String(), udb.Nickname, udb.Role, time.Now().Unix()+JWTEXP)
 	if err != nil {
 		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10314, "message": "生成token遇到错误!", "err": err})
