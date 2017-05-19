@@ -229,3 +229,65 @@ func (o SignUpPhoneForm) Validate(req *http.Request) error {
 	return nil
 }
 
+
+
+
+//==============================================================用户手机注册表单
+
+//SignInPhoneForm 用户手机登陆表单
+type SignInPhoneForm struct {
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+}
+
+// FieldMap 数据绑定
+func (o *SignInPhoneForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.Phone: binding.Field{
+			Form:         "phone",
+			Required:     true,
+			ErrorMessage: "请提交手机号",
+		},
+		&o.Password: binding.Field{
+			Form:         "password",
+			Required:     true,
+			ErrorMessage: "请提交用户密码",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o SignInPhoneForm) Validate(req *http.Request) error {
+	//检查手机号长度
+	if len(o.Phone) < 11 || len(o.Phone) > 11 {
+		return binding.Errors{
+			binding.NewError([]string{"phone"}, "LengthError", "手机号必须是11位."),
+		}
+	}
+	//检查手机号格式
+	var validPhone = regexp.MustCompile(`^1[\d]{10}$`)
+	iv := validPhone.MatchString(o.Phone)
+	if !iv {
+		return binding.Errors{
+			binding.NewError([]string{"phone"}, "FormatError", "手机号格式不正确,必须是11位1开头数字。"),
+		}
+	}
+
+	//检查密码长度
+	if len(o.Password) < 6 || len(o.Password) > 30 {
+		return binding.Errors{
+			binding.NewError([]string{"password"}, "LengthError", "用户密码长度必须大于等于6位，小于等于30位."),
+		}
+	}
+
+	//检查密码格式
+	var validPassword = regexp.MustCompile(`^[[:graph:]]{6,30}$`)
+	ivp := validPassword.MatchString(o.Password)
+	if !ivp {
+		return binding.Errors{
+			binding.NewError([]string{"password"}, "FormatError", "密码格式不正确，必须是6至30位alphabetic字母数字或者特殊字符。"),
+		}
+	}
+
+	return nil
+}

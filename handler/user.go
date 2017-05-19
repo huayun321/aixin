@@ -12,13 +12,13 @@ import (
 
 	"encoding/json"
 
+	"crypto/md5"
 	"github.com/dgrijalva/jwt-go"
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
 	"github.com/mholt/binding"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"immense-lowlands-91960/form"
-	"crypto/md5"
 	"io"
 )
 
@@ -272,7 +272,69 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-//todo add user ad
+//SignInWithPhone 通过手机号登陆
+func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
+	// check params
+	uf := new(form.SignInPhoneForm)
+
+	if errs := binding.Bind(r, uf); errs != nil {
+		fmt.Println("SignInWithPhone: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10401, "message": "用户数据格式错误", "err": errs})
+		return
+	}
+
+	h := md5.New()
+	io.WriteString(h, uf.Password)
+	uf.Password = fmt.Sprintf("%x", h.Sum(nil))
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	//验证用户名密码
+	udb := model.User{}
+	err := nms.DB.C("user").Find(bson.M{"phone": uf.Phone, "password":uf.Password}).One(&udb)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("SignInWithPhone err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10402, "message": "SignInWithPhone 查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("SignInWithPhone 用户不存在 err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10403, "message": "用户名密码错误"})
+		return
+	}
+
+	//check frozen
+	if udb.IsFrozen {
+		fmt.Println("SignInWithPhone phone user is frozen")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10404, "message": "该用户已被冻结，请联系管理人员"})
+		return
+	}
+
+	udb.LastLoginTime = time.Now().Unix()
+	//更新最后登陆时间
+	upsertdata := bson.M{"$set": bson.M{"last_login_time": udb.LastLoginTime}}
+	err = nms.DB.C("user").UpdateId(udb.ID, upsertdata)
+	if err != nil {
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10405, "message": "插入数据库时遇到内部错误!", "err": err})
+		return
+	}
+
+	//token
+	tk, err := jwtSign(uf.Phone, "", "user", time.Now().Unix()+JWTEXP)
+	if err != nil {
+		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10406, "message": "生成token遇到错误!", "err": err})
+		return
+	}
+
+	udb.Password = ""
+
+	util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 0, "message": "登陆成功", "user":udb, "token":tk})
+	return
+}
 
 //SignInWithWx 通过微信登陆或者注册
 func SignWithWx(w http.ResponseWriter, r *http.Request) {
@@ -370,7 +432,6 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-
 		////允许微信登陆更改密码
 		//u.Phone = swf.Phone
 		//u.Password = swf.Password
@@ -447,7 +508,6 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		udb = u
 	}
 
-
 	//upsert to db
 	fmt.Println("=======SignWithWx upsert by openid")
 	upsertdata := bson.M{"$set": u}
@@ -486,8 +546,8 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	ivc := mgo.Index{
-		Key: []string{"phone"},
-		Unique: true,
+		Key:      []string{"phone"},
+		Unique:   true,
 		DropDups: true,
 	}
 	err := nms.DB.C("verifycode").EnsureIndex(ivc)
@@ -495,8 +555,6 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "声明索引时遇到错误"})
 		return
 	}
-
-
 
 	//user index
 	//err = nms.DB.C("user").DropIndex("phone")
@@ -515,8 +573,8 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	iup := mgo.Index{
-		Key: []string{"phone"},
-		Unique: true,
+		Key:      []string{"phone", "openid"},
+		Unique:   true,
 		DropDups: true,
 	}
 	err = nms.DB.C("user").EnsureIndex(iup)
@@ -525,8 +583,8 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	iuo := mgo.Index{
-		Key: []string{"openid"},
-		Unique: true,
+		Key:      []string{"openid"},
+		Unique:   true,
 		DropDups: true,
 	}
 	err = nms.DB.C("user").EnsureIndex(iuo)
@@ -534,5 +592,15 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "声明索引时遇到错误"})
 		return
 	}
+
+	iupw := mgo.Index{
+		Key:      []string{"phone", "password"},
+	}
+	err = nms.DB.C("user").EnsureIndex(iupw)
+	if err != nil {
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 120, "message": "声明索引时遇到错误"})
+		return
+	}
+
 	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 0, "message": "声明索引成功"})
 }
