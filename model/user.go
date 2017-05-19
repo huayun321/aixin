@@ -31,7 +31,8 @@ type User struct {
 	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	LastLoginTime int64         `json:"last_login_time,omitempty" bson:"last_login_time,omitempty"`
 	FrozeTime     int64         `json:"froze_time,omitempty" bson:"froze_time,omitempty"`
-	UnFrozeTime     int64         `json:"un_froze_time,omitempty" bson:"un_froze_time,omitempty"`
+	FrozeReason   string        `json:"froze_reason,omitempty" bson:"froze_reason,omitempty"`
+	UnFrozeTime   int64         `json:"un_froze_time,omitempty" bson:"un_froze_time,omitempty"`
 	Role          string        `json:"role,omitempty" bson:"role,omitempty"`
 }
 

@@ -2,9 +2,9 @@ package form
 
 import (
 	"github.com/mholt/binding"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"regexp"
-	"gopkg.in/mgo.v2/bson"
 )
 
 //todo password md5
@@ -380,11 +380,12 @@ func (o UserListForm) Validate(req *http.Request) error {
 	return nil
 }
 
-//==============================================================冻结解冻用户表单
+//==============================================================冻结用户表单
 
-//FrozeForm 冻结解冻用户表单
+//FrozeForm 冻结用户表单
 type FrozeForm struct {
-	ID string `json:"id"`
+	ID     string `json:"id"`
+	Reason string `json:"reason"`
 }
 
 // FieldMap 数据绑定
@@ -394,6 +395,11 @@ func (o *FrozeForm) FieldMap(req *http.Request) binding.FieldMap {
 			Form:         "id",
 			Required:     true,
 			ErrorMessage: "请提交用户id",
+		},
+		&o.Reason: binding.Field{
+			Form:         "reason",
+			Required:     true,
+			ErrorMessage: "请提交冻结原因",
 		},
 	}
 }
@@ -406,5 +412,39 @@ func (o FrozeForm) Validate(req *http.Request) error {
 		}
 	}
 
+	if len(o.Reason) > 500 {
+		return binding.Errors{
+			binding.NewError([]string{"reason"}, "length error", "冻结原因过长."),
+		}
+	}
+
+	return nil
+}
+
+//==============================================================解冻用户表单
+
+//UnFrozeForm 解冻用户表单
+type UnFrozeForm struct {
+	ID string `json:"id"`
+}
+
+// FieldMap 数据绑定
+func (o *UnFrozeForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.ID: binding.Field{
+			Form:         "id",
+			Required:     true,
+			ErrorMessage: "请提交用户id",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o UnFrozeForm) Validate(req *http.Request) error {
+	if !bson.IsObjectIdHex(o.ID) {
+		return binding.Errors{
+			binding.NewError([]string{"id"}, "format error", "id 格式不正确."),
+		}
+	}
 	return nil
 }

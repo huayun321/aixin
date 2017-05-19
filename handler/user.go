@@ -622,7 +622,7 @@ func FrozeUser(w http.ResponseWriter, r *http.Request) {
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
 	fmt.Println("=======SignWithWx 获得nms")
 
-	upsertdata := bson.M{"$set": bson.M{"is_frozen": true, "froze_time":time.Now().Unix()}}
+	upsertdata := bson.M{"$set": bson.M{"is_frozen": true, "froze_time":time.Now().Unix(), "froze_reason": f.Reason}}
 	err := nms.DB.C("user").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
 
 	if err != nil && err != mgo.ErrNotFound {
@@ -645,7 +645,7 @@ func FrozeUser(w http.ResponseWriter, r *http.Request) {
 //UnFrozeUser 解冻用户
 func UnFrozeUser(w http.ResponseWriter, r *http.Request) {
 	// check params
-	f := new(form.FrozeForm)
+	f := new(form.UnFrozeForm)
 
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
