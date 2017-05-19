@@ -24,6 +24,8 @@ import (
 	"github.com/urfave/negroni"
 )
 
+const VERSION_ONE_PREFIX  = "/v1"
+
 var (
 	port   = os.Getenv("PORT")
 	dbURL  = os.Getenv("MONGODB_URI")
@@ -213,14 +215,14 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(jwtSecuredHandler)),
 	))
-	router.HandleFunc("/user/unfrozen", handler.UnFrozeUser).Methods("POST")
-	router.HandleFunc("/user/frozen", handler.FrozeUser).Methods("POST")
-	router.HandleFunc("/user/list", handler.GetUsers).Methods("POST")
-	router.HandleFunc("/user/sign-in", handler.SignInWithPhone).Methods("POST")
-	router.HandleFunc("/user/signup-phone", handler.SignUpWithPhone).Methods("POST")
-	router.HandleFunc("/user/sign-wx", handler.SignWithWx).Methods("POST")
-	router.HandleFunc("/user/verify", handler.GetVerifyCode).Methods("POST")
-	router.HandleFunc("/user/index", handler.EnsureIndex).Methods("GET")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/unfrozen", handler.UnFrozeUser).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/frozen", handler.FrozeUser).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/list", handler.GetUsers).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-in", handler.SignInWithPhone).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signup-phone", handler.SignUpWithPhone).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-wx", handler.SignWithWx).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/verify", handler.GetVerifyCode).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/index", handler.EnsureIndex).Methods("GET")
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)
 	n.UseHandler(router)
