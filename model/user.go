@@ -19,7 +19,7 @@ type User struct {
 	Avatar        string        `json:"avatar" bson:"avatar,omitempty"`
 	Nickname      string        `json:"nickname" bson:"nickname,omitempty"`
 	Sex           uint8         `json:"sex" bson:"sex,omitempty"`
-	Birthday      string        `json:"birthday" bson:"birthday,omitempty"`
+	Birthday      int64         `json:"birthday" bson:"birthday,omitempty"`
 	Signature     string        `json:"signature" bson:"signature,omitempty"`
 	City          string        `json:"city" bson:"city,omitempty"`
 	Height        string        `json:"height" bson:"height,omitempty"`

@@ -10,7 +10,7 @@
         }
     },
     "host": "immense-lowlands-91960.herokuapp.com",
-    "basePath": "/",
+    "basePath": "/v1",
     "tags": [
         {
             "name": "admin",
@@ -109,6 +109,122 @@
                     }
                 }
             }
+        },
+        "/user/sign-wx": {
+            "post": {
+                "tags": [
+                    "user",
+                    "client"
+                ],
+                "summary": "微信注册登陆",
+                "description": "发送微信信息，登陆注册",
+                "operationId": "sign-wx",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "phone number",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "user password",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "verify_code",
+                        "in": "query",
+                        "description": "phone verify code",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "openid",
+                        "in": "query",
+                        "description": "wechat openid",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "wechat nickname",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sex",
+                        "in": "query",
+                        "description": "wechat sex, 1 male 2 female",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "province",
+                        "in": "query",
+                        "description": "wechat province",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "wechat city",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "wechat country",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "headimgurl",
+                        "in": "query",
+                        "description": "wechat headimgurl",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "unionid",
+                        "in": "query",
+                        "description": "wechat unionid",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/SignWxSuccessModel"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -125,8 +241,8 @@
                 },
                 "code": {
                     "type": "integer",
-                    "minimum": 100,
-                    "maximum": 600
+                    "minimum": 0,
+                    "maximum": 20000
                 },
                 "verify_code": {
                     "type": "string",
@@ -146,8 +262,116 @@
                 },
                 "code": {
                     "type": "integer",
-                    "minimum": 100,
-                    "maximum": 600
+                    "minimum": 0,
+                    "maximum": 20000
+                }
+            }
+        },
+        "SignWxSuccessModel": {
+            "type": "object",
+            "required": [
+                "message",
+                "code",
+                "verify_code"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 20000
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/User"
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "length": 24
+                },
+                "phone": {
+                    "type": "integer",
+                    "length": 11
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 30
+                },
+                "avatar": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 300
+                },
+                "nickname": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 30
+                },
+                "sex": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2
+                    ]
+                },
+                "birthday": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "signature": {
+                    "type": "string",
+                    "maxLength": 30
+                },
+                "city": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "string"
+                },
+                "bmi": {
+                    "type": "string"
+                },
+                "openid": {
+                    "type": "string"
+                },
+                "is_frozen": {
+                    "type": "boolean"
+                },
+                "create_time": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "last_login_time": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "froze_time": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "un_froze_time": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "froze_reason": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         }
