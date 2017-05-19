@@ -41,10 +41,10 @@ func getRandomString(l int) string {
 func jwtSign(id, nickname, role string, exp int64) (string, error) {
 	// Claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":  id,
+		"id":       id,
 		"nickname": nickname,
-		"role":   role,
-		"exp":    exp,
+		"role":     role,
+		"exp":      exp,
 	})
 
 	// Headers
@@ -292,7 +292,7 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 
 	//验证用户名密码
 	udb := model.User{}
-	err := nms.DB.C("user").Find(bson.M{"phone": uf.Phone, "password":uf.Password}).One(&udb)
+	err := nms.DB.C("user").Find(bson.M{"phone": uf.Phone, "password": uf.Password}).One(&udb)
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("SignInWithPhone err:", err)
@@ -332,7 +332,7 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 
 	udb.Password = ""
 
-	util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 0, "message": "登陆成功", "user":udb, "token":tk})
+	util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 0, "message": "登陆成功", "user": udb, "token": tk})
 	return
 }
 
@@ -367,6 +367,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	u.WxUserInfo.Sex = swf.WxSex
 	u.WxUserInfo.Unionid = swf.WxUnionid
 	u.LastLoginTime = time.Now().Unix()
+	u.IsFrozen = false
 
 	// check if verify code match
 	if swf.Phone != "" && swf.Password != "" && swf.Code != "" {
@@ -534,6 +535,78 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// 获取所有用户
+func GetUsers(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.UserListForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10501, "message": "用户数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("=======SignWithWx 获得nms")
+
+	q := bson.M{}
+	var page int
+	var pageSize int
+	page = 1
+	pageSize = 20
+
+	if f.Page != 0 {
+		page = f.Page
+	}
+
+	if f.PageSize != 0 {
+		pageSize = f.PageSize
+	}
+
+	if f.Phone != "" {
+		q["phone"] = f.Phone
+	}
+
+	if f.Sex != 0 {
+		q["sex"] = f.Sex
+	}
+
+	if f.Nickname != "" {
+		q["nickname"] = f.Nickname
+	}
+
+	if f.IsFrozen {
+		q["is_frozen"] = f.IsFrozen
+	}
+
+	l := []model.User{}
+	err := nms.DB.C("user").Find(q).Sort("create_time").Skip((page-1) * pageSize).Limit(pageSize).All(&l)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======GetUsers 获取用户列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10502, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======GetUsers 获取用户列表 not found user: ")
+	}
+
+	c, err := nms.DB.C("user").Find(q).Count()
+	if err != nil {
+		fmt.Println("=======GetUsers 获取用户列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10503, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	for i := range l {
+		l[i].Password = ""
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total":c})
+	return
+}
+
 //EnsureIndex 声明索引
 func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -595,7 +668,7 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	iupw := mgo.Index{
-		Key:      []string{"phone", "password"},
+		Key: []string{"phone", "password"},
 	}
 	err = nms.DB.C("user").EnsureIndex(iupw)
 	if err != nil {

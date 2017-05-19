@@ -29,13 +29,13 @@ type SignWxForm struct {
 func (o *SignWxForm) FieldMap(req *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&o.Phone: binding.Field{
-			Form:         "phone",
+			Form: "phone",
 		},
 		&o.Password: binding.Field{
-			Form:         "password",
+			Form: "password",
 		},
 		&o.Code: binding.Field{
-			Form:         "verify_code",
+			Form: "verify_code",
 		},
 		&o.WxOpenID: binding.Field{
 			Form:         "openid",
@@ -98,11 +98,6 @@ func (o SignWxForm) Validate(req *http.Request) error {
 
 	return nil
 }
-
-
-
-
-
 
 //==============================================================用户手机注册表单
 
@@ -196,7 +191,7 @@ func (o SignUpPhoneForm) Validate(req *http.Request) error {
 	}
 
 	//检查昵称长度
-	if len(o.Avatar) < 1 || len(o.Avatar) > 30 {
+	if len(o.Nickname) < 1 || len(o.Nickname) > 30 {
 		return binding.Errors{
 			binding.NewError([]string{"nickname"}, "LengthError", "用户昵称长度，必须大于等于1位，小于等于30位."),
 		}
@@ -228,9 +223,6 @@ func (o SignUpPhoneForm) Validate(req *http.Request) error {
 	}
 	return nil
 }
-
-
-
 
 //==============================================================用户手机注册表单
 
@@ -286,6 +278,101 @@ func (o SignInPhoneForm) Validate(req *http.Request) error {
 	if !ivp {
 		return binding.Errors{
 			binding.NewError([]string{"password"}, "FormatError", "密码格式不正确，必须是6至30位alphabetic字母数字或者特殊字符。"),
+		}
+	}
+
+	return nil
+}
+
+//==============================================================获取用户列表表单
+
+//UserListForm 用户列表表单
+type UserListForm struct {
+	Page     int    `json:"page"`
+	PageSize int    `json:"page_size"`
+	Phone    string `json:"phone"`
+	Sex      uint8  `json:"sex"`
+	Nickname string `json:"nickname"`
+	IsFrozen bool   `json:"is_frozen"`
+}
+
+// FieldMap 数据绑定
+func (o *UserListForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.Page: binding.Field{
+			Form: "page",
+		},
+		&o.PageSize: binding.Field{
+			Form: "page_size",
+		},
+		&o.Phone: binding.Field{
+			Form: "phone",
+		},
+		&o.Sex: binding.Field{
+			Form: "sex",
+		},
+		&o.Nickname: binding.Field{
+			Form: "nickname",
+		},
+		&o.IsFrozen: binding.Field{
+			Form: "is_frozen",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o UserListForm) Validate(req *http.Request) error {
+	//页码
+	if o.Page < 0 {
+		return binding.Errors{
+			binding.NewError([]string{"page"}, "size error", "页数不能是负数."),
+		}
+	}
+	//每页数据
+	if o.PageSize < 0 {
+		return binding.Errors{
+			binding.NewError([]string{"page_size"}, "size error", "每页数据数不能是负数."),
+		}
+	}
+
+	if o.Phone != "" {
+		if len(o.Phone) < 11 || len(o.Phone) > 11 {
+			return binding.Errors{
+				binding.NewError([]string{"phone"}, "LengthError", "手机号必须是11位."),
+			}
+		}
+
+		//检查手机号格式
+		var validPhone = regexp.MustCompile(`^1[\d]{10}$`)
+		iv := validPhone.MatchString(o.Phone)
+		if !iv {
+			return binding.Errors{
+				binding.NewError([]string{"phone"}, "FormatError", "手机号格式不正确,必须是11位1开头数字。"),
+			}
+		}
+	}
+
+	if o.Sex != 0 && o.Sex != 1 && o.Sex != 2 {
+		return binding.Errors{
+			binding.NewError([]string{"sex"}, "FormatError", "性别格式不对，必须是0，1，2中一个"),
+		}
+	}
+
+	//检查昵称长度
+	if o.Nickname != "" {
+		if len(o.Nickname) < 1 || len(o.Nickname) > 30 {
+			return binding.Errors{
+				binding.NewError([]string{"nickname"}, "LengthError", "用户昵称长度，必须大于等于1位，小于等于30位."),
+			}
+		}
+
+		//检查昵称格式
+		validNickname := regexp.MustCompile(`^[a-z0-9A-Z\p{Han}]+(_[a-z0-9A-Z\p{Han}]+)*$`)
+		ivn := validNickname.MatchString(o.Nickname)
+		if !ivn {
+			return binding.Errors{
+				binding.NewError([]string{"nickname"}, "FormatError", "昵称格式不正确，正确地址例子：a_bc汉子_汉789字"),
+			}
 		}
 	}
 
