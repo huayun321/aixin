@@ -130,7 +130,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		//store to db
 		err := nms.DB.C("verifycode").Insert(&vc)
 		if err != nil {
-			util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 110, "message": "GetVerifyCode 插入数据库时遇到内部错误", "vc": vc})
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 110, "message": "GetVerifyCode 插入数据库时遇到内部错误", "err": err})
 			return
 		}
 		//todo send sms
@@ -145,7 +145,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	tsr := now - vc.VerifyTimestamp
 	fmt.Printf("GetVerifyCode now:%d-- vc.VerifyTimestamp: %d = %d \n", now, vc.VerifyTimestamp, tsr)
 	if tsr < 60 {
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 102, "message": "GetVerifyCode 一分钟后才能发送！"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 102, "message": "GetVerifyCode 一分钟后才能发送！"})
 		return
 	}
 
@@ -154,7 +154,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("GetVerifyCode now:%d-- vc.LastVerifyDay: %d = %d \n", now, vc.LastVerifyDay, dsr)
 	if dsr < 60*60*24 {
 		if vc.TimesRemainDay < 1 {
-			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 103, "message": "GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
+			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 103, "message": "GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
 			return
 		}
 		//时间是同一天，次数有剩余
