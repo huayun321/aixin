@@ -145,6 +145,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	tsr := now - vc.VerifyTimestamp
 	fmt.Printf("GetVerifyCode now:%d-- vc.VerifyTimestamp: %d = %d \n", now, vc.VerifyTimestamp, tsr)
 	if tsr < 60 {
+		fmt.Println("一分钟后才能发送")
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 102, "message": "GetVerifyCode 一分钟后才能发送！"})
 		return
 	}
@@ -154,6 +155,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("GetVerifyCode now:%d-- vc.LastVerifyDay: %d = %d \n", now, vc.LastVerifyDay, dsr)
 	if dsr < 60*60*24 {
 		if vc.TimesRemainDay < 1 {
+			fmt.Println("今天已经发送了5条，不能发送了")
 			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 103, "message": "GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
 			return
 		}
