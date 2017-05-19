@@ -213,6 +213,7 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(jwtSecuredHandler)),
 	))
+	router.HandleFunc("/user/unfrozen", handler.UnFrozeUser).Methods("POST")
 	router.HandleFunc("/user/frozen", handler.FrozeUser).Methods("POST")
 	router.HandleFunc("/user/list", handler.GetUsers).Methods("POST")
 	router.HandleFunc("/user/sign-in", handler.SignInWithPhone).Methods("POST")
