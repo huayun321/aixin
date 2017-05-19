@@ -208,7 +208,7 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "$ref": "#/definitions/SignWxSuccessModel"
+                            "$ref": "#/definitions/SignInSuccessModel"
                         }
                     },
                     "400": {
@@ -234,7 +234,7 @@
                 ],
                 "summary": "手机注册",
                 "description": "手机号 密码 验证码，注册",
-                "operationId": "signup-phone",
+                "operationId": "SignUpPhone",
                 "produces": [
                     "application/json"
                 ],
@@ -256,7 +256,7 @@
                         "description": "user password",
                         "required": true,
                         "type": "string",
-                         "minLength": 6,
+                        "minLength": 6,
                         "maxLength": 30
                     },
                     {
@@ -265,7 +265,25 @@
                         "description": "phone verify code",
                         "required": true,
                         "type": "string",
-                        "length":6
+                        "length": 6
+                    },
+                    {
+                        "name": "avatar",
+                        "in": "query",
+                        "description": "avatar url",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 300
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "user nickname",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
                     }
                 ],
                 "responses": {
@@ -273,6 +291,250 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/SuccessModel"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/signin-phone": {
+            "post": {
+                "tags": [
+                    "user",
+                    "client"
+                ],
+                "summary": "手机登陆",
+                "description": "手机号 密码 ，登陆",
+                "operationId": "SignInPhone",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "phone number",
+                        "required": true,
+                        "type": "string",
+                        "length": 11
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "user password",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 6,
+                        "maxLength": 30
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/SignInSuccessModel"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/list": {
+            "post": {
+                "tags": [
+                    "user",
+                    "admin"
+                ],
+                "summary": "用户列表",
+                "description": "后端管理 获取用户列表， 可分页， 可按条件搜索",
+                "operationId": "UserList",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "required": false,
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 1
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 20
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "phone number",
+                        "required": false,
+                        "type": "string",
+                        "length": 11
+                    },
+                    {
+                        "name": "sex",
+                        "in": "query",
+                        "description": "sex number",
+                        "required": false,
+                        "type": "integer",
+                        "enum": [
+                            1,
+                            2
+                        ]
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "user nickname",
+                        "required": false,
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/froze": {
+            "post": {
+                "tags": [
+                    "user",
+                    "admin"
+                ],
+                "summary": "冻结用户",
+                "description": "后端管理 冻结用户",
+                "operationId": "FrozeUser",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "type": "string",
+                        "length": 24
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SuccessModel"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/unfroze": {
+            "post": {
+                "tags": [
+                    "user",
+                    "admin"
+                ],
+                "summary": "解冻用户",
+                "description": "后端管理 解冻用户",
+                "operationId": "UnfrozeUser",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "type": "string",
+                        "length": 24
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SuccessModel"
+                            }
                         }
                     },
                     "400": {
@@ -344,7 +606,32 @@
                 }
             }
         },
-        "SignWxSuccessModel": {
+        "UserListSuccessModel": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/SuccessModel"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "result": {
+                            "type": "array",
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        },
+                        "total": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                }
+            ]
+        },
+        "SignInSuccessModel": {
             "type": "object",
             "required": [
                 "message",

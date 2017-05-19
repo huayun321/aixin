@@ -215,10 +215,10 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(jwtSecuredHandler)),
 	))
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/unfrozen", handler.UnFrozeUser).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/frozen", handler.FrozeUser).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/unfroze", handler.UnFrozeUser).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/froze", handler.FrozeUser).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/list", handler.GetUsers).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-in", handler.SignInWithPhone).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signin-phone", handler.SignInWithPhone).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signup-phone", handler.SignUpWithPhone).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-wx", handler.SignWithWx).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/verify", handler.GetVerifyCode).Methods("POST")
