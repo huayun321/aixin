@@ -587,35 +587,6 @@
                 }
             }
         },
-        "UserListSuccessModel": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/SuccessModel"
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "result",
-                        "total"
-                    ],
-                    "properties": {
-                        "result": {
-                            "type": "array",
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/User"
-                                }
-                            }
-                        },
-                        "total": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                }
-            ]
-        },
         "SignInSuccessModel": {
             "type": "object",
             "required": [
