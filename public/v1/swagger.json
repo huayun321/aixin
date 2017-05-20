@@ -71,23 +71,15 @@
                     },
                     "400": {
                         "description": "bad request",
-                        "type": "object",
-
-                        "properties": {
-                            "message": {
-                                "type": "string"
-                            },
-                            "code": {
-                                "type": "integer"
-                            }
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
                         }
-
                     },
                     "500": {
                         "description": "internal error",
-
-                        "$ref": "#/definitions/ErrorModel"
-
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
                     }
                 }
             }
