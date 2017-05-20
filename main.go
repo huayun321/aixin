@@ -206,7 +206,7 @@ func main() {
 	})
 
 	router := mux.NewRouter()
-	router.HandleFunc("/", helloHandler).Methods("GET")
+	router.HandleFunc("/hello", helloHandler).Methods("GET")
 	router.HandleFunc("/binding", bindingHandler).Methods("POST")
 	router.HandleFunc("/sign-in", signInHandler).Methods("POST")
 	router.HandleFunc("/users", usersHandler).Methods("GET")
