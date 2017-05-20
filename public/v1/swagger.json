@@ -69,11 +69,16 @@
                             "$ref": "#/definitions/VerifySuccessModel"
                         }
                     },
-                    "default": {
+                    "400": {
                         "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
+                        "$ref": "#/definitions/ErrorModel"
+
+                    },
+                    "500": {
+                        "description": "internal error",
+
+                        "$ref": "#/definitions/ErrorModel"
+
                     }
                 }
             }
