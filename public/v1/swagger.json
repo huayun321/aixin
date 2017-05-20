@@ -11,8 +11,7 @@
     },
     "host": "immense-lowlands-91960.herokuapp.com",
     "basePath": "/v1",
-    "tags": [
-        {
+    "tags": [{
             "name": "admin",
             "description": "admin",
             "externalDocs": {
@@ -56,15 +55,13 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
-                        "name": "phone",
-                        "in": "query",
-                        "description": "phone number",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
+                "parameters": [{
+                    "name": "phone",
+                    "in": "query",
+                    "description": "phone number",
+                    "required": true,
+                    "type": "string"
+                }],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -102,8 +99,7 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
+                "parameters": [{
                         "name": "phone",
                         "in": "query",
                         "description": "phone number",
@@ -218,14 +214,12 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
+                "parameters": [{
                         "name": "phone",
                         "in": "query",
                         "description": "phone number",
                         "required": true,
-                        "type": "string",
-                        "length": 11
+                        "type": "string"
                     },
                     {
                         "name": "password",
@@ -241,8 +235,7 @@
                         "in": "query",
                         "description": "phone verify code",
                         "required": true,
-                        "type": "string",
-                        "length": 6
+                        "type": "string"
                     },
                     {
                         "name": "avatar",
@@ -300,14 +293,12 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
+                "parameters": [{
                         "name": "phone",
                         "in": "query",
                         "description": "phone number",
                         "required": true,
-                        "type": "string",
-                        "length": 11
+                        "type": "string"
                     },
                     {
                         "name": "password",
@@ -356,8 +347,7 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
+                "parameters": [{
                         "name": "page",
                         "in": "query",
                         "description": "page number",
@@ -380,8 +370,7 @@
                         "in": "query",
                         "description": "phone number",
                         "required": false,
-                        "type": "string",
-                        "length": 11
+                        "type": "string"
                     },
                     {
                         "name": "sex",
@@ -444,16 +433,13 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "description": "user id",
-                        "required": true,
-                        "type": "string",
-                        "length": 24
-                    }
-                ],
+                "parameters": [{
+                    "name": "id",
+                    "in": "query",
+                    "description": "user id",
+                    "required": true,
+                    "type": "string"
+                }],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -494,16 +480,13 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "description": "user id",
-                        "required": true,
-                        "type": "string",
-                        "length": 24
-                    }
-                ],
+                "parameters": [{
+                    "name": "id",
+                    "in": "query",
+                    "description": "user id",
+                    "required": true,
+                    "type": "string"
+                }],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -548,8 +531,7 @@
                     "maximum": 20000
                 },
                 "verify_code": {
-                    "type": "string",
-                    "length": 6
+                    "type": "string"
                 }
             }
         },
@@ -616,12 +598,10 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "string",
-                    "length": 24
+                    "type": "string"
                 },
                 "phone": {
-                    "type": "integer",
-                    "length": 11
+                    "type": "integer"
                 },
                 "password": {
                     "type": "string",
