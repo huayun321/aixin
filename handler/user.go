@@ -28,7 +28,7 @@ const (
 )
 
 func getRandomString(l int) string {
-	str := "0123456789abcdefghijklmnopqrstuvwxyz"
+	str := "0123456789"
 	bytes := []byte(str)
 	result := []byte{}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
