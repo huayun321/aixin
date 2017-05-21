@@ -481,7 +481,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 
 			udbp.OpenID = u.OpenID
 			udbp.WxUserInfo = u.WxUserInfo
-			result := map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk, "user": udbp}
+			result := map[string]interface{}{"code": 0, "message": "操作成功", "token": tk, "user": udbp}
 			fmt.Println("=======SignWithWx 成功返回: result", result)
 			util.Ren.JSON(w, http.StatusOK, result)
 			return
@@ -538,7 +538,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 
 	//udb.LastLoginTime = udb.LastLoginTime * 1000
 	udb.WxUserInfo = u.WxUserInfo
-	result := map[string]interface{}{"code": 0, "message": "SignInWithPhone 注册成功", "token": tk, "user": udb}
+	result := map[string]interface{}{"code": 0, "message": "操作成功", "token": tk, "user": udb}
 	fmt.Println("=======SignWithWx 成功返回: result", result)
 	util.Ren.JSON(w, http.StatusOK, result)
 	return
