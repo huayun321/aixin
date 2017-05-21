@@ -3,34 +3,28 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "n2KWrxS+GQrPiFI/RQfKSj1nZTs=",
-			"path": "github.com/auth0/go-jwt-middleware",
-			"revision": "5493cabe49f7bfa6e2ec444a09d334d90cd4e2bd",
-			"revisionTime": "2017-04-25T17:11:59Z"
-		},
-		{
 			"checksumSHA1": "NQWrITjQCpJdsRzaPQIsfClTF6M=",
 			"path": "github.com/codegangsta/negroni",
 			"revision": "1d8981a52d6bda4467a9faacf3fdddd38222dfc4",
 			"revisionTime": "2017-05-06T02:27:41Z"
 		},
 		{
-			"checksumSHA1": "2Fy1Y6Z3lRRX1891WF/+HT4XS2I=",
+			"checksumSHA1": "FwjxyOGlOWp5TqkqLSYfrdxC1E4=",
 			"path": "github.com/dgrijalva/jwt-go",
-			"revision": "2268707a8f0843315e2004ee4f1d021dc08baedf",
-			"revisionTime": "2017-02-01T22:58:49Z"
+			"revision": "6c8dedd55f8a2e41f605de6d5d66e51ed1f299fc",
+			"revisionTime": "2017-05-08T16:54:58Z"
 		},
 		{
-			"checksumSHA1": "g/V4qrXjUGG9B+e3hB+4NAYJ5Gs=",
-			"path": "github.com/gorilla/context",
-			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
-			"revisionTime": "2016-08-17T18:46:32Z"
-		},
-		{
-			"checksumSHA1": "zmCk+lgIeiOf0Ng9aFP9aFy8ksE=",
+			"checksumSHA1": "Ow/mLkfVIZgMOXE6aPSdPiDLJ6c=",
 			"path": "github.com/gorilla/mux",
-			"revision": "599cba5e7b6137d46ddf58fb1765f5d928e69604",
-			"revisionTime": "2017-02-28T22:43:54Z"
+			"revision": "bcd8bc72b08df0f70df986b97f95590779502d31",
+			"revisionTime": "2017-05-21T04:50:13Z"
+		},
+		{
+			"checksumSHA1": "vdduzBOoYzd7ReiIGJctG453NyM=",
+			"path": "github.com/huayun321/go-jwt-middleware",
+			"revision": "f13a30113992838938886194396422d73cef9be9",
+			"revisionTime": "2017-05-21T05:27:35Z"
 		},
 		{
 			"checksumSHA1": "3+fi9McAeZ6zpvuB3U2OmPZ9iFE=",
@@ -63,10 +57,10 @@
 			"revisionTime": "2017-01-09T14:32:44Z"
 		},
 		{
-			"checksumSHA1": "ezZyPBDiKHM5y+YmlIhrWIzgbfw=",
+			"checksumSHA1": "x1AhvSvgDWiTnAc57jsoFKeKLsI=",
 			"path": "github.com/urfave/negroni",
-			"revision": "c0db5feaa33826cd5117930c8f4ee5c0f565eec6",
-			"revisionTime": "2017-02-26T00:53:33Z"
+			"revision": "1d8981a52d6bda4467a9faacf3fdddd38222dfc4",
+			"revisionTime": "2017-05-06T02:27:41Z"
 		},
 		{
 			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",

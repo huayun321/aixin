@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"os"
 
-	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	jwtmiddleware "github.com/huayun321/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
 	"github.com/unrolled/render"
@@ -22,6 +22,7 @@ import (
 	"github.com/mholt/binding"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
+	"immense-lowlands-91960/middleware"
 )
 
 const VERSION_ONE_PREFIX  = "/v1"
@@ -125,7 +126,8 @@ func usersHandler(resp http.ResponseWriter, req *http.Request) {
 
 //===================== jwt start
 func jwtOnError(w http.ResponseWriter, r *http.Request, err string) {
-	ren.JSON(w, http.StatusUnauthorized, map[string]interface{}{"code": 001, "msg": "未通过认证的请求", "err": "unauthorized"})
+	ren.JSON(w, http.StatusUnauthorized, map[string]interface{}{"code": 10001, "msg": "未通过认证的请求", "err":
+	err})
 }
 
 func jwtLoginHandler(resp http.ResponseWriter, req *http.Request) {
@@ -192,6 +194,11 @@ func main() {
 		SigningMethod: jwt.SigningMethodHS256,
 
 		ErrorHandler: jwtOnError,
+
+		Extractor: jwtmiddleware.FromFirst(jwtmiddleware.FromAuthHeader,
+                                     jwtmiddleware.FromJSON("token")),
+
+		Debug:true,
 	})
 
 	//nms middleware
@@ -207,22 +214,18 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/hello", helloHandler).Methods("GET")
-	router.HandleFunc("/binding", bindingHandler).Methods("POST")
-	router.HandleFunc("/sign-in", signInHandler).Methods("POST")
-	router.HandleFunc("/users", usersHandler).Methods("GET")
-	router.HandleFunc("/login", jwtLoginHandler).Methods("POST")
-	router.Handle("/secured", negroni.New(
+	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(http.HandlerFunc(jwtSecuredHandler)),
+		negroni.HandlerFunc(middleware.IsAdminM),
 	))
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/unfroze", handler.UnFrozeUser).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/froze", handler.FrozeUser).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/list", handler.GetUsers).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/unfroze", handler.UnFrozeUser).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/froze", handler.FrozeUser).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/list", handler.GetUsers).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signin-phone", handler.SignInWithPhone).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signup-phone", handler.SignUpWithPhone).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-wx", handler.SignWithWx).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/verify", handler.GetVerifyCode).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/index", handler.EnsureIndex).Methods("GET")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/index", handler.EnsureIndex).Methods("GET")
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)
 	n.UseHandler(router)
