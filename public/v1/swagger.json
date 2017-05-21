@@ -332,7 +332,7 @@
                 }
             }
         },
-        "/user/list": {
+        "/admin/user/list": {
             "post": {
                 "tags": [
                     "user",
@@ -418,7 +418,7 @@
                 }
             }
         },
-        "/user/froze": {
+        "/admin/user/froze": {
             "post": {
                 "tags": [
                     "user",
@@ -465,7 +465,7 @@
                 }
             }
         },
-        "/user/unfroze": {
+        "/admin/user/unfroze": {
             "post": {
                 "tags": [
                     "user",
