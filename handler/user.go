@@ -98,7 +98,8 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	vcf := new(model.VerifyCode)
 	if errs := binding.Bind(r, vcf); errs != nil {
 		fmt.Println("GetVerifyCode: bind err: ", errs)
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 101, "message": "手机号格式错误"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10101, "message": "手机号格式错误",
+			"err": errs})
 		return
 	}
 	//generate code
@@ -115,7 +116,8 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("GetVerifyCode err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 110, "message": "GetVerifyCode 查询数据库时遇到内部错误"})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10102, "message":
+		"GetVerifyCode 查询数据库时遇到内部错误"})
 		return
 	}
 
@@ -130,7 +132,8 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		//store to db
 		err := nms.DB.C("verifycode").Insert(&vc)
 		if err != nil {
-			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 110, "message": "GetVerifyCode 插入数据库时遇到内部错误", "err": err})
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10103,
+				"message":	"GetVerifyCode 插入数据库时遇到内部错误", "err": err})
 			return
 		}
 		//todo send sms
@@ -146,7 +149,8 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("GetVerifyCode now:%d-- vc.VerifyTimestamp: %d = %d \n", now, vc.VerifyTimestamp, tsr)
 	if tsr < 60 {
 		fmt.Println("一分钟后才能发送")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 102, "message": "GetVerifyCode 一分钟后才能发送！"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10104, "message":
+		"GetVerifyCode 一分钟后才能发送！"})
 		return
 	}
 
@@ -156,7 +160,8 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	if dsr < 60*60*24 {
 		if vc.TimesRemainDay < 1 {
 			fmt.Println("今天已经发送了5条，不能发送了")
-			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 103, "message": "GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
+			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10105, "message":
+			"GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
 			return
 		}
 		//时间是同一天，次数有剩余
@@ -167,7 +172,8 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		vcr := model.VerifyCode{}
 		_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
 		if err != nil {
-			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 110, "message": "插入数据库时遇到内部错误!"})
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10106,
+				"message":	"插入数据库时遇到内部错误!"})
 			return
 		}
 	} else {
@@ -180,7 +186,8 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		vcr := model.VerifyCode{}
 		_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
 		if err != nil {
-			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 110, "message": "插入数据库时遇到内部错误!"})
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10107,
+				"message":	"插入数据库时遇到内部错误!"})
 			return
 		}
 	}
