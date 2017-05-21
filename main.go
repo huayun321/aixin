@@ -1,10 +1,3 @@
-// @APIVersion 1.0.0
-// @APITitle My Cool API
-// @APIDescription My API usually works as expected.
-// @Contact huayun321@gmail.com
-// @TermsOfServiceUrl http://pandariel.com
-// @BasePath http://localhost:3000
-
 package main
 
 import (
@@ -214,18 +207,24 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/hello", helloHandler).Methods("GET")
+	subRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/admin").Subrouter().StrictSlash(true)
+	subRouter.HandleFunc("/user/unfroze", handler.UnFrozeUser).Methods("POST")
+	subRouter.HandleFunc("/user/froze", handler.FrozeUser).Methods("POST")
+	subRouter.HandleFunc("/user/list", handler.GetUsers).Methods("POST")
+	subRouter.HandleFunc("/user/index", handler.EnsureIndex).Methods("GET")
+
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.HandlerFunc(middleware.IsAdminM),
+		negroni.Wrap(subRouter),
 	))
-	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/unfroze", handler.UnFrozeUser).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/froze", handler.FrozeUser).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/list", handler.GetUsers).Methods("POST")
+
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signin-phone", handler.SignInWithPhone).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signup-phone", handler.SignUpWithPhone).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-wx", handler.SignWithWx).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/verify", handler.GetVerifyCode).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/admin/user/index", handler.EnsureIndex).Methods("GET")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/set-admin", handler.SetAdmin).Methods("POST")
+
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)
 	n.UseHandler(router)
