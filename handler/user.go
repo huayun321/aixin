@@ -341,7 +341,7 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 
 	udb.Password = ""
 
-	util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 0, "message": "登陆成功", "user": udb, "token": tk})
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "登陆成功", "user": udb, "token": tk})
 	return
 }
 
