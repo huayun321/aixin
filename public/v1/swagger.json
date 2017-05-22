@@ -11,7 +11,8 @@
     },
     "host": "immense-lowlands-91960.herokuapp.com",
     "basePath": "/v1",
-    "tags": [{
+    "tags": [
+        {
             "name": "admin",
             "description": "admin",
             "externalDocs": {
@@ -55,13 +56,15 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
-                    "name": "id",
-                    "in": "query",
-                    "description": "user id",
-                    "required": true,
-                    "type": "string"
-                }],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -99,13 +102,15 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
-                    "name": "phone",
-                    "in": "query",
-                    "description": "phone number",
-                    "required": true,
-                    "type": "string"
-                }],
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "phone number",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -143,7 +148,8 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
+                "parameters": [
+                    {
                         "name": "phone",
                         "in": "query",
                         "description": "phone number",
@@ -258,7 +264,8 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
+                "parameters": [
+                    {
                         "name": "phone",
                         "in": "query",
                         "description": "phone number",
@@ -337,7 +344,8 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
+                "parameters": [
+                    {
                         "name": "phone",
                         "in": "query",
                         "description": "phone number",
@@ -391,15 +399,17 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
-                  "in": "body",
-                  "name": "body",
-                  "description": "用户列表参数",
-                  "required": false,
-                  "schema": {
-                    "$ref": "#/definitions/UserListForm"
-                  }
-                }],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "用户列表参数",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/UserListForm"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -423,11 +433,11 @@
                         }
                     }
                 },
-              "security": [
-                {
-                  "auth": []
-                }
-              ]
+                "security": [
+                    {
+                        "auth": []
+                    }
+                ]
             }
         },
         "/admin/user/froze": {
@@ -445,13 +455,15 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
-                    "name": "id",
-                    "in": "query",
-                    "description": "user id",
-                    "required": true,
-                    "type": "string"
-                }],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -475,11 +487,11 @@
                         }
                     }
                 },
-              "security": [
-                {
-                  "auth": []
-                }
-              ]
+                "security": [
+                    {
+                        "auth": []
+                    }
+                ]
             }
         },
         "/admin/user/unfroze": {
@@ -497,13 +509,15 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [{
-                    "name": "id",
-                    "in": "query",
-                    "description": "user id",
-                    "required": true,
-                    "type": "string"
-                }],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -527,11 +541,11 @@
                         }
                     }
                 },
-              "security": [
-                {
-                  "auth": []
-                }
-              ]
+                "security": [
+                    {
+                        "auth": []
+                    }
+                ]
             }
         },
         "/admin/user/drop": {
@@ -567,57 +581,57 @@
                         }
                     }
                 },
-              "security": [
-                {
-                  "auth": []
-                }
-              ]
+                "security": [
+                    {
+                        "auth": []
+                    }
+                ]
             }
         }
     },
-  "securityDefinitions": {
-    "auth": {
-      "type": "apiKey",
-      "name": "token",
-      "in": "query"
+    "securityDefinitions": {
+        "auth": {
+            "type": "apiKey",
+            "name": "token",
+            "in": "query"
+        },
+        "auth_header": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "description": "value should be: bearer {token}",
+            "in": "header"
+        }
     },
-    "auth_header": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "description":"value should be: bearer {token}",
-      "in": "header"
-    }
-  },
     "definitions": {
         "UserListForm": {
-          "type": "object",
-          "required": [],
-          "properties": {
-            "page": {
-              "type": "integer",
-              "minimum": "1"
-            },
-            "page_size": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "sex": {
-              "type": "integer",
-              "enum": [
-                1,
-                2
-              ]
-            },
-            "phone": {
-              "type": "string"
-            },
-            "nickname":{
-              "type": "string"
-            },
-            "is_frozen":{
-              "type": "boolean"
+            "type": "object",
+            "required": [],
+            "properties": {
+                "page": {
+                    "type": "integer",
+                    "minimum": "1"
+                },
+                "page_size": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "sex": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2
+                    ]
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "is_frozen": {
+                    "type": "boolean"
+                }
             }
-          }
         },
         "VerifySuccessModel": {
             "type": "object",
