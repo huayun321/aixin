@@ -213,7 +213,7 @@ func main() {
 	subRouter.HandleFunc("/user/froze", handler.FrozeUser).Methods("POST")
 	subRouter.HandleFunc("/user/list", handler.GetUsers).Methods("POST")
 	subRouter.HandleFunc("/user/index", handler.EnsureIndex).Methods("GET")
-	subRouter.HandleFunc("/user/drop", handler.DropUser).Methods("GET")
+	subRouter.HandleFunc("/user/drop", handler.DropUser).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
