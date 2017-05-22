@@ -807,6 +807,6 @@ func DropUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 0, "message": "操作成功"})
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 }
 
