@@ -811,3 +811,19 @@ func DropUser(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 }
 
+func DropCode(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	err := nms.DB.C("verifycode").DropCollection()
+	if err != nil {
+		fmt.Println("DropCode: err :", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 19201, "message": "删除库时遇到错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+}
+
+
+

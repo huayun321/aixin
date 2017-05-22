@@ -214,7 +214,7 @@ func main() {
 	subRouter.HandleFunc("/user/list", handler.GetUsers).Methods("POST")
 	subRouter.HandleFunc("/user/index", handler.EnsureIndex).Methods("GET")
 	subRouter.HandleFunc("/user/drop", handler.DropUser).Methods("POST")
-
+	subRouter.HandleFunc("/user/code/drop", handler.DropCode).Methods("POST")
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.HandlerFunc(middleware.IsAdminM),
