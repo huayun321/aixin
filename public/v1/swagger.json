@@ -9,7 +9,8 @@
             "email": "huayun321@gmail.com"
         }
     },
-    "host": "immense-lowlands-91960.herokuapp.com",
+//    "host": "immense-lowlands-91960.herokuapp.com",
+    "host": "localhost:3000",
     "basePath": "/v1",
     "tags": [
         {
@@ -38,7 +39,8 @@
         }
     ],
     "schemes": [
-        "https"
+        "https",
+        "http"
     ],
     "paths": {
         "/user/set-admin": {
@@ -346,20 +348,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": "phone",
-                        "in": "query",
-                        "description": "phone number",
+                        "in": "body",
+                        "name": "body",
+                        "description": "用户登陆参数",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "user password",
-                        "required": true,
-                        "type": "string",
-                        "minLength": 6,
-                        "maxLength": 30
+                        "schema": {
+                            "$ref": "#/definitions/PhoneLoginForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -457,11 +452,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "query",
-                        "description": "user id",
-                        "required": true,
-                        "type": "string"
+                        "in": "body",
+                        "name": "body",
+                        "description": "参数",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/IDForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -511,11 +508,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "query",
-                        "description": "user id",
-                        "required": true,
-                        "type": "string"
+                        "in": "body",
+                        "name": "body",
+                        "description": "参数",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/IDForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -605,11 +604,10 @@
     "definitions": {
         "UserListForm": {
             "type": "object",
-            "required": [],
             "properties": {
                 "page": {
                     "type": "integer",
-                    "minimum": "1"
+                    "minimum": 1
                 },
                 "page_size": {
                     "type": "integer",
@@ -631,6 +629,29 @@
                 "is_frozen": {
                     "type": "boolean"
                 }
+            }
+        },
+        "IDForm": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "PhoneLoginForm": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+
             }
         },
         "VerifySuccessModel": {
