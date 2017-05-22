@@ -803,6 +803,7 @@ func DropUser(w http.ResponseWriter, r *http.Request) {
 
 	err := nms.DB.C("user").DropCollection()
 	if err != nil {
+		fmt.Println("DropUser: err :", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 19101, "message": "删除user库时遇到错误", "err": err})
 		return
 	}
