@@ -58,11 +58,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "query",
-                        "description": "user id",
+                        "in": "body",
+                        "name": "body",
+                        "description": "参数",
                         "required": true,
-                        "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/IDForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -104,11 +106,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": "phone",
-                        "in": "query",
-                        "description": "phone number",
+                        "in": "body",
+                        "name": "body",
+                        "description": "参数",
                         "required": true,
-                        "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/VerifyForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -150,81 +154,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": "phone",
-                        "in": "query",
-                        "description": "phone number",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "user password",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "verify_code",
-                        "in": "query",
-                        "description": "phone verify code",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "openid",
-                        "in": "query",
-                        "description": "wechat openid",
+                        "in": "body",
+                        "name": "body",
+                        "description": "用户登陆参数",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "nickname",
-                        "in": "query",
-                        "description": "wechat nickname",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "sex",
-                        "in": "query",
-                        "description": "wechat sex, 1 male 2 female",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "province",
-                        "in": "query",
-                        "description": "wechat province",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "city",
-                        "in": "query",
-                        "description": "wechat city",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "country",
-                        "in": "query",
-                        "description": "wechat country",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "headimgurl",
-                        "in": "query",
-                        "description": "wechat headimgurl",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "unionid",
-                        "in": "query",
-                        "description": "wechat unionid",
-                        "required": false,
-                        "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/WxForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -266,45 +202,13 @@
                 ],
                 "parameters": [
                     {
-                        "name": "phone",
-                        "in": "query",
-                        "description": "phone number",
+                        "in": "body",
+                        "name": "body",
+                        "description": "用户参数",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "user password",
-                        "required": true,
-                        "type": "string",
-                        "minLength": 6,
-                        "maxLength": 30
-                    },
-                    {
-                        "name": "verify_code",
-                        "in": "query",
-                        "description": "phone verify code",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "avatar",
-                        "in": "query",
-                        "description": "avatar url",
-                        "required": true,
-                        "type": "string",
-                        "minLength": 3,
-                        "maxLength": 300
-                    },
-                    {
-                        "name": "nickname",
-                        "in": "query",
-                        "description": "user nickname",
-                        "required": true,
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 30
+                        "schema": {
+                            "$ref": "#/definitions/PhoneSignUpForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -640,16 +544,106 @@
                 }
             }
         },
+        "VerifyForm": {
+            "type": "object",
+            "required": [
+                "phone"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "PhoneSignUpForm": {
+            "type": "object",
+            "required": [
+                "phone",
+                "password",
+                "verify_code",
+                "avatar",
+                "nickname"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 30
+                },
+                "verify_code": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 300
+                },
+                "nickname": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 30
+                }
+            }
+        },
         "PhoneLoginForm": {
             "type": "object",
             "required": [
-                "id"
+                "phone",
+                "password"
             ],
             "properties": {
-                "id": {
+                "phone": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 30
+                }
+            }
+        },
+        "WxForm": {
+            "type": "object",
+            "required": [
+                "openid"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "verify_code": {
+                    "type": "string"
+                },
+                "openid": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "integer"
+                },
+                "province": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "headimgurl": {
+                    "type": "string"
+                },
+                "unionid": {
                     "type": "string"
                 }
-
             }
         },
         "VerifySuccessModel": {
