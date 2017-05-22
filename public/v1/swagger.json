@@ -9,8 +9,7 @@
             "email": "huayun321@gmail.com"
         }
     },
-//    "host": "immense-lowlands-91960.herokuapp.com",
-    "host": "localhost:3000",
+    "host": "immense-lowlands-91960.herokuapp.com",
     "basePath": "/v1",
     "tags": [
         {
@@ -39,8 +38,7 @@
         }
     ],
     "schemes": [
-        "https",
-        "http"
+        "https"
     ],
     "paths": {
         "/user/set-admin": {
