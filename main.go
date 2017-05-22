@@ -189,6 +189,7 @@ func main() {
 		ErrorHandler: jwtOnError,
 
 		Extractor: jwtmiddleware.FromFirst(jwtmiddleware.FromAuthHeader,
+				     jwtmiddleware.FromParameter("token"),
                                      jwtmiddleware.FromJSON("token")),
 
 		Debug:true,

@@ -44,7 +44,7 @@
             "post": {
                 "tags": [
                     "user",
-                    "client"
+                    "admin"
                 ],
                 "summary": "将普通用户设置为管理员",
                 "description": "set normal user to admin, for admin test",
@@ -136,7 +136,7 @@
                 ],
                 "summary": "微信注册登陆",
                 "description": "发送微信信息，登陆注册",
-                "operationId": "sign-wx",
+                "operationId": "SignWx",
                 "produces": [
                     "application/json"
                 ],
@@ -392,51 +392,14 @@
                     "application/json"
                 ],
                 "parameters": [{
-                        "name": "page",
-                        "in": "query",
-                        "description": "page number",
-                        "required": false,
-                        "type": "integer",
-                        "minimum": 1,
-                        "default": 1
-                    },
-                    {
-                        "name": "page_size",
-                        "in": "query",
-                        "description": "page size",
-                        "required": false,
-                        "type": "integer",
-                        "minimum": 1,
-                        "default": 20
-                    },
-                    {
-                        "name": "phone",
-                        "in": "query",
-                        "description": "phone number",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "sex",
-                        "in": "query",
-                        "description": "sex number",
-                        "required": false,
-                        "type": "integer",
-                        "enum": [
-                            1,
-                            2
-                        ]
-                    },
-                    {
-                        "name": "nickname",
-                        "in": "query",
-                        "description": "user nickname",
-                        "required": false,
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 30
-                    }
-                ],
+                  "in": "body",
+                  "name": "body",
+                  "description": "用户列表参数",
+                  "required": false,
+                  "schema": {
+                    "$ref": "#/definitions/UserListForm"
+                  }
+                }],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -459,7 +422,12 @@
                             "$ref": "#/definitions/ErrorModel"
                         }
                     }
+                },
+              "security": [
+                {
+                  "auth": []
                 }
+              ]
             }
         },
         "/admin/user/froze": {
@@ -506,7 +474,12 @@
                             "$ref": "#/definitions/ErrorModel"
                         }
                     }
+                },
+              "security": [
+                {
+                  "auth": []
                 }
+              ]
             }
         },
         "/admin/user/unfroze": {
@@ -553,7 +526,12 @@
                             "$ref": "#/definitions/ErrorModel"
                         }
                     }
+                },
+              "security": [
+                {
+                  "auth": []
                 }
+              ]
             }
         },
         "/admin/user/drop": {
@@ -588,11 +566,59 @@
                             "$ref": "#/definitions/ErrorModel"
                         }
                     }
+                },
+              "security": [
+                {
+                  "auth": []
                 }
+              ]
             }
         }
     },
+  "securityDefinitions": {
+    "auth": {
+      "type": "apiKey",
+      "name": "token",
+      "in": "query"
+    },
+    "auth_header": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "description":"value should be: bearer {token}",
+      "in": "header"
+    }
+  },
     "definitions": {
+        "UserListForm": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "page": {
+              "type": "integer",
+              "minimum": "1"
+            },
+            "page_size": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sex": {
+              "type": "integer",
+              "enum": [
+                1,
+                2
+              ]
+            },
+            "phone": {
+              "type": "string"
+            },
+            "nickname":{
+              "type": "string"
+            },
+            "is_frozen":{
+              "type": "boolean"
+            }
+          }
+        },
         "VerifySuccessModel": {
             "type": "object",
             "required": [
