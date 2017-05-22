@@ -40,6 +40,50 @@
         "https"
     ],
     "paths": {
+        "/user/set-admin": {
+            "post": {
+                "tags": [
+                    "user",
+                    "client"
+                ],
+                "summary": "将普通用户设置为管理员",
+                "description": "set normal user to admin, for admin test",
+                "operationId": "setAdmin",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [{
+                    "name": "id",
+                    "in": "query",
+                    "description": "user id",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/SuccessModel"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/user/verify": {
             "post": {
                 "tags": [
@@ -501,6 +545,41 @@
                         "description": "bad request",
                         "schema": {
                             "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/drop": {
+            "post": {
+                "tags": [
+                    "user",
+                    "admin"
+                ],
+                "summary": "删除用户库",
+                "description": "后端测试 删除用户库, 需要认证管理员",
+                "operationId": "DropUser",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SuccessModel"
+                            }
                         }
                     },
                     "500": {

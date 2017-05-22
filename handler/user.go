@@ -794,3 +794,19 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 
 	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 0, "message": "声明索引成功"})
 }
+
+
+//DropUser 删除user collection
+func DropUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	err := nms.DB.C("user").DropCollection()
+	if err != nil {
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 19101, "message": "删除user库时遇到错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 0, "message": "操作成功"})
+}
+
