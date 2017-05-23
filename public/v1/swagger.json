@@ -357,7 +357,7 @@
                         "in": "body",
                         "name": "body",
                         "description": "参数",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/IDForm"
                         }
@@ -413,7 +413,7 @@
                         "in": "body",
                         "name": "body",
                         "description": "参数",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/IDForm"
                         }
@@ -426,6 +426,62 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/SuccessModel"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth": []
+                    }
+                ]
+            }
+        },
+        "/admin/user/get-by-id": {
+            "post": {
+                "tags": [
+                    "user",
+                    "admin"
+                ],
+                "summary": "获得用户详细信息",
+                "description": "后端管理 获得用户详细信息",
+                "operationId": "GetUserById",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "参数",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/IDForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/GetUserByIDSuccessModel"
                             }
                         }
                     },
@@ -700,6 +756,31 @@
             }
         },
         "SignInSuccessModel": {
+            "type": "object",
+            "required": [
+                "message",
+                "code",
+                "token",
+                "user"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 20000
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/User"
+                }
+            }
+        },
+        "GetUserByIDSuccessModel": {
             "type": "object",
             "required": [
                 "message",
