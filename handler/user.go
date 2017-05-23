@@ -857,7 +857,7 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	udb.Password = ""
 
-	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result":udb})
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "user":udb})
 	return
 }
 
