@@ -311,7 +311,7 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err == mgo.ErrNotFound {
 		fmt.Println("SignInWithPhone 用户不存在 err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10403, "message": "用户名密码错误"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10403, "message": "用户名密码错误"})
 		return
 	}
 

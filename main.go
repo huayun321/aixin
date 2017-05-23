@@ -204,6 +204,8 @@ func main() {
 	//cors
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
+		AllowCredentials:true,
+		AllowedHeaders:[]string{"*"},
 	})
 
 	router := mux.NewRouter()
