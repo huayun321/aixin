@@ -797,9 +797,6 @@
                     "minimum": 0,
                     "maximum": 20000
                 },
-                "token": {
-                    "type": "string"
-                },
                 "user": {
                     "$ref": "#/definitions/User"
                 }
