@@ -1,972 +1,1114 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "description": "ai",
-        "version": "1.0.0",
-        "title": "ai",
-        "termsOfService": "http://pandariel.com",
-        "contact": {
-            "email": "huayun321@gmail.com"
-        }
-    },
-    "host": "immense-lowlands-91960.herokuapp.com",
-    "basePath": "/v1",
-    "tags": [
-        {
-            "name": "admin",
-            "description": "admin",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "https://immense-lowlands-91960.herokuapp.com"
-            }
-        },
-        {
-            "name": "client",
-            "description": "client",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "https://immense-lowlands-91960.herokuapp.com"
-            }
-        },
-        {
-            "name": "user",
-            "description": "Operations about user",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "https://immense-lowlands-91960.herokuapp.com"
-            }
-        }
-    ],
-    "schemes": [
-        "https"
-    ],
-    "paths": {
-        "/user/set-admin": {
-            "post": {
-                "tags": [
-                    "user",
-                    "admin"
-                ],
-                "summary": "将普通用户设置为管理员",
-                "description": "set normal user to admin, for admin test",
-                "operationId": "setAdmin",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/IDForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/verify": {
-            "post": {
-                "tags": [
-                    "user",
-                    "client"
-                ],
-                "summary": "请求手机验证码",
-                "description": "发送手机号，获取验证码",
-                "operationId": "getVerify",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/VerifyForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/VerifySuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/sign-wx": {
-            "post": {
-                "tags": [
-                    "user",
-                    "client"
-                ],
-                "summary": "微信注册登陆",
-                "description": "发送微信信息，登陆注册",
-                "operationId": "SignWx",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "用户登陆参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/WxForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SignInSuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/signup-phone": {
-            "post": {
-                "tags": [
-                    "user",
-                    "client"
-                ],
-                "summary": "手机注册",
-                "description": "手机号 密码 验证码，注册",
-                "operationId": "SignUpPhone",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "用户参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/PhoneSignUpForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/signin-phone": {
-            "post": {
-                "tags": [
-                    "user",
-                    "client"
-                ],
-                "summary": "手机登陆",
-                "description": "手机号 密码 ，登陆",
-                "operationId": "SignInPhone",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "用户登陆参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/PhoneLoginForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SignInSuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/user/list": {
-            "post": {
-                "tags": [
-                    "user",
-                    "admin"
-                ],
-                "summary": "用户列表",
-                "description": "后端管理 获取用户列表， 可分页， 可按条件搜索",
-                "operationId": "UserList",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "用户列表参数",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/definitions/UserListForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/User"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "auth": []
-                    }
-                ]
-            }
-        },
-        "/admin/user/froze": {
-            "post": {
-                "tags": [
-                    "user",
-                    "admin"
-                ],
-                "summary": "冻结用户",
-                "description": "后端管理 冻结用户",
-                "operationId": "FrozeUser",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/IDForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "auth": []
-                    }
-                ]
-            }
-        },
-        "/admin/user/unfroze": {
-            "post": {
-                "tags": [
-                    "user",
-                    "admin"
-                ],
-                "summary": "解冻用户",
-                "description": "后端管理 解冻用户",
-                "operationId": "UnfrozeUser",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/IDForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "auth": []
-                    }
-                ]
-            }
-        },
-        "/admin/user/get-by-id": {
-            "post": {
-                "tags": [
-                    "user",
-                    "admin"
-                ],
-                "summary": "获得用户详细信息",
-                "description": "后端管理 获得用户详细信息",
-                "operationId": "GetUserById",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/IDForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/GetUserByIDSuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "auth": []
-                    }
-                ]
-            }
-        },
-        "/admin/user/drop": {
-            "post": {
-                "tags": [
-                    "user",
-                    "admin"
-                ],
-                "summary": "删除用户库",
-                "description": "后端测试 删除用户库, 需要认证管理员",
-                "operationId": "DropUser",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SuccessModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "auth": []
-                    }
-                ]
-            }
-        },
-        "/client/article/create": {
-            "post": {
-                "tags": [
-                    "user",
-                    "client"
-                ],
-                "summary": "用户 创建文章",
-                "description": "客户端创建文章，需要用户权限，即传token",
-                "operationId": "CreateArticle",
-                "produces": [
-                    "application/json"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "参数",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ArticleCreateForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/SuccessModel"
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "internal error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "auth": []
-                    }
-                ]
-            }
-        }
-    },
-    "securityDefinitions": {
-        "auth": {
-            "type": "apiKey",
-            "name": "token",
-            "in": "query"
-        },
-        "auth_header": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "description": "value should be: bearer {token}",
-            "in": "header"
-        }
-    },
-    "definitions": {
-        "UserListForm": {
-            "type": "object",
-            "properties": {
-                "page": {
-                    "type": "integer",
-                    "minimum": 1
-                },
-                "page_size": {
-                    "type": "integer",
-                    "minimum": 1
-                },
-                "sex": {
-                    "type": "integer",
-                    "enum": [
-                        1,
-                        2
-                    ]
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "is_frozen": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "IDForm": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
-        "VerifyForm": {
-            "type": "object",
-            "required": [
-                "phone"
-            ],
-            "properties": {
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
-        "PhoneSignUpForm": {
-            "type": "object",
-            "required": [
-                "phone",
-                "password",
-                "verify_code",
-                "avatar",
-                "nickname"
-            ],
-            "properties": {
-                "phone": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 6,
-                    "maxLength": 30
-                },
-                "verify_code": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 300
-                },
-                "nickname": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 30
-                }
-            }
-        },
-        "PhoneLoginForm": {
-            "type": "object",
-            "required": [
-                "phone",
-                "password"
-            ],
-            "properties": {
-                "phone": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 6,
-                    "maxLength": 30
-                }
-            }
-        },
-        "WxForm": {
-            "type": "object",
-            "required": [
-                "openid"
-            ],
-            "properties": {
-                "phone": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "verify_code": {
-                    "type": "string"
-                },
-                "openid": {
-                    "type": "string"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "sex": {
-                    "type": "integer"
-                },
-                "province": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "headimgurl": {
-                    "type": "string"
-                },
-                "unionid": {
-                    "type": "string"
-                }
-            }
-        },
-        "ArticleCreateForm": {
-            "type": "object",
-            "required": [
-                "author_id",
-                "content"
-            ],
-            "properties": {
-                "author_id": {
-                    "type": "string"
-                },
-                "content": {
-                    "type": "string"
-                },
-                "images": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "VerifySuccessModel": {
-            "type": "object",
-            "required": [
-                "message",
-                "code",
-                "verify_code"
-            ],
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 20000
-                },
-                "verify_code": {
-                    "type": "string"
-                }
-            }
-        },
-        "ErrorModel": {
-            "type": "object",
-            "required": [
-                "message",
-                "code"
-            ],
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer"
-                }
-            }
-        },
-        "SuccessModel": {
-            "type": "object",
-            "required": [
-                "message",
-                "code"
-            ],
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 20000
-                }
-            }
-        },
-        "SignInSuccessModel": {
-            "type": "object",
-            "required": [
-                "message",
-                "code",
-                "token",
-                "user"
-            ],
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 20000
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/User"
-                }
-            }
-        },
-        "GetUserByIDSuccessModel": {
-            "type": "object",
-            "required": [
-                "message",
-                "code",
-                "user"
-            ],
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 20000
-                },
-                "user": {
-                    "$ref": "#/definitions/User"
-                }
-            }
-        },
-        "User": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "description": "用户id， mongodb object id"
-                },
-                "phone": {
-                    "type": "string",
-                    "description": "用户电话， 11位数字格式字符串 1开头后跟10位数字"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 6,
-                    "maxLength": 30,
-                    "description": "6到30位密码，可以是特殊字符"
-                },
-                "avatar": {
-                    "type": "string",
-                    "minLength": 10,
-                    "maxLength": 300,
-                    "description": "用户头像地址， 10到300个字符，必须http://或者https://开头"
-                },
-                "nickname": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 30,
-                    "description": "用户昵称， 1到30字节长度"
-                },
-                "sex": {
-                    "type": "integer",
-                    "enum": [
-                        1,
-                        2
-                    ],
-                    "description": "用户性别， 1为男 2为女"
-                },
-                "birthday": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "用户生日， unix utc time 秒"
-                },
-                "signature": {
-                    "type": "string",
-                    "maxLength": 30,
-                    "description": "用户签名，最多30个字节"
-                },
-                "city": {
-                    "type": "string",
-                    "description": "城市，最多30个字节"
-                },
-                "height": {
-                    "type": "integer",
-                    "format": "uint8",
-                    "description": "身高，非负整数"
-                },
-                "weight": {
-                    "type": "integer",
-                    "format": "uint8",
-                    "description": "体重，非负整数"
-                },
-                "bmi": {
-                    "type": "integer",
-                    "format": "int",
-                    "description": "bmi指数，整数"
-                },
-                "openid": {
-                    "type": "string",
-                    "description": "openid，字符串"
-                },
-                "is_frozen": {
-                    "type": "boolean",
-                    "description": "是否冻结，true false"
-                },
-                "create_time": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "创建时间，unix utc time"
-                },
-                "last_login_time": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "最后登陆时间，unix utc time"
-                },
-                "froze_time": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "冻结时间，unix utc time"
-                },
-                "un_froze_time": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "解冻时间，unix utc time"
-                },
-                "froze_reason": {
-                    "type": "string",
-                    "maxLength": 500,
-                    "description": "冻结原因，最长500字节"
-                },
-                "role": {
-                    "type": "string",
-                    "description": "角色，enum admin， user 或无 无即user "
-                }
-            }
-        }
+  "swagger": "2.0",
+  "info": {
+    "description": "ai",
+    "version": "1.0.0",
+    "title": "ai",
+    "termsOfService": "http://pandariel.com",
+    "contact": {
+      "email": "huayun321@gmail.com"
     }
+  },
+  "host": "immense-lowlands-91960.herokuapp.com",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "admin",
+      "description": "admin",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "https://immense-lowlands-91960.herokuapp.com"
+      }
+    },
+    {
+      "name": "client",
+      "description": "client",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "https://immense-lowlands-91960.herokuapp.com"
+      }
+    },
+    {
+      "name": "user",
+      "description": "Operations about user",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "https://immense-lowlands-91960.herokuapp.com"
+      }
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/user/set-admin": {
+      "post": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "将普通用户设置为管理员",
+        "description": "set normal user to admin, for admin test",
+        "operationId": "setAdmin",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/user/verify": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "请求手机验证码",
+        "description": "发送手机号，获取验证码",
+        "operationId": "getVerify",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VerifyForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VerifySuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/user/sign-wx": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "微信注册登陆",
+        "description": "发送微信信息，登陆注册",
+        "operationId": "SignWx",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "用户登陆参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WxForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SignInSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/user/signup-phone": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "手机注册",
+        "description": "手机号 密码 验证码，注册",
+        "operationId": "SignUpPhone",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "用户参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PhoneSignUpForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/user/signin-phone": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "手机登陆",
+        "description": "手机号 密码 ，登陆",
+        "operationId": "SignInPhone",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "用户登陆参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PhoneLoginForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SignInSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/admin/user/list": {
+      "post": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "用户列表",
+        "description": "后端管理 获取用户列表， 可分页， 可按条件搜索",
+        "operationId": "UserList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "用户列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UserListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/admin/user/froze": {
+      "post": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "冻结用户",
+        "description": "后端管理 冻结用户",
+        "operationId": "FrozeUser",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/admin/user/unfroze": {
+      "post": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "解冻用户",
+        "description": "后端管理 解冻用户",
+        "operationId": "UnfrozeUser",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/admin/user/get-by-id": {
+      "post": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "获得用户详细信息",
+        "description": "后端管理 获得用户详细信息",
+        "operationId": "GetUserById",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUserByIDSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/admin/user/drop": {
+      "post": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "删除用户库",
+        "description": "后端测试 删除用户库, 需要认证管理员",
+        "operationId": "DropUser",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/client/article/create": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "用户 创建文章",
+        "description": "客户端创建文章，需要用户权限，即传token",
+        "operationId": "CreateArticle",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ArticleCreateForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/admin/article/list": {
+      "post": {
+        "tags": [
+          "user",
+          "admin"
+        ],
+        "summary": "文章列表",
+        "description": "后端管理 获取文章列表， 可分页， 可按条件搜索",
+        "operationId": "ArticleList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ArticleListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Article"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "auth": {
+      "type": "apiKey",
+      "name": "token",
+      "in": "query"
+    },
+    "auth_header": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "description": "value should be: bearer {token}",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "UserListForm": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sex": {
+          "type": "integer",
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "phone": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "is_frozen": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ArticleListForm": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "phone": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "is_selected": {
+          "type": "boolean"
+        },
+        "is_deleted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "IDForm": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "VerifyForm": {
+      "type": "object",
+      "required": [
+        "phone"
+      ],
+      "properties": {
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "PhoneSignUpForm": {
+      "type": "object",
+      "required": [
+        "phone",
+        "password",
+        "verify_code",
+        "avatar",
+        "nickname"
+      ],
+      "properties": {
+        "phone": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 30
+        },
+        "verify_code": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 300
+        },
+        "nickname": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        }
+      }
+    },
+    "PhoneLoginForm": {
+      "type": "object",
+      "required": [
+        "phone",
+        "password"
+      ],
+      "properties": {
+        "phone": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 30
+        }
+      }
+    },
+    "WxForm": {
+      "type": "object",
+      "required": [
+        "openid"
+      ],
+      "properties": {
+        "phone": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "verify_code": {
+          "type": "string"
+        },
+        "openid": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "integer"
+        },
+        "province": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "headimgurl": {
+          "type": "string"
+        },
+        "unionid": {
+          "type": "string"
+        }
+      }
+    },
+    "ArticleCreateForm": {
+      "type": "object",
+      "required": [
+        "author_id",
+        "content"
+      ],
+      "properties": {
+        "author_id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "VerifySuccessModel": {
+      "type": "object",
+      "required": [
+        "message",
+        "code",
+        "verify_code"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "verify_code": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorModel": {
+      "type": "object",
+      "required": [
+        "message",
+        "code"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer"
+        }
+      }
+    },
+    "SuccessModel": {
+      "type": "object",
+      "required": [
+        "message",
+        "code"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        }
+      }
+    },
+    "SignInSuccessModel": {
+      "type": "object",
+      "required": [
+        "message",
+        "code",
+        "token",
+        "user"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "token": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "GetUserByIDSuccessModel": {
+      "type": "object",
+      "required": [
+        "message",
+        "code",
+        "user"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "用户id， db id"
+        },
+        "phone": {
+          "type": "string",
+          "description": "用户电话， 11位数字格式字符串 1开头后跟10位数字"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 30,
+          "description": "6到30位密码，可以是特殊字符"
+        },
+        "avatar": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 300,
+          "description": "用户头像地址， 10到300个字符，必须http://或者https://开头"
+        },
+        "nickname": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30,
+          "description": "用户昵称， 1到30字节长度"
+        },
+        "sex": {
+          "type": "integer",
+          "enum": [
+            1,
+            2
+          ],
+          "description": "用户性别， 1为男 2为女"
+        },
+        "birthday": {
+          "type": "integer",
+          "format": "int64",
+          "description": "用户生日， unix utc time 秒"
+        },
+        "signature": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "用户签名，最多30个字节"
+        },
+        "city": {
+          "type": "string",
+          "description": "城市，最多30个字节"
+        },
+        "height": {
+          "type": "integer",
+          "format": "uint8",
+          "description": "身高，非负整数"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "uint8",
+          "description": "体重，非负整数"
+        },
+        "bmi": {
+          "type": "integer",
+          "format": "int",
+          "description": "bmi指数，整数"
+        },
+        "openid": {
+          "type": "string",
+          "description": "openid，字符串"
+        },
+        "is_frozen": {
+          "type": "boolean",
+          "description": "是否冻结，true false"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "last_login_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "最后登陆时间，unix utc time"
+        },
+        "froze_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "冻结时间，unix utc time"
+        },
+        "un_froze_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "解冻时间，unix utc time"
+        },
+        "froze_reason": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "冻结原因，最长500字节"
+        },
+        "role": {
+          "type": "string",
+          "description": "角色，enum admin， user 或无 无即user "
+        }
+      }
+    },
+    "Article": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10000,
+          "description": "文章内容，10到10000字节"
+        },
+        "images": {
+          "type": "array",
+          "description": "最多九个图片地址",
+          "items": {
+            "type": "string",
+            "description": "图片地址，10到300个字符，必须http://或者https://开头"
+          }
+        },
+        "is_selected": {
+          "type": "boolean",
+          "description": "是否精选，true false"
+        },
+        "is_deleted": {
+          "type": "boolean",
+          "description": "是否精选，true false"
+        },
+        "delete_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "删除时间，unix utc time"
+        },
+        "select_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "精选时间，unix utc time"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "fans_count": {
+          "type": "integer",
+          "format": "int64",
+          "description": "喜欢数"
+        },
+        "comments_count": {
+          "type": "integer",
+          "format": "int64",
+          "description": "评论数"
+        },
+        "view_count": {
+          "type": "integer",
+          "format": "int64",
+          "description": "查看数"
+        }
+      }
+    }
+  }
 }
