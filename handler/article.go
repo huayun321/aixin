@@ -10,6 +10,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
+	"gopkg.in/mgo.v2"
 )
 
 //CreateArticle 添加文章
@@ -45,5 +46,72 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result":a})
+	return
+}
+
+//GetArticles
+func GetArticles(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.ArticleListForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13201, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	q := bson.M{}
+	var page int
+	var pageSize int
+	page = 1
+	pageSize = 20
+
+	if f.Page != 0 {
+		page = f.Page
+	}
+
+	if f.PageSize != 0 {
+		pageSize = f.PageSize
+	}
+
+	if f.Phone != "" {
+		q["phone"] = f.Phone
+	}
+
+	if f.Nickname != "" {
+		q["nickname"] = f.Nickname
+	}
+
+	if f.IsSelected {
+		q["is_selected"] = f.IsSelected
+	}
+
+	if f.IsDeleted {
+		q["is_deleted"] = f.IsDeleted
+	}
+
+	l := []model.Article{}
+	err := nms.DB.C("article").Find(q).Sort("create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13202, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 not found: ")
+	}
+
+	c, err := nms.DB.C("article").Find(q).Count()
+	if err != nil {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13203, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": c})
 	return
 }
