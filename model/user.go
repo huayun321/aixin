@@ -22,9 +22,9 @@ type User struct {
 	Birthday      int64         `json:"birthday" bson:"birthday,omitempty"`
 	Signature     string        `json:"signature" bson:"signature,omitempty"`
 	City          string        `json:"city" bson:"city,omitempty"`
-	Height        string        `json:"height" bson:"height,omitempty"`
-	Weight        string        `json:"weight" bson:"weight,omitempty"`
-	BMI           string        `json:"bmi" bson:"bmi,omitempty"`
+	Height        uint8        `json:"height" bson:"height,omitempty"`
+	Weight        uint8        `json:"weight" bson:"weight,omitempty"`
+	BMI           int        `json:"bmi" bson:"bmi,omitempty"`
 	OpenID        string        `json:"openid,omitempty" bson:"openid,omitempty"`
 	WxUserInfo    wxUserInfo    `json:"wx_user_info,omitempty" bson:"wx_user_info,omitempty"`
 	IsFrozen      bool          `json:"is_frozen" bson:"is_frozen,omitempty"`

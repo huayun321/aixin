@@ -176,9 +176,9 @@ func (o SignUpPhoneForm) Validate(req *http.Request) error {
 	}
 
 	//检查头像地址长度
-	if len(o.Avatar) < 3 || len(o.Avatar) > 300 {
+	if len(o.Avatar) < 10 || len(o.Avatar) > 300 {
 		return binding.Errors{
-			binding.NewError([]string{"avatar"}, "LengthError", "用户头像地址长度，必须大于等于3位，小于等于300位."),
+			binding.NewError([]string{"avatar"}, "LengthError", "用户头像地址长度，必须大于等于10位，小于等于300位."),
 		}
 	}
 

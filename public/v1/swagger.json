@@ -367,10 +367,7 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/SuccessModel"
-                            }
+                            "$ref": "#/definitions/SuccessModel"
                         }
                     },
                     "400": {
@@ -423,10 +420,7 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/SuccessModel"
-                            }
+                            "$ref": "#/definitions/SuccessModel"
                         }
                     },
                     "400": {
@@ -479,10 +473,7 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/GetUserByIDSuccessModel"
-                            }
+                            "$ref": "#/definitions/GetUserByIDSuccessModel"
                         }
                     },
                     "400": {
@@ -525,10 +516,60 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/SuccessModel"
-                            }
+                            "$ref": "#/definitions/SuccessModel"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth": []
+                    }
+                ]
+            }
+        },
+        "/client/article/create": {
+            "post": {
+                "tags": [
+                    "user",
+                    "client"
+                ],
+                "summary": "用户 创建文章",
+                "description": "客户端创建文章，需要用户权限，即传token",
+                "operationId": "CreateArticle",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "参数",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ArticleCreateForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/SuccessModel"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
                         }
                     },
                     "500": {
@@ -702,6 +743,27 @@
                 }
             }
         },
+        "ArticleCreateForm": {
+            "type": "object",
+            "required": [
+                "author_id",
+                "content"
+            ],
+            "properties": {
+                "author_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "VerifySuccessModel": {
             "type": "object",
             "required": [
@@ -785,7 +847,6 @@
             "required": [
                 "message",
                 "code",
-                "token",
                 "user"
             ],
             "properties": {
@@ -806,81 +867,104 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "用户id， mongodb object id"
                 },
                 "phone": {
-                    "type": "integer"
+                    "type": "string",
+                    "description": "用户电话， 11位数字格式字符串 1开头后跟10位数字"
                 },
                 "password": {
                     "type": "string",
                     "minLength": 6,
-                    "maxLength": 30
+                    "maxLength": 30,
+                    "description": "6到30位密码，可以是特殊字符"
                 },
                 "avatar": {
                     "type": "string",
-                    "minLength": 3,
-                    "maxLength": 300
+                    "minLength": 10,
+                    "maxLength": 300,
+                    "description": "用户头像地址， 10到300个字符，必须http://或者https://开头"
                 },
                 "nickname": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 30
+                    "maxLength": 30,
+                    "description": "用户昵称， 1到30字节长度"
                 },
                 "sex": {
                     "type": "integer",
                     "enum": [
                         1,
                         2
-                    ]
+                    ],
+                    "description": "用户性别， 1为男 2为女"
                 },
                 "birthday": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "用户生日， unix utc time 秒"
                 },
                 "signature": {
                     "type": "string",
-                    "maxLength": 30
+                    "maxLength": 30,
+                    "description": "用户签名，最多30个字节"
                 },
                 "city": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "城市，最多30个字节"
                 },
                 "height": {
-                    "type": "string"
+                    "type": "integer",
+                    "format": "uint8",
+                    "description": "身高，非负整数"
                 },
                 "weight": {
-                    "type": "string"
+                    "type": "integer",
+                    "format": "uint8",
+                    "description": "体重，非负整数"
                 },
                 "bmi": {
-                    "type": "string"
+                    "type": "integer",
+                    "format": "int",
+                    "description": "bmi指数，整数"
                 },
                 "openid": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "openid，字符串"
                 },
                 "is_frozen": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否冻结，true false"
                 },
                 "create_time": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "创建时间，unix utc time"
                 },
                 "last_login_time": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "最后登陆时间，unix utc time"
                 },
                 "froze_time": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "冻结时间，unix utc time"
                 },
                 "un_froze_time": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "解冻时间，unix utc time"
                 },
                 "froze_reason": {
                     "type": "string",
-                    "maxLength": 500
+                    "maxLength": 500,
+                    "description": "冻结原因，最长500字节"
                 },
                 "role": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "角色，enum admin， user 或无 无即user "
                 }
             }
         }

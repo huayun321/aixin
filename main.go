@@ -76,6 +76,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/hello", helloHandler).Methods("GET")
+	//admin
 	subRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/admin").Subrouter().StrictSlash(true)
 	subRouter.HandleFunc("/user/unfroze", handler.UnFrozeUser).Methods("POST")
 	subRouter.HandleFunc("/user/froze", handler.FrozeUser).Methods("POST")
@@ -88,6 +89,13 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.HandlerFunc(middleware.IsAdminM),
 		negroni.Wrap(subRouter),
+	))
+	//client
+	clientRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/client").Subrouter().StrictSlash(true)
+	clientRouter.HandleFunc("/article/create", handler.CreateArticle).Methods("POST")
+	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(clientRouter),
 	))
 
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signin-phone", handler.SignInWithPhone).Methods("POST")
