@@ -643,6 +643,59 @@
       }
     }
   },
+  "/admin/article/select": {
+    "post": {
+      "tags": [
+        "user",
+        "admin"
+      ],
+      "summary": "加精选",
+      "description": "加精选",
+      "operationId": "SelectArticle",
+      "produces": [
+        "application/json"
+      ],
+      "consumes": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "in": "body",
+          "name": "body",
+          "description": "参数",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/IDForm"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "successful operation",
+          "schema": {
+            "$ref": "#/definitions/SuccessModel"
+          }
+        },
+        "400": {
+          "description": "bad request",
+          "schema": {
+            "$ref": "#/definitions/ErrorModel"
+          }
+        },
+        "500": {
+          "description": "internal error",
+          "schema": {
+            "$ref": "#/definitions/ErrorModel"
+          }
+        }
+      },
+      "security": [
+        {
+          "auth": []
+        }
+      ]
+    }
+  },
   "securityDefinitions": {
     "auth": {
       "type": "apiKey",
@@ -1087,6 +1140,11 @@
           "type": "integer",
           "format": "int64",
           "description": "精选时间，unix utc time"
+        },
+        "un_select_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "取消精选时间，unix utc time"
         },
         "create_time": {
           "type": "integer",
