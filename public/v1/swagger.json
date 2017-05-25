@@ -35,7 +35,16 @@
         "description": "Find out more about our store",
         "url": "https://immense-lowlands-91960.herokuapp.com"
       }
+    },
+    {
+      "name": "article",
+      "description": "Operations about article",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "https://immense-lowlands-91960.herokuapp.com"
+      }
     }
+
   ],
   "schemes": [
     "https"
@@ -536,10 +545,10 @@
     "/client/article/create": {
       "post": {
         "tags": [
-          "user",
+          "article",
           "client"
         ],
-        "summary": "用户 创建文章",
+        "summary": "创建文章",
         "description": "客户端创建文章，需要用户权限，即传token",
         "operationId": "CreateArticle",
         "produces": [
@@ -589,7 +598,7 @@
     "/admin/article/list": {
       "post": {
         "tags": [
-          "user",
+          "article",
           "admin"
         ],
         "summary": "文章列表",
@@ -646,7 +655,7 @@
   "/admin/article/select": {
     "post": {
       "tags": [
-        "user",
+        "article",
         "admin"
       ],
       "summary": "加精选",
