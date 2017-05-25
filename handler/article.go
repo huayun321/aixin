@@ -120,7 +120,7 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 //SelectArticle
 func SelectArticle(w http.ResponseWriter, r *http.Request) {
 	// check params
-	f := new(form.SelectForm)
+	f := new(form.ArticleIdForm)
 
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
@@ -155,7 +155,7 @@ func SelectArticle(w http.ResponseWriter, r *http.Request) {
 //UnSelectArticle
 func UnSelectArticle(w http.ResponseWriter, r *http.Request) {
 	// check params
-	f := new(form.SelectForm)
+	f := new(form.ArticleIdForm)
 
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
@@ -179,6 +179,41 @@ func UnSelectArticle(w http.ResponseWriter, r *http.Request) {
 	if err != nil && err == mgo.ErrNotFound {
 		fmt.Println("======= not found : ")
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13403, "message": "不存在此条数据", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+
+
+//DeleteArticle
+func DeleteArticle(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.ArticleIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13501, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("======= 获得nms")
+
+	upsertdata := bson.M{"$set": bson.M{"is_deleted": false, "delete_time":time.Now().Unix()}}
+	err := nms.DB.C("article").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
+
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("======= update err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13502, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("======= not found : ")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13503, "message": "不存在此条数据", "err": err})
 		return
 	}
 

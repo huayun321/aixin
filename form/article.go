@@ -175,13 +175,13 @@ func (o ArticleListForm) Validate(req *http.Request) error {
 
 //==============================================================精选表单
 
-//SelectForm
-type SelectForm struct {
+//ArticleIdForm
+type ArticleIdForm struct {
 	ID string `json:"id"`
 }
 
 // FieldMap 数据绑定
-func (o *SelectForm) FieldMap(req *http.Request) binding.FieldMap {
+func (o *ArticleIdForm) FieldMap(req *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&o.ID: binding.Field{
 			Form:         "id",
@@ -193,7 +193,7 @@ func (o *SelectForm) FieldMap(req *http.Request) binding.FieldMap {
 
 
 //Validate 数据格式验证
-func (o SelectForm) Validate(req *http.Request) error {
+func (o ArticleIdForm) Validate(req *http.Request) error {
 	if !bson.IsObjectIdHex(o.ID) {
 		return binding.Errors{
 			binding.NewError([]string{"id"}, "format error", "id 格式不正确."),
