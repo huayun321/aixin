@@ -475,7 +475,6 @@ func (o SetAdminForm) Validate(req *http.Request) error {
 	return nil
 }
 
-
 //GetUserByIDForm 用户详细信息表单
 type GetUserByIDForm struct {
 	ID string `json:"id"`
@@ -497,6 +496,86 @@ func (o GetUserByIDForm) Validate(req *http.Request) error {
 	if !bson.IsObjectIdHex(o.ID) {
 		return binding.Errors{
 			binding.NewError([]string{"id"}, "format error", "id 格式不正确."),
+		}
+	}
+	return nil
+}
+
+//==============================================================忘记密码表单
+//ForgotPasswordForm
+type ForgotPasswordForm struct {
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+	Code     string `json:"verify_code" bson:"verify_code"`
+}
+
+// FieldMap 数据绑定
+func (o *ForgotPasswordForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.Phone: binding.Field{
+			Form:         "phone",
+			Required:     true,
+			ErrorMessage: "请提交手机号",
+		},
+		&o.Password: binding.Field{
+			Form:         "password",
+			Required:     true,
+			ErrorMessage: "请提交用户密码",
+		},
+		&o.Code: binding.Field{
+			Form:         "verify_code",
+			Required:     true,
+			ErrorMessage: "请提交验证码",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o ForgotPasswordForm) Validate(req *http.Request) error {
+	//检查手机号长度
+	if len(o.Phone) < 11 || len(o.Phone) > 11 {
+		return binding.Errors{
+			binding.NewError([]string{"phone"}, "LengthError", "手机号必须是11位."),
+		}
+	}
+	//检查手机号格式
+	var validPhone = regexp.MustCompile(`^1[\d]{10}$`)
+	iv := validPhone.MatchString(o.Phone)
+	if !iv {
+		return binding.Errors{
+			binding.NewError([]string{"phone"}, "FormatError", "手机号格式不正确,必须是11位1开头数字。"),
+		}
+	}
+
+	//检查密码长度
+	if len(o.Password) < 6 || len(o.Password) > 30 {
+		return binding.Errors{
+			binding.NewError([]string{"password"}, "LengthError", "用户密码长度必须大于等于6位，小于等于30位."),
+		}
+	}
+
+	//检查密码格式
+	var validPassword = regexp.MustCompile(`^[[:graph:]]{6,30}$`)
+	ivp := validPassword.MatchString(o.Password)
+	if !ivp {
+		return binding.Errors{
+			binding.NewError([]string{"password"}, "FormatError", "密码格式不正确，必须是6至30位alphabetic字母数字或者特殊字符。"),
+		}
+	}
+
+	//检查验证码长度
+	if len(o.Code) != 6 {
+		return binding.Errors{
+			binding.NewError([]string{"password"}, "LengthError", "用户验证码必须等于6位."),
+		}
+	}
+
+	//检查验证码格式
+	var validCode = regexp.MustCompile(`^[0-9a-z]{6}$`)
+	ivc := validCode.MatchString(o.Code)
+	if !ivc {
+		return binding.Errors{
+			binding.NewError([]string{"code"}, "FormatError", "验证码格式不正确，必须是6位[0-9a-z]"),
 		}
 	}
 	return nil

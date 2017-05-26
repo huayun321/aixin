@@ -44,7 +44,6 @@
         "url": "https://immense-lowlands-91960.herokuapp.com"
       }
     }
-
   ],
   "schemes": [
     "https"
@@ -273,6 +272,54 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/SignInSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/user/forgot": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "忘记密码",
+        "description": "忘记密码",
+        "operationId": "ForgotPasswrod",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "用户参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForgotPasswordForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
             }
           },
           "400": {
@@ -811,7 +858,6 @@
       }
     }
   },
-
   "securityDefinitions": {
     "auth": {
       "type": "apiKey",
@@ -932,6 +978,27 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 30
+        }
+      }
+    },
+    "ForgotPasswordForm": {
+      "type": "object",
+      "required": [
+        "phone",
+        "password",
+        "verify_code"
+      ],
+      "properties": {
+        "phone": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 30
+        },
+        "verify_code": {
+          "type": "string"
         }
       }
     },

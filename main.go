@@ -107,6 +107,7 @@ func main() {
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-wx", handler.SignWithWx).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/verify", handler.GetVerifyCode).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX + "/user/set-admin", handler.SetAdmin).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX + "/user/forgot", handler.ForgotPassword).Methods("POST")
 
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)

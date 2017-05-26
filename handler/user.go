@@ -861,5 +861,87 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//ForgotPassword
+func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.ForgotPasswordForm)
 
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("ResetPassword: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10901, "message": "用户数据格式错误", "err": errs})
+		return
+	}
 
+	// check if verify code match
+	vc := model.VerifyCode{}
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	err := nms.DB.C("verifycode").Find(bson.M{"phone": f.Phone}).One(&vc)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10902, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10903, "message": "数据库中并没有此电话的验证码", "err": err})
+		return
+	}
+
+	if f.Code != vc.VerifyCode {
+		fmt.Println("ResetPassword 验证码与存储的验证码不匹配:")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10904, "message": "验证码与存储的验证码不匹配"})
+		return
+	}
+
+	// check timestamp so late
+	// 验证码超过1小时为过期
+	now := time.Now().Unix()
+	st := now - vc.VerifyTimestamp
+	if st > 60*60 {
+		fmt.Println("ResetPassword 验证码已超过一小时:", err)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10905, "message": "验证码已超过一小时"})
+		return
+	}
+
+	udb := model.User{}
+	err = nms.DB.C("user").Find(bson.M{"phone": f.Phone}).One(&udb)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10906, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10907, "message": "手机号不存在"})
+		return
+	}
+
+	//check frozen
+	if udb.IsFrozen {
+		fmt.Println("phone user is frozen")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10908, "message": "该用户已被冻结，请联系管理人员"})
+		return
+	}
+
+	//reset
+	h := md5.New()
+	io.WriteString(h, f.Password)
+	np := fmt.Sprintf("%x", h.Sum(nil))
+
+	//store to db
+	upsertdata := bson.M{"$set": bson.M{"password": np}}
+	err = nms.DB.C("user").UpdateId(udb.ID, upsertdata)
+
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10909, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
