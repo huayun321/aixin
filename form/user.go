@@ -580,3 +580,60 @@ func (o ForgotPasswordForm) Validate(req *http.Request) error {
 	}
 	return nil
 }
+
+//==============================================================修改密码表单
+//ResetPasswordForm
+type ResetPasswordForm struct {
+	PasswordOld    string `json:"password_old"`
+	PasswordNew string `json:"password_new"`
+}
+
+// FieldMap 数据绑定
+func (o *ResetPasswordForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.PasswordOld: binding.Field{
+			Form:         "password_old",
+			Required:     true,
+			ErrorMessage: "请提交手机号",
+		},
+		&o.PasswordNew: binding.Field{
+			Form:         "password_new",
+			Required:     true,
+			ErrorMessage: "请提交用户密码",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o ResetPasswordForm) Validate(req *http.Request) error {
+	//检查密码长度
+	if len(o.PasswordOld) < 6 || len(o.PasswordOld) > 30 {
+		return binding.Errors{
+			binding.NewError([]string{"password_old"}, "LengthError", "旧用户密码长度必须大于等于6位，小于等于30位."),
+		}
+	}
+	if len(o.PasswordNew) < 6 || len(o.PasswordNew) > 30 {
+		return binding.Errors{
+			binding.NewError([]string{"password_new"}, "LengthError", "新用户密码长度必须大于等于6位，小于等于30位."),
+		}
+	}
+
+	//检查密码格式
+	var validPasswordOld = regexp.MustCompile(`^[[:graph:]]{6,30}$`)
+	iop := validPasswordOld.MatchString(o.PasswordOld)
+	if !iop {
+		return binding.Errors{
+			binding.NewError([]string{"password_old"}, "FormatError", "旧密码格式不正确，必须是6至30位alphabetic字母数字或者特殊字符。"),
+		}
+	}
+
+	//检查密码格式
+	var validPasswordNew = regexp.MustCompile(`^[[:graph:]]{6,30}$`)
+	inp := validPasswordNew.MatchString(o.PasswordNew)
+	if !inp {
+		return binding.Errors{
+			binding.NewError([]string{"password_new"}, "FormatError", "新密码格式不正确，必须是6至30位alphabetic字母数字或者特殊字符。"),
+		}
+	}
+	return nil
+}

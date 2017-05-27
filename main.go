@@ -84,6 +84,7 @@ func main() {
 	subRouter.HandleFunc("/user/index", handler.EnsureIndex).Methods("GET")
 	subRouter.HandleFunc("/user/drop", handler.DropUser).Methods("POST")
 	subRouter.HandleFunc("/user/code/drop", handler.DropCode).Methods("POST")
+	subRouter.HandleFunc("/user/reset-password", handler.ResetPassword).Methods("POST")
 	subRouter.HandleFunc("/user/get-by-id", handler.GetUserByID).Methods("POST")
 	subRouter.HandleFunc("/article/list", handler.GetArticles).Methods("POST")
 	subRouter.HandleFunc("/article/select", handler.SelectArticle).Methods("POST")

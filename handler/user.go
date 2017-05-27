@@ -47,6 +47,8 @@ func jwtSign(id, nickname, role string, exp int64) (string, error) {
 		"exp":      exp,
 	})
 
+	fmt.Println("jwtsin token: ", token)
+
 	// Headers
 	token.Header["alg"] = "HS256"
 	token.Header["typ"] = "JWT"
@@ -332,7 +334,7 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//token
-	tk, err := jwtSign(udb.ID.String(), udb.Nickname, udb.Role, time.Now().Unix()+JWTEXP)
+	tk, err := jwtSign(udb.ID.Hex(), udb.Nickname, udb.Role, time.Now().Unix()+JWTEXP)
 	if err != nil {
 		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10406, "message": "生成token遇到错误!", "err": err})
@@ -472,7 +474,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			tk, err := jwtSign(udbp.ID.String(), udbp.Nickname, udbp.Role, time.Now().Unix()+JWTEXP)
+			tk, err := jwtSign(udbp.ID.Hex(), udbp.Nickname, udbp.Role, time.Now().Unix()+JWTEXP)
 			if err != nil {
 				fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10310, "message": "生成token遇到错误!", "err": err})
@@ -529,7 +531,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tk, err := jwtSign(udb.ID.String(), udb.Nickname, udb.Role, time.Now().Unix()+JWTEXP)
+	tk, err := jwtSign(udb.ID.Hex(), udb.Nickname, udb.Role, time.Now().Unix()+JWTEXP)
 	if err != nil {
 		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10314, "message": "生成token遇到错误!", "err": err})
@@ -945,3 +947,66 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
+
+//ResetPassword
+func ResetPassword(w http.ResponseWriter, r *http.Request) {
+
+	// check params
+	f := new(form.ResetPasswordForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("ResetPassword: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11001, "message": "用户数据格式错误", "err": errs})
+		return
+	}
+
+	user := r.Context().Value("user")
+	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
+
+	u := model.User{}
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	hp := md5.New()
+	io.WriteString(hp, f.PasswordOld)
+	op := fmt.Sprintf("%x", hp.Sum(nil))
+
+	err := nms.DB.C("user").Find(bson.M{"_id": bson.ObjectIdHex(uid), "password":op}).One(&u)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11002, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11003, "message": "数据库中并没有此用户,或旧密码不匹配", "err": err})
+		return
+	}
+
+	if u.IsFrozen {
+		fmt.Println("phone user is frozen")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11004, "message": "该用户已被冻结，请联系管理人员"})
+		return
+	}
+
+	//reset
+	h := md5.New()
+	io.WriteString(h, f.PasswordNew)
+	np := fmt.Sprintf("%x", h.Sum(nil))
+
+	//store to db
+	upsertdata := bson.M{"$set": bson.M{"password": np}}
+	err = nms.DB.C("user").UpdateId(bson.ObjectIdHex(uid), upsertdata)
+
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11005, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+
