@@ -31,14 +31,16 @@ type Comment struct {
 
 //Fan 喜欢的人
 type Fan struct {
-	ID        bson.ObjectId `json:"id" bson:"_id,omitempty"`
-	ArticleID bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
-	UserID    bson.ObjectId `json:"user_id" bson:"user_id,omitempty"`
+	ID         bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	ArticleID  bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
+	UserID     bson.ObjectId `json:"user_id" bson:"user_id,omitempty"`
+	CreateTime int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 }
 
 //Bookmark 收藏的人
 type Bookmark struct {
-	ID        bson.ObjectId `json:"id" bson:"_id,omitempty"`
-	ArticleID bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
-	UserID    bson.ObjectId `json:"user_id" bson:"user_id,omitempty"`
+	ID         bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	ArticleID  bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
+	UserID     bson.ObjectId `json:"user_id" bson:"user_id,omitempty"`
+	CreateTime int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 }
