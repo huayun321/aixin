@@ -112,6 +112,17 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	for _, v := range l {
+		var u = model.User{}
+		err = nms.DB.C("article").Find(bson.M{"_id": v.AuthorId}).One(&u)
+		if err != nil && err != mgo.ErrNotFound {
+			fmt.Println("=======获取文章列表 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13204, "message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+		v.Author = u
+	}
+
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": c})
 	return
 }

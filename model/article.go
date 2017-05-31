@@ -11,12 +11,13 @@ type Article struct {
 	IsSelected    bool          `json:"is_selected" bson:"is_selected,omitempty"`
 	IsDeleted     bool          `json:"is_deleted" bson:"is_deleted,omitempty"`
 	SelectTime    int64         `json:"select_time,omitempty" bson:"select_time,omitempty"`
-	UnSelectTime    int64         `json:"un_select_time,omitempty" bson:"un_select_time,omitempty"`
+	UnSelectTime  int64         `json:"un_select_time,omitempty" bson:"un_select_time,omitempty"`
 	DeleteTime    int64         `json:"delete_time,omitempty" bson:"delete_time,omitempty"`
 	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	FansCount     int64         `json:"fans_count,omitempty" bson:",omitempty"`
 	CommentsCount int64         `json:"comments_count,omitempty" bson:",omitempty"`
 	ViewCount     int64         `json:"view_count,omitempty" bson:",omitempty"`
+	Author        User          `json:"author,omitempty" bson:",omitempty"`
 }
 
 //Comment 用户回复

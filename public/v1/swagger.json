@@ -1414,6 +1414,9 @@
           "type": "integer",
           "format": "int64",
           "description": "查看数"
+        },
+        "author": {
+          "$ref": "#/definitions/User"
         }
       }
     }
