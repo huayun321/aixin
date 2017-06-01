@@ -1,16 +1,16 @@
 package jwtmiddleware
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
-	"encoding/json"
-	"io/ioutil"
-	"bytes"
 )
 
 // A function called whenever an error is encountered
@@ -171,7 +171,7 @@ func FromJSON(param string) TokenExtractor {
 			return "", fmt.Errorf("No json token field found")
 		}
 
-		if s, ok := pm[param].(string); ok{
+		if s, ok := pm[param].(string); ok {
 			return s, nil
 		}
 

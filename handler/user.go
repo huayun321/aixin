@@ -118,8 +118,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("GetVerifyCode err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10102, "message":
-		"GetVerifyCode 查询数据库时遇到内部错误"})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10102, "message": "GetVerifyCode 查询数据库时遇到内部错误"})
 		return
 	}
 
@@ -135,7 +134,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		err := nms.DB.C("verifycode").Insert(&vc)
 		if err != nil {
 			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10103,
-				"message":	"GetVerifyCode 插入数据库时遇到内部错误", "err": err})
+				"message": "GetVerifyCode 插入数据库时遇到内部错误", "err": err})
 			return
 		}
 		//todo send sms
@@ -151,8 +150,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("GetVerifyCode now:%d-- vc.VerifyTimestamp: %d = %d \n", now, vc.VerifyTimestamp, tsr)
 	if tsr < 60 {
 		fmt.Println("一分钟后才能发送")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10104, "message":
-		"GetVerifyCode 一分钟后才能发送！"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10104, "message": "GetVerifyCode 一分钟后才能发送！"})
 		return
 	}
 
@@ -162,8 +160,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	if dsr < 60*60*24 {
 		if vc.TimesRemainDay < 1 {
 			fmt.Println("今天已经发送了5条，不能发送了")
-			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10105, "message":
-			"GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
+			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10105, "message": "GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
 			return
 		}
 		//时间是同一天，次数有剩余
@@ -175,7 +172,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
 		if err != nil {
 			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10106,
-				"message":	"插入数据库时遇到内部错误!"})
+				"message": "插入数据库时遇到内部错误!"})
 			return
 		}
 	} else {
@@ -189,7 +186,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 		_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
 		if err != nil {
 			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10107,
-				"message":	"插入数据库时遇到内部错误!"})
+				"message": "插入数据库时遇到内部错误!"})
 			return
 		}
 	}
@@ -634,7 +631,7 @@ func FrozeUser(w http.ResponseWriter, r *http.Request) {
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
 	fmt.Println("=======SignWithWx 获得nms")
 
-	upsertdata := bson.M{"$set": bson.M{"is_frozen": true, "froze_time":time.Now().Unix(), "froze_reason": f.Reason}}
+	upsertdata := bson.M{"$set": bson.M{"is_frozen": true, "froze_time": time.Now().Unix(), "froze_reason": f.Reason}}
 	err := nms.DB.C("user").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
 
 	if err != nil && err != mgo.ErrNotFound {
@@ -674,8 +671,7 @@ func SetAdmin(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======SetAdmin update err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 19002, "message":
-		"插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 19002, "message": "插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -689,7 +685,6 @@ func SetAdmin(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
-
 
 //UnFrozeUser 解冻用户
 func UnFrozeUser(w http.ResponseWriter, r *http.Request) {
@@ -706,7 +701,7 @@ func UnFrozeUser(w http.ResponseWriter, r *http.Request) {
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
 	fmt.Println("=======SignWithWx 获得nms")
 
-	upsertdata := bson.M{"$set": bson.M{"is_frozen": false, "un_froze_time":time.Now().Unix()}}
+	upsertdata := bson.M{"$set": bson.M{"is_frozen": false, "un_froze_time": time.Now().Unix()}}
 	err := nms.DB.C("user").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
 
 	if err != nil && err != mgo.ErrNotFound {
@@ -797,7 +792,6 @@ func EnsureIndex(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 0, "message": "声明索引成功"})
 }
 
-
 //DropUser 删除user collection
 func DropUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -859,7 +853,7 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	udb.Password = ""
 
-	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "user":udb})
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "user": udb})
 	return
 }
 
@@ -971,7 +965,7 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(hp, f.PasswordOld)
 	op := fmt.Sprintf("%x", hp.Sum(nil))
 
-	err := nms.DB.C("user").Find(bson.M{"_id": bson.ObjectIdHex(uid), "password":op}).One(&u)
+	err := nms.DB.C("user").Find(bson.M{"_id": bson.ObjectIdHex(uid), "password": op}).One(&u)
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
@@ -1009,4 +1003,3 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
-

@@ -191,7 +191,6 @@ func (o *ArticleIdForm) FieldMap(req *http.Request) binding.FieldMap {
 	}
 }
 
-
 //Validate 数据格式验证
 func (o ArticleIdForm) Validate(req *http.Request) error {
 	if !bson.IsObjectIdHex(o.ID) {

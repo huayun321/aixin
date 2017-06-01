@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	jwtmiddleware "github.com/huayun321/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
+	jwtmiddleware "github.com/huayun321/go-jwt-middleware"
 	nigronimgosession "github.com/joeljames/nigroni-mgo-session"
 	"github.com/unrolled/render"
 
@@ -17,7 +17,7 @@ import (
 	"immense-lowlands-91960/middleware"
 )
 
-const VERSION_ONE_PREFIX  = "/v1"
+const VERSION_ONE_PREFIX = "/v1"
 
 var (
 	port   = os.Getenv("PORT")
@@ -27,11 +27,9 @@ var (
 	ren    = render.New(render.Options{IndentJSON: true, StreamingJSON: true, IsDevelopment: true})
 )
 
-
 //===================== jwt start
 func jwtOnError(w http.ResponseWriter, r *http.Request, err string) {
-	ren.JSON(w, http.StatusUnauthorized, map[string]interface{}{"code": 10001, "msg": "未通过认证的请求", "err":
-	err})
+	ren.JSON(w, http.StatusUnauthorized, map[string]interface{}{"code": 10001, "msg": "未通过认证的请求", "err": err})
 }
 
 //test
@@ -55,10 +53,10 @@ func main() {
 		ErrorHandler: jwtOnError,
 
 		Extractor: jwtmiddleware.FromFirst(jwtmiddleware.FromAuthHeader,
-				     jwtmiddleware.FromParameter("token"),
-                                     jwtmiddleware.FromJSON("token")),
+			jwtmiddleware.FromParameter("token"),
+			jwtmiddleware.FromJSON("token")),
 
-		Debug:true,
+		Debug: true,
 	})
 
 	//nms middleware
@@ -69,9 +67,9 @@ func main() {
 
 	//cors
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowCredentials:true,
-		AllowedHeaders:[]string{"*"},
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"*"},
 	})
 
 	router := mux.NewRouter()
@@ -98,17 +96,20 @@ func main() {
 	//client
 	clientRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/client").Subrouter().StrictSlash(true)
 	clientRouter.HandleFunc("/article/create", handler.CreateArticle).Methods("POST")
+	clientRouter.HandleFunc("/article/list", handler.GetArticles).Methods("POST")
+	clientRouter.HandleFunc("/article/like", handler.LikeArticle).Methods("POST")
+	clientRouter.HandleFunc("/article/unlike", handler.UnLikeArticle).Methods("POST")
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(clientRouter),
 	))
 
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signin-phone", handler.SignInWithPhone).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/signup-phone", handler.SignUpWithPhone).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/sign-wx", handler.SignWithWx).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/verify", handler.GetVerifyCode).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/set-admin", handler.SetAdmin).Methods("POST")
-	router.HandleFunc(VERSION_ONE_PREFIX + "/user/forgot", handler.ForgotPassword).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/user/signin-phone", handler.SignInWithPhone).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/user/signup-phone", handler.SignUpWithPhone).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/user/sign-wx", handler.SignWithWx).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/user/verify", handler.GetVerifyCode).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/user/set-admin", handler.SetAdmin).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/user/forgot", handler.ForgotPassword).Methods("POST")
 
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)

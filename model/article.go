@@ -14,10 +14,12 @@ type Article struct {
 	UnSelectTime  int64         `json:"un_select_time,omitempty" bson:"un_select_time,omitempty"`
 	DeleteTime    int64         `json:"delete_time,omitempty" bson:"delete_time,omitempty"`
 	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
-	FansCount     int64         `json:"fans_count,omitempty" bson:",omitempty"`
-	CommentsCount int64         `json:"comments_count,omitempty" bson:",omitempty"`
-	ViewCount     int64         `json:"view_count,omitempty" bson:",omitempty"`
+	FansCount     int           `json:"fans_count,omitempty" bson:",omitempty"`
+	CommentsCount int           `json:"comments_count,omitempty" bson:",omitempty"`
+	ViewCount     int           `json:"view_count,omitempty" bson:",omitempty"`
+	BookmarkCount int           `json:"bookmark_count,omitempty" bson:",omitempty"`
 	Author        User          `json:"author,omitempty" bson:",omitempty"`
+	Fans          []User        `json:"fans,omitempty" bson:",omitempty"`
 }
 
 //Comment 用户回复
@@ -39,6 +41,14 @@ type Fan struct {
 
 //Bookmark 收藏的人
 type Bookmark struct {
+	ID         bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	ArticleID  bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
+	UserID     bson.ObjectId `json:"user_id" bson:"user_id,omitempty"`
+	CreateTime int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
+}
+
+//View
+type View struct {
 	ID         bson.ObjectId `json:"id" bson:"_id,omitempty"`
 	ArticleID  bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
 	UserID     bson.ObjectId `json:"user_id" bson:"user_id,omitempty"`

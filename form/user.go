@@ -584,7 +584,7 @@ func (o ForgotPasswordForm) Validate(req *http.Request) error {
 //==============================================================修改密码表单
 //ResetPasswordForm
 type ResetPasswordForm struct {
-	PasswordOld    string `json:"password_old"`
+	PasswordOld string `json:"password_old"`
 	PasswordNew string `json:"password_new"`
 }
 
