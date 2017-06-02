@@ -200,3 +200,39 @@ func (o ArticleIdForm) Validate(req *http.Request) error {
 	}
 	return nil
 }
+
+//BookmarkListForm
+type BookmarkListForm struct {
+	Page       int    `json:"page"`
+	PageSize   int    `json:"page_size"`
+}
+
+// FieldMap 数据绑定
+func (o *BookmarkListForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.Page: binding.Field{
+			Form: "page",
+		},
+		&o.PageSize: binding.Field{
+			Form: "page_size",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o BookmarkListForm) Validate(req *http.Request) error {
+	//页码
+	if o.Page < 0 {
+		return binding.Errors{
+			binding.NewError([]string{"page"}, "size error", "页数不能是负数."),
+		}
+	}
+	//每页数据
+	if o.PageSize < 0 {
+		return binding.Errors{
+			binding.NewError([]string{"page_size"}, "size error", "每页数据数不能是负数."),
+		}
+	}
+
+	return nil
+}

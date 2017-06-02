@@ -99,6 +99,11 @@ func main() {
 	clientRouter.HandleFunc("/article/list", handler.GetArticles).Methods("POST")
 	clientRouter.HandleFunc("/article/like", handler.LikeArticle).Methods("POST")
 	clientRouter.HandleFunc("/article/unlike", handler.UnLikeArticle).Methods("POST")
+	clientRouter.HandleFunc("/article/add-view", handler.AddView).Methods("POST")
+	clientRouter.HandleFunc("/article/add-bookmark", handler.AddBookmark).Methods("POST")
+	clientRouter.HandleFunc("/article/un-bookmark", handler.UnBookmark).Methods("POST")
+	clientRouter.HandleFunc("/article/get-bookmarks", handler.GetBookmarks).Methods("POST")
+	clientRouter.HandleFunc("/article/get-article-by-id", handler.GetArticleByID).Methods("POST")
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(clientRouter),

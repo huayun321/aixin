@@ -95,7 +95,7 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	l := []model.Article{}
-	err := nms.DB.C("article").Find(q).Sort("create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
+	err := nms.DB.C("article").Find(q).Sort("-create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======获取文章列表 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13202, "message": "查询数据库时遇到内部错误", "err": err})
@@ -360,5 +360,332 @@ func UnLikeArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+
+//AddView
+func AddView(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.ArticleIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("CreateArticle: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13801, "message": "用户数据格式错误", "err": errs})
+		return
+	}
+
+	user := r.Context().Value("user")
+	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	a := model.View{}
+	a.ID = bson.NewObjectId()
+	a.ArticleID = bson.ObjectIdHex(f.ID)
+	a.UserID = bson.ObjectIdHex(uid)
+	a.CreateTime = time.Now().Unix()
+
+	//store to db
+	err := nms.DB.C("view").Insert(a)
+	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13802, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": a})
+	return
+}
+
+//AddBookmark
+func AddBookmark(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.ArticleIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13901, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	user := r.Context().Value("user")
+	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("======= 获得nms")
+
+	a := model.Bookmark{}
+	a.ID = bson.NewObjectId()
+	a.ArticleID = bson.ObjectIdHex(f.ID)
+	a.UserID = bson.ObjectIdHex(uid)
+	a.CreateTime = time.Now().Unix()
+
+	//store to db
+	upsertdata := bson.M{"$set": a}
+	_, err := nms.DB.C("bookmark").Upsert(bson.M{"article_id": a.ArticleID, "user_id": a.UserID}, upsertdata)
+	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13902, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+
+//UnBookmark
+func UnBookmark(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.ArticleIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 14001, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	user := r.Context().Value("user")
+	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("======= 获得nms")
+
+	aid := bson.ObjectIdHex(f.ID)
+	ouid := bson.ObjectIdHex(uid)
+
+	//store to db
+	err := nms.DB.C("bookmark").Remove(bson.M{"article_id": aid, "user_id": ouid})
+	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14002, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+
+//GetBookmarks
+func GetBookmarks(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.BookmarkListForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 14101, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	user := r.Context().Value("user")
+	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	q := bson.M{}
+	q["user_id"] = bson.ObjectIdHex(uid)
+	var page int
+	var pageSize int
+	page = 1
+	pageSize = 20
+
+	if f.Page != 0 {
+		page = f.Page
+	}
+
+	if f.PageSize != 0 {
+		pageSize = f.PageSize
+	}
+
+	l := []model.Bookmark{}
+	err := nms.DB.C("bookmark").Find(q).Sort("-create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14102, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 not found: ")
+	}
+
+	c, err := nms.DB.C("bookmark").Find(q).Count()
+	if err != nil {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14103, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	u := model.User{}
+	err = nms.DB.C("user").Find(bson.M{"_id": bson.ObjectIdHex(uid)}).One(&u)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14104, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+	u.Password = ""
+
+	al := []model.Article{}
+
+	for _, v := range l {
+		var la = model.Article{}
+
+		la.Author = u
+
+		fc, err := nms.DB.C("fan").Find(bson.M{"article_id": v.ArticleID}).Count()
+		if err != nil {
+			fmt.Println("=======获取文章列表数 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14105, "message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+		la.FansCount = fc
+
+		cc, err := nms.DB.C("comment").Find(bson.M{"article_id": v.ArticleID}).Count()
+		if err != nil {
+			fmt.Println("=======获取文章列表数 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14106, "message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+		la.CommentsCount = cc
+
+		bc, err := nms.DB.C("bookmark").Find(bson.M{"article_id": v.ArticleID}).Count()
+		if err != nil {
+			fmt.Println("=======获取文章列表数 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14107, "message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+		la.BookmarkCount = bc
+
+		vc, err := nms.DB.C("view").Find(bson.M{"article_id": v.ArticleID}).Count()
+		if err != nil {
+			fmt.Println("=======获取文章列表数 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14108, "message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+		la.ViewCount = vc
+
+		fl := []model.Fan{}
+		err = nms.DB.C("fan").Find(bson.M{"article_id": v.ArticleID}).All(&fl)
+		if err != nil && err != mgo.ErrNotFound {
+			fmt.Println("=======获取文章列表数 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14109, "message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+
+		for _, fu := range fl {
+			fuu := model.User{}
+			err = nms.DB.C("user").FindId(fu.UserID).One(&fuu)
+			if err != nil && err != mgo.ErrNotFound {
+				fmt.Println("=======获取文章列表数 err: ", err)
+				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14110, "message": "查询数据库时遇到内部错误", "err": err})
+				return
+			}
+			fmt.Println("v.fans fuu:", fuu)
+			la.Fans = append(la.Fans, fuu)
+		}
+
+		al = append(al, la)
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": al, "total": c})
+	return
+}
+
+//GetArticles
+func GetArticleByID(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.ArticleIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 14201, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	a := model.Article{}
+	err := nms.DB.C("article").Find(bson.M{"_id": bson.ObjectIdHex(f.ID)}).One(&a)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14202, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 not found: ")
+	}
+
+	//v.Fans = []model.User{}
+	var u = model.User{}
+	err = nms.DB.C("article").Find(bson.M{"_id": a.AuthorId}).One(&u)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14204, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+	u.Password = ""
+	a.Author = u
+
+	fc, err := nms.DB.C("fan").Find(bson.M{"article_id": a.ID}).Count()
+	if err != nil {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14205, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+	a.FansCount = fc
+
+	cc, err := nms.DB.C("comment").Find(bson.M{"article_id": a.ID}).Count()
+	if err != nil {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14206, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+	a.CommentsCount = cc
+
+	bc, err := nms.DB.C("bookmark").Find(bson.M{"article_id": a.ID}).Count()
+	if err != nil {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14207, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+	a.BookmarkCount = bc
+
+	vc, err := nms.DB.C("view").Find(bson.M{"article_id": a.ID}).Count()
+	if err != nil {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14208, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+	a.ViewCount = vc
+
+	fl := []model.Fan{}
+	err = nms.DB.C("fan").Find(bson.M{"article_id": a.ID}).All(&fl)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14209, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	for _, fu := range fl {
+		fuu := model.User{}
+		err = nms.DB.C("user").FindId(fu.UserID).One(&fuu)
+		if err != nil && err != mgo.ErrNotFound {
+			fmt.Println("=======获取文章列表数 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14210, "message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+		fmt.Println("v.fans fuu:", fuu)
+		a.Fans = append(a.Fans, fuu)
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": a})
 	return
 }

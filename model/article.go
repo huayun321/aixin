@@ -14,12 +14,12 @@ type Article struct {
 	UnSelectTime  int64         `json:"un_select_time,omitempty" bson:"un_select_time,omitempty"`
 	DeleteTime    int64         `json:"delete_time,omitempty" bson:"delete_time,omitempty"`
 	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
-	FansCount     int           `json:"fans_count,omitempty" bson:",omitempty"`
-	CommentsCount int           `json:"comments_count,omitempty" bson:",omitempty"`
-	ViewCount     int           `json:"view_count,omitempty" bson:",omitempty"`
-	BookmarkCount int           `json:"bookmark_count,omitempty" bson:",omitempty"`
-	Author        User          `json:"author,omitempty" bson:",omitempty"`
-	Fans          []User        `json:"fans,omitempty" bson:",omitempty"`
+	FansCount     int           `json:"fans_count" bson:",omitempty"`
+	CommentsCount int           `json:"comments_count" bson:",omitempty"`
+	ViewCount     int           `json:"view_count" bson:",omitempty"`
+	BookmarkCount int           `json:"bookmark_count" bson:",omitempty"`
+	Author        User          `json:"author" bson:",omitempty"`
+	Fans          []User        `json:"fans" bson:",omitempty"`
 }
 
 //Comment 用户回复
