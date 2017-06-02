@@ -203,8 +203,8 @@ func (o ArticleIdForm) Validate(req *http.Request) error {
 
 //BookmarkListForm
 type BookmarkListForm struct {
-	Page       int    `json:"page"`
-	PageSize   int    `json:"page_size"`
+	Page     int `json:"page"`
+	PageSize int `json:"page_size"`
 }
 
 // FieldMap 数据绑定
@@ -231,6 +231,64 @@ func (o BookmarkListForm) Validate(req *http.Request) error {
 	if o.PageSize < 0 {
 		return binding.Errors{
 			binding.NewError([]string{"page_size"}, "size error", "每页数据数不能是负数."),
+		}
+	}
+
+	return nil
+}
+
+//todo delete article create form author id
+
+//CommentCreateForm 文章创建表单
+type CommentCreateForm struct {
+	Content     string `json:"content"` //content string minLength 10 maxLength 1000
+	ArticleID   string `json:"article_id"`
+	ReferenceID string `json:"reference_id"`
+}
+
+// FieldMap 数据绑定
+func (o *CommentCreateForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.ArticleID: binding.Field{
+			Form:         "article_id",
+			Required:     true,
+			ErrorMessage: "请填写文章id",
+		},
+		&o.Content: binding.Field{
+			Form:         "content",
+			Required:     true,
+			ErrorMessage: "请填写内容",
+		},
+		&o.ReferenceID: binding.Field{
+			Form: "reference_id",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o CommentCreateForm) Validate(req *http.Request) error {
+	if !bson.IsObjectIdHex(o.ArticleID) {
+		return binding.Errors{
+			binding.NewError([]string{"article_id"}, "format error", "article_id 格式不正确."),
+		}
+	}
+	if o.ReferenceID != "" {
+		if !bson.IsObjectIdHex(o.ReferenceID) {
+			return binding.Errors{
+				binding.NewError([]string{"reference_id"}, "format error", "reference_id 格式不正确."),
+			}
+		}
+	}
+
+	if len(o.Content) < 10 {
+		return binding.Errors{
+			binding.NewError([]string{"content"}, "length error", "内容过短."),
+		}
+	}
+
+	if len(o.Content) > 1000 {
+		return binding.Errors{
+			binding.NewError([]string{"content"}, "length error", "内容过长."),
 		}
 	}
 

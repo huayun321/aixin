@@ -689,6 +689,59 @@
         ]
       }
     },
+    "/client/article/add-comment": {
+      "post": {
+        "tags": [
+          "article",
+          "client"
+        ],
+        "summary": "创建回复",
+        "description": "创建回复，需要用户权限，即传token",
+        "operationId": "AddComment",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CommentCreateForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AddCommentSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/client/article/like": {
       "post": {
         "tags": [
@@ -1590,6 +1643,24 @@
         }
       }
     },
+    "CommentCreateForm": {
+      "type": "object",
+      "required": [
+        "article_id",
+        "content"
+      ],
+      "properties": {
+        "article_id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "reference_id": {
+          "type": "string"
+        }
+      }
+    },
     "VerifySuccessModel": {
       "type": "object",
       "required": [
@@ -1686,6 +1757,26 @@
         },
         "user": {
           "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "AddCommentSuccessModel": {
+      "type": "object",
+      "required": [
+        "message",
+        "code"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "result": {
+          "$ref": "#/definitions/Comment"
         }
       }
     },
@@ -1870,6 +1961,47 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/User"
+          }
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "article_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "author_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "reference_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "内容，10到1000字节"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "author": {
+          "$ref": "#/definitions/User"
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Comment"
           }
         }
       }
