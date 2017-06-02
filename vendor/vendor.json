@@ -27,12 +27,6 @@
 			"revisionTime": "2017-05-21T04:50:13Z"
 		},
 		{
-			"checksumSHA1": "vdduzBOoYzd7ReiIGJctG453NyM=",
-			"path": "github.com/huayun321/go-jwt-middleware",
-			"revision": "f13a30113992838938886194396422d73cef9be9",
-			"revisionTime": "2017-05-21T05:27:35Z"
-		},
-		{
 			"checksumSHA1": "3+fi9McAeZ6zpvuB3U2OmPZ9iFE=",
 			"path": "github.com/joeljames/nigroni-mgo-session",
 			"revision": "135786242691a122820b82b129b7262b3f0c7362",
