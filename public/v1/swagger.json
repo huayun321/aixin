@@ -43,6 +43,14 @@
         "description": "Find out more about our store",
         "url": "https://immense-lowlands-91960.herokuapp.com"
       }
+    },
+    {
+      "name": "news",
+      "description": "Operations about news",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "https://immense-lowlands-91960.herokuapp.com"
+      }
     }
   ],
   "schemes": [
@@ -620,6 +628,59 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/admin/news/create": {
+      "post": {
+        "tags": [
+          "news",
+          "admin"
+        ],
+        "summary": "创建资讯",
+        "description": "创建资讯，需要管理用户权限，即传token",
+        "operationId": "CreateNews",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewsCreateForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
             }
           },
           "500": {
@@ -1643,6 +1704,29 @@
         }
       }
     },
+    "NewsCreateForm": {
+      "type": "object",
+      "required": [
+        "title",
+        "content",
+        "image",
+        "position"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "position": {
+          "type": "integer"
+        }
+      }
+    },
     "CommentCreateForm": {
       "type": "object",
       "required": [
@@ -1962,6 +2046,57 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        }
+      }
+    },
+    "News": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 100,
+          "description": "文章标题，10到100字节"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10000,
+          "description": "文章内容，10到10000字节"
+        },
+        "image": {
+          "type": "string",
+          "description": "图片地址，10到300个字符，必须http://或者https://开头"
+        },
+        "position": {
+          "type": "integer",
+          "description": "轮播位置 1 2 3 4"
+        },
+        "is_published": {
+          "type": "boolean",
+          "description": "是否发布，true false"
+        },
+        "publish_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "发布时间，unix utc time"
+        },
+        "un_publish_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "取消发布时间，unix utc time"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "author": {
+          "$ref": "#/definitions/User"
         }
       }
     },
