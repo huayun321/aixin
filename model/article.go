@@ -20,6 +20,7 @@ type Article struct {
 	BookmarkCount int           `json:"bookmark_count" bson:",omitempty"`
 	Author        User          `json:"author" bson:",omitempty"`
 	Fans          []User        `json:"fans" bson:",omitempty"`
+	Comments      []Comment     `json:"comments"  bson:",omitempty"`
 }
 
 //Comment 用户回复
