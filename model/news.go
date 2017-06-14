@@ -15,5 +15,17 @@ type News struct {
 	UnPublishTime int64         `json:"un_publish_time,omitempty" bson:"un_publish_time,omitempty"`
 	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	Author        User          `json:"author, omitempty" bson:",omitempty"`
-	Comments      []Comment     `json:"comments"  bson:",omitempty"`
+	NComments     []NComment    `json:"comments"  bson:",omitempty"`
+}
+
+//NComment 用户回复
+type NComment struct {
+	ID          bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	NewsID      bson.ObjectId `json:"news_id" bson:"news_id,omitempty"`
+	AuthorID    bson.ObjectId `json:"author_id" bson:"author_id,omitempty"`
+	Content     string        `json:"content" bson:"content,omitempty"`
+	ReferenceID bson.ObjectId `json:"reference_id,omitempty" bson:"reference_id,omitempty"`
+	CreateTime  int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
+	Author      User          `json:"author" bson:"author,omitempty"`
+	Comments    []Comment     `json:"comments" bson:",omitempty"`
 }
