@@ -106,6 +106,8 @@ func main() {
 	clientRouter.HandleFunc("/article/get-bookmarks", handler.GetBookmarks).Methods("POST")
 	clientRouter.HandleFunc("/article/get-article-by-id", handler.GetArticleByID).Methods("POST")
 	clientRouter.HandleFunc("/article/add-comment", handler.CreateComment).Methods("POST")
+	clientRouter.HandleFunc("/news/add-comment", handler.CreateNComment).Methods("POST")
+
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(clientRouter),

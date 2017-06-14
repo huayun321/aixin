@@ -4,6 +4,7 @@ import (
 	"github.com/mholt/binding"
 	"net/http"
 	"regexp"
+	"gopkg.in/mgo.v2/bson"
 )
 
 //NewsCreateForm news创建表单
@@ -80,6 +81,50 @@ func (o NewsCreateForm) Validate(req *http.Request) error {
 	if !iva {
 		return binding.Errors{
 			binding.NewError([]string{"imgage"}, "FormatError", "图片地址不正确，正确地址例子：http://a.com/a.jpg or https://www.a.com/a.jpg."),
+		}
+	}
+
+	return nil
+}
+
+//NCommentCreateForm 文章创建表单
+type NCommentCreateForm struct {
+	Content     string `json:"content"` //content string minLength 10 maxLength 1000
+	ArticleID   string `json:"article_id"`
+}
+
+// FieldMap 数据绑定
+func (o *NCommentCreateForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.ArticleID: binding.Field{
+			Form:         "article_id",
+			Required:     true,
+			ErrorMessage: "请填写文章id",
+		},
+		&o.Content: binding.Field{
+			Form:         "content",
+			Required:     true,
+			ErrorMessage: "请填写内容",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o NCommentCreateForm) Validate(req *http.Request) error {
+	if !bson.IsObjectIdHex(o.ArticleID) {
+		return binding.Errors{
+			binding.NewError([]string{"article_id"}, "format error", "article_id 格式不正确."),
+		}
+	}
+	if len(o.Content) < 10 {
+		return binding.Errors{
+			binding.NewError([]string{"content"}, "length error", "内容过短."),
+		}
+	}
+
+	if len(o.Content) > 1000 {
+		return binding.Errors{
+			binding.NewError([]string{"content"}, "length error", "内容过长."),
 		}
 	}
 
