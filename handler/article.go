@@ -706,7 +706,7 @@ func GetArticleByID(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if cm.ReferenceID != "" {
-			r := model.Comment{}
+			r := model.Reference{}
 			err = nms.DB.C("comment").FindId(cm.ReferenceID).One(&r)
 			if err != nil && err != mgo.ErrNotFound {
 				fmt.Println("=======获取文章列表数 err: ", err)
