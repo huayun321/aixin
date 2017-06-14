@@ -89,6 +89,7 @@ func main() {
 	subRouter.HandleFunc("/article/un-select", handler.UnSelectArticle).Methods("POST")
 	subRouter.HandleFunc("/article/delete", handler.DeleteArticle).Methods("POST")
 	subRouter.HandleFunc("/news/add", handler.CreateNews).Methods("POST")
+	subRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.HandlerFunc(middleware.IsAdminM),
@@ -108,6 +109,7 @@ func main() {
 	clientRouter.HandleFunc("/article/add-comment", handler.CreateComment).Methods("POST")
 	clientRouter.HandleFunc("/news/add-comment", handler.CreateNComment).Methods("POST")
 	clientRouter.HandleFunc("/news/get-news-by-id", handler.GetNewsByID).Methods("POST")
+	clientRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
@@ -120,7 +122,8 @@ func main() {
 	router.HandleFunc(VERSION_ONE_PREFIX+"/user/verify", handler.GetVerifyCode).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX+"/user/set-admin", handler.SetAdmin).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX+"/user/forgot", handler.ForgotPassword).Methods("POST")
-
+	router.HandleFunc(VERSION_ONE_PREFIX+"/news/list", handler.GetNews).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/article/list", handler.GetArticles).Methods("POST")
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)
 	n.UseHandler(router)
