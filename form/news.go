@@ -90,13 +90,13 @@ func (o NewsCreateForm) Validate(req *http.Request) error {
 //NCommentCreateForm 文章创建表单
 type NCommentCreateForm struct {
 	Content     string `json:"content"` //content string minLength 10 maxLength 1000
-	ArticleID   string `json:"article_id"`
+	NewsID   string `json:"news_id"`
 }
 
 // FieldMap 数据绑定
 func (o *NCommentCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 	return binding.FieldMap{
-		&o.ArticleID: binding.Field{
+		&o.NewsID: binding.Field{
 			Form:         "article_id",
 			Required:     true,
 			ErrorMessage: "请填写文章id",
@@ -111,7 +111,7 @@ func (o *NCommentCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 
 //Validate 数据格式验证
 func (o NCommentCreateForm) Validate(req *http.Request) error {
-	if !bson.IsObjectIdHex(o.ArticleID) {
+	if !bson.IsObjectIdHex(o.NewsID) {
 		return binding.Errors{
 			binding.NewError([]string{"article_id"}, "format error", "article_id 格式不正确."),
 		}
@@ -128,5 +128,31 @@ func (o NCommentCreateForm) Validate(req *http.Request) error {
 		}
 	}
 
+	return nil
+}
+
+//NewsIdForm
+type NewsIdForm struct {
+	ID string `json:"id"`
+}
+
+// FieldMap 数据绑定
+func (o *NewsIdForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.ID: binding.Field{
+			Form:         "id",
+			Required:     true,
+			ErrorMessage: "请提交文章id",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o NewsIdForm) Validate(req *http.Request) error {
+	if !bson.IsObjectIdHex(o.ID) {
+		return binding.Errors{
+			binding.NewError([]string{"id"}, "format error", "id 格式不正确."),
+		}
+	}
 	return nil
 }
