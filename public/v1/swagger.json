@@ -2187,6 +2187,12 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
         }
       }
     },

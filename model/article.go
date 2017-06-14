@@ -32,7 +32,7 @@ type Comment struct {
 	ReferenceID bson.ObjectId `json:"reference_id,omitempty" bson:"reference_id,omitempty"`
 	CreateTime  int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	Author      User          `json:"author" bson:"author,omitempty"`
-	Comments    []Comment     `json:"comments" bson:",omitempty"`
+	Reference   Comment       `json:"reference" bson:",omitempty"`
 }
 
 //Fan 喜欢的人

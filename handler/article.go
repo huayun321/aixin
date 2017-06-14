@@ -686,6 +686,55 @@ func GetArticleByID(w http.ResponseWriter, r *http.Request) {
 		a.Fans = append(a.Fans, fuu)
 	}
 
+	ccl := []model.Comment{}
+	err = nms.DB.C("comment").Find(bson.M{"article_id": a.ID}).Sort("-create_time").All(&ccl)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14211, "message":
+		"查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	for _, cm := range ccl {
+		cmu := model.User{}
+		err = nms.DB.C("user").FindId(cm.AuthorID).One(&cmu)
+		if err != nil && err != mgo.ErrNotFound {
+			fmt.Println("=======获取文章列表数 err: ", err)
+			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14212,
+				"message": "查询数据库时遇到内部错误", "err": err})
+			return
+		}
+
+		if cm.ReferenceID != "" {
+			r := model.Comment{}
+			err = nms.DB.C("comment").FindId(cm.ReferenceID).One(&r)
+			if err != nil && err != mgo.ErrNotFound {
+				fmt.Println("=======获取文章列表数 err: ", err)
+				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14213,
+					"message":
+					"查询数据库时遇到内部错误", "err": err})
+				return
+			}
+
+			ccmu := model.User{}
+			err = nms.DB.C("user").FindId(r.AuthorID).One(&ccmu)
+			if err != nil && err != mgo.ErrNotFound {
+				fmt.Println("=======获取文章列表数 err: ", err)
+				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14214,
+					"message": "查询数据库时遇到内部错误", "err": err})
+				return
+			}
+			r.Author = ccmu
+
+			cm.Reference = r
+		}
+
+		cm.Author = cmu
+
+		fmt.Println("c.author cmu:", cmu)
+		a.Comments = append(a.Comments, cm)
+	}
+
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": a})
 	return
 }
