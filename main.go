@@ -88,7 +88,7 @@ func main() {
 	subRouter.HandleFunc("/article/select", handler.SelectArticle).Methods("POST")
 	subRouter.HandleFunc("/article/un-select", handler.UnSelectArticle).Methods("POST")
 	subRouter.HandleFunc("/article/delete", handler.DeleteArticle).Methods("POST")
-	subRouter.HandleFunc("/news/add", handler.CreateNews).Methods("POST")
+	subRouter.HandleFunc("/news/create", handler.CreateNews).Methods("POST")
 	subRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 	subRouter.HandleFunc("/news/publish", handler.GetNews).Methods("POST")
 	subRouter.HandleFunc("/news/un-publish", handler.GetNews).Methods("POST")
