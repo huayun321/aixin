@@ -325,6 +325,8 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 		q["image"] = f.Image
 	}
 
+	fmt.Println("update form:", q)
+
 	ctx := r.Context()
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
 	fmt.Println("======= 获得nms")
