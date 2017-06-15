@@ -162,6 +162,9 @@ type NewsListForm struct {
 	Page       int    `json:"page"`
 	PageSize   int    `json:"page_size"`
 	IsPublished bool   `json:"is_published"`
+	Title     string `json:"title"`
+	TimeStart int   `json:"time_start"`
+	TimeEnd int `json:"time_end"`
 }
 
 // FieldMap 数据绑定
@@ -175,6 +178,15 @@ func (o *NewsListForm) FieldMap(req *http.Request) binding.FieldMap {
 		},
 		&o.IsPublished: binding.Field{
 			Form: "is_published",
+		},
+		&o.Title: binding.Field{
+			Form: "title",
+		},
+		&o.TimeStart: binding.Field{
+			Form: "time_start",
+		},
+		&o.TimeEnd: binding.Field{
+			Form: "time_end",
 		},
 	}
 }

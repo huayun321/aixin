@@ -187,6 +187,15 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 	if f.PageSize != 0 {
 		pageSize = f.PageSize
 	}
+
+	if f.Title != "" {
+		q["title"] = f.Title
+	}
+
+	if f.TimeStart > 0 && f.TimeEnd > 0 {
+		q["create_time"] = bson.M{"$gte": f.TimeStart, "$lte": f.TimeEnd}
+	}
+
 	q["is_published"] = f.IsPublished
 
 	l := []model.News{}
