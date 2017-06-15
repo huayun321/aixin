@@ -10,7 +10,7 @@ type News struct {
 	Content       string        `json:"content" bson:"content,omitempty"`
 	Image         string        `json:"image,omitempty" bson:"image,omitempty"`
 	Position      int           `json:"position" bson:"position,omitempty"`
-	IsPublished   bool          `json:"is_published" bson:"is_published,omitempty"`
+	IsPublished   bool          `json:"is_published" bson:"is_published"`
 	PublishTime   int64         `json:"publish_time,omitempty" bson:"publish_time,omitempty"`
 	UnPublishTime int64         `json:"un_publish_time,omitempty" bson:"un_publish_time,omitempty"`
 	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
