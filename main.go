@@ -92,6 +92,7 @@ func main() {
 	subRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 	subRouter.HandleFunc("/news/publish", handler.PublishNews).Methods("POST")
 	subRouter.HandleFunc("/news/un-publish", handler.UnPublishNews).Methods("POST")
+	subRouter.HandleFunc("/news/update", handler.UnPublishNews).Methods("POST")
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.HandlerFunc(middleware.IsAdminM),

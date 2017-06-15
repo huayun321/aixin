@@ -1015,6 +1015,59 @@
         ]
       }
     },
+    "/admin/news/update": {
+      "post": {
+        "tags": [
+          "news",
+          "admin"
+        ],
+        "summary": "更新资讯",
+        "description": "更新资讯，需要管理用户权限，即传token",
+        "operationId": "UpdateNews",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewsUpdateForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/client/article/list": {
       "post": {
         "tags": [
@@ -2075,6 +2128,29 @@
         },
         "position": {
           "type": "integer"
+        }
+      }
+    },
+    "NewsUpdateForm": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "position": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
         }
       }
     },
