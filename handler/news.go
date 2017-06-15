@@ -310,11 +310,26 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	q := bson.M{}
+
+	if f.Title != "" {
+		q["title"] = f.Title
+	}
+	if f.Content != "" {
+		q["content"] = f.Content
+	}
+	if f.Position != 0 {
+		q["position"] = f.Position
+	}
+	if f.Image != "" {
+		q["image"] = f.Image
+	}
+
 	ctx := r.Context()
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
 	fmt.Println("======= 获得nms")
 
-	upsertdata := bson.M{"$set": bson.M{"title": f.Title, "content": f.Content, "image": f.Image,}}
+	upsertdata := bson.M{"$set": q}
 	err := nms.DB.C("news").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
 
 	if err != nil && err != mgo.ErrNotFound {
