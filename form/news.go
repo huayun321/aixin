@@ -161,7 +161,7 @@ func (o NewsIdForm) Validate(req *http.Request) error {
 type NewsListForm struct {
 	Page       int    `json:"page"`
 	PageSize   int    `json:"page_size"`
-	IsPublished bool   `json:"is_published"`
+	IsPublished int   `json:"is_published"`
 	Title     string `json:"title"`
 	TimeStart int   `json:"time_start"`
 	TimeEnd int `json:"time_end"`

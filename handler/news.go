@@ -196,7 +196,13 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 		q["create_time"] = bson.M{"$gte": f.TimeStart, "$lte": f.TimeEnd}
 	}
 
-	q["is_published"] = f.IsPublished
+	if f.IsPublished == 1 {
+		q["is_published"] = true
+	}
+
+	if f.IsPublished == 2 {
+		q["is_published"] = false
+	}
 
 	l := []model.News{}
 	err := nms.DB.C("news").Find(q).Sort("-create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)

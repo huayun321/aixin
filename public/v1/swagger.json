@@ -1959,7 +1959,8 @@
           "minimum": 1
         },
         "is_published": {
-          "type": "boolean"
+          "type": "integer",
+          "description": "1已发布 2已下架"
         },
         "title": {
           "type": "string"
