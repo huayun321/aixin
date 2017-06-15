@@ -208,7 +208,7 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("=======获取文章列表 not found: ")
 	}
 
-	c, err := nms.DB.C("article").Find(q).Count()
+	c, err := nms.DB.C("news").Find(q).Count()
 	if err != nil {
 		fmt.Println("=======获取文章列表数 err: ", err)
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16303, "message":
