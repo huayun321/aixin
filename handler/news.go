@@ -221,8 +221,8 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-//PublishArticle
-func PublishArticle(w http.ResponseWriter, r *http.Request) {
+//PublishNews
+func PublishNews(w http.ResponseWriter, r *http.Request) {
 	// check params
 	f := new(form.NewsIdForm)
 
@@ -258,8 +258,8 @@ func PublishArticle(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-//UnPublishArticle
-func UnPublishArticle(w http.ResponseWriter, r *http.Request) {
+//UnPublishNews
+func UnPublishNews(w http.ResponseWriter, r *http.Request) {
 	// check params
 	f := new(form.NewsIdForm)
 

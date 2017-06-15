@@ -90,8 +90,8 @@ func main() {
 	subRouter.HandleFunc("/article/delete", handler.DeleteArticle).Methods("POST")
 	subRouter.HandleFunc("/news/create", handler.CreateNews).Methods("POST")
 	subRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
-	subRouter.HandleFunc("/news/publish", handler.GetNews).Methods("POST")
-	subRouter.HandleFunc("/news/un-publish", handler.GetNews).Methods("POST")
+	subRouter.HandleFunc("/news/publish", handler.PublishNews).Methods("POST")
+	subRouter.HandleFunc("/news/un-publish", handler.UnPublishNews).Methods("POST")
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.HandlerFunc(middleware.IsAdminM),
