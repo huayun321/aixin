@@ -114,6 +114,7 @@ func main() {
 	clientRouter.HandleFunc("/news/add-comment", handler.CreateNComment).Methods("POST")
 	clientRouter.HandleFunc("/news/get-news-by-id", handler.GetNewsByID).Methods("POST")
 	clientRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
+	clientRouter.HandleFunc("/feedback/create", handler.GetNews).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),

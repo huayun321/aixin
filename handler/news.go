@@ -138,7 +138,7 @@ func GetNewsByID(w http.ResponseWriter, r *http.Request) {
 	err = nms.DB.C("user").Find(bson.M{"_id": a.AuthorId}).One(&u)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======获取文章列表 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16204, "message":
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16203, "message":
 		"查询数据库时遇到内部错误", "err": err})
 		return
 	}
@@ -149,7 +149,7 @@ func GetNewsByID(w http.ResponseWriter, r *http.Request) {
 	err = nms.DB.C("ncomment").Find(bson.M{"news_id": a.ID}).Sort("-create_time").All(&ncs)
 	if err != nil {
 		fmt.Println("=======获取文章列表数 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16206, "message":
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16204, "message":
 		"查询数据库时遇到内部错误", "err": err})
 		return
 	}
