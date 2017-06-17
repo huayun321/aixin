@@ -94,6 +94,10 @@ func main() {
 	subRouter.HandleFunc("/news/un-publish", handler.UnPublishNews).Methods("POST")
 	subRouter.HandleFunc("/news/update", handler.UpdateNews).Methods("POST")
 	subRouter.HandleFunc("/news/delete", handler.DeleteNews).Methods("POST")
+	subRouter.HandleFunc("/feedback/list", handler.GetFeedbacks).Methods("POST")
+	subRouter.HandleFunc("/feedback/reply", handler.ReplyFeedback).Methods("POST")
+
+
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.HandlerFunc(middleware.IsAdminM),
@@ -114,7 +118,8 @@ func main() {
 	clientRouter.HandleFunc("/news/add-comment", handler.CreateNComment).Methods("POST")
 	clientRouter.HandleFunc("/news/get-news-by-id", handler.GetNewsByID).Methods("POST")
 	clientRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
-	clientRouter.HandleFunc("/feedback/create", handler.GetNews).Methods("POST")
+	clientRouter.HandleFunc("/feedback/create", handler.CreateFeedback).Methods("POST")
+	clientRouter.HandleFunc("/feedback/list-by-user-id", handler.GetFeedbacks).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
