@@ -20,6 +20,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"immense-lowlands-91960/form"
 	"io"
+	"strconv"
 )
 
 const (
@@ -64,7 +65,12 @@ func jwtSign(id, nickname, role string, exp int64) (string, error) {
 }
 
 func sendSMS(code, phone string) error {
-	sq := model.SMSQuery{Phone: phone, Code: code}
+	p, err :=strconv.Atoi(phone)
+	if err != nil {
+		fmt.Println("sendSMS str to int err:", err)
+		return err
+	}
+	sq := model.SMSQuery{Phone: p, Code: code}
 	jsq, err := json.Marshal(sq)
 	if err != nil {
 		fmt.Println("sendSMS Marshal err:", err)

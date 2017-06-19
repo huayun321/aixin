@@ -91,6 +91,6 @@ func (vc VerifyCode) Validate(req *http.Request) error {
 
 //SMSQuery 向短息服务发送到信息格式
 type SMSQuery struct {
-	Phone string `json:"phone"`
+	Phone int `json:"phone"`
 	Code  string `json:"code"`
 }
