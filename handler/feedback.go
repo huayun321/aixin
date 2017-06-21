@@ -203,6 +203,7 @@ func ReplyFeedback(w http.ResponseWriter, r *http.Request) {
 
 	rp := model.Reply{}
 	rp.Content = f.Content
+	rp.CreateTime = time.Now().Unix()
 	u.Password = ""
 	rp.Author = u
 	upsertdata := bson.M{"$set": bson.M{"is_replied": true, "reply": rp}}
