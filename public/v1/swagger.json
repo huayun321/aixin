@@ -51,6 +51,14 @@
         "description": "Find out more about our store",
         "url": "https://immense-lowlands-91960.herokuapp.com"
       }
+    },
+    {
+      "name": "feedback",
+      "description": "Operations about feedback",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "https://immense-lowlands-91960.herokuapp.com"
+      }
     }
   ],
   "schemes": [
@@ -1877,6 +1885,224 @@
           }
         ]
       }
+    },
+    "/admin/feedback/list": {
+      "post": {
+        "tags": [
+          "feedback",
+          "admin"
+        ],
+        "summary": "反馈列表",
+        "description": "后端管理 获取反馈列表， 可分页， 可按条件搜索",
+        "operationId": "FeedbackList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/FeedbackListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Feedback"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/client/feedback/list": {
+      "post": {
+        "tags": [
+          "feedback",
+          "client"
+        ],
+        "summary": "反馈列表",
+        "description": "获取反馈列表， 可分页， 可按条件搜索",
+        "operationId": "ClientFeedbackList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/FeedbackListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Feedback"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/client/feedback/create": {
+      "post": {
+        "tags": [
+          "feedback",
+          "client"
+        ],
+        "summary": "创建反馈",
+        "description": "客户端创建反馈，需要用户权限，即传token",
+        "operationId": "CreateFeedback",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FeedbackCreateForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/admin/feedback/track": {
+      "post": {
+        "tags": [
+          "feedback",
+          "admin"
+        ],
+        "summary": "跟踪反馈",
+        "description": "跟踪反馈，需要管理权限，即传token",
+        "operationId": "TrackFeedback",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -1944,6 +2170,31 @@
         },
         "is_deleted": {
           "type": "boolean"
+        }
+      }
+    },
+    "FeedbackListForm": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "phone": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "is_tracked": {
+          "type": "boolean"
+        },
+        "user_id": {
+          "type": "string"
         }
       }
     },
@@ -2182,6 +2433,21 @@
         },
         "position": {
           "type": "integer"
+        }
+      }
+    },
+    "FeedbackCreateForm": {
+      "type": "object",
+      "required": [
+        "phone",
+        "content"
+      ],
+      "properties": {
+        "phone": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
         }
       }
     },
@@ -2678,6 +2944,73 @@
           "type": "string",
           "description": "id， db id"
         },
+        "content": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "内容，10到1000字节"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "author": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "Feedback": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "author_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "内容，10到1000字节"
+        },
+        "phone": {
+          "type": "string",
+          "description": "mobile phone"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "track_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "is_tracked": {
+          "type": "boolean",
+          "description": "是否已跟踪，true false"
+        },
+        "is_replied": {
+          "type": "boolean",
+          "description": "是否已回复，true false"
+        },
+        "reply": {
+          "type": "object",
+          "$ref": "#/definitions/Reply"
+        },
+        "author": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "Reply": {
+      "type": "object",
+      "properties": {
         "content": {
           "type": "string",
           "minLength": 10,

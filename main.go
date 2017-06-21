@@ -96,7 +96,7 @@ func main() {
 	subRouter.HandleFunc("/news/delete", handler.DeleteNews).Methods("POST")
 	subRouter.HandleFunc("/feedback/list", handler.GetFeedbacks).Methods("POST")
 	subRouter.HandleFunc("/feedback/reply", handler.ReplyFeedback).Methods("POST")
-
+	subRouter.HandleFunc("/feedback/track", handler.TrackFeedback).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),

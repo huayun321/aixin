@@ -37,19 +37,22 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11002, "message": "查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17002, "message":
+		"查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
 	if err != nil && err == mgo.ErrNotFound {
-		fmt.Println("ResetPassword err:", err)
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11003, "message": "数据库中并没有此用户,或旧密码不匹配", "err": err})
+		fmt.Println("用户不存在 err:", err)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17003, "message": "数据库中并没有此用户," +
+			"用户不存在", "err": err})
 		return
 	}
 
 	if u.IsFrozen {
 		fmt.Println("phone user is frozen")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11004, "message": "该用户已被冻结，请联系管理人员"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17004, "message":
+		"该用户已被冻结，请联系管理人员"})
 		return
 	}
 
@@ -67,7 +70,7 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17002, "message":
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17005, "message":
 		"插入数据库时遇到内部错误", "err": err})
 		return
 	}
@@ -83,7 +86,7 @@ func GetFeedbacks(w http.ResponseWriter, r *http.Request) {
 
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 16301, "message": "数据格式错误",
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17101, "message": "数据格式错误",
 			"err": errs})
 		return
 	}
@@ -132,8 +135,8 @@ func GetFeedbacks(w http.ResponseWriter, r *http.Request) {
 	l := []model.Feedback{}
 	err := nms.DB.C("feedback").Find(q).Sort("-create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
 	if err != nil && err != mgo.ErrNotFound {
-		fmt.Println("=======获取文章列表 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16302, "message":
+		fmt.Println("=======获取列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17102, "message":
 		"查询数据库时遇到内部错误", "err": err})
 		return
 	}
@@ -144,8 +147,8 @@ func GetFeedbacks(w http.ResponseWriter, r *http.Request) {
 
 	c, err := nms.DB.C("feedback").Find(q).Count()
 	if err != nil {
-		fmt.Println("=======获取文章列表数 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16303, "message":
+		fmt.Println("=======获取列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17103, "message":
 		"查询数据库时遇到内部错误", "err": err})
 		return
 	}
@@ -162,7 +165,8 @@ func ReplyFeedback(w http.ResponseWriter, r *http.Request) {
 
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13301, "message": "数据格式错误", "err": errs})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17201, "message": "数据格式错误",
+			"err": errs})
 		return
 	}
 
@@ -178,19 +182,22 @@ func ReplyFeedback(w http.ResponseWriter, r *http.Request) {
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11002, "message": "查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17202, "message":
+		"查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
 	if err != nil && err == mgo.ErrNotFound {
-		fmt.Println("ResetPassword err:", err)
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11003, "message": "数据库中并没有此用户,或旧密码不匹配", "err": err})
+		fmt.Println("用户不存在 err:", err)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17203, "message": "数据库中并没有此用户," +
+			"用户不存在", "err": err})
 		return
 	}
 
 	if u.IsFrozen {
 		fmt.Println("phone user is frozen")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11004, "message": "该用户已被冻结，请联系管理人员"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17204, "message":
+		"该用户已被冻结，请联系管理人员"})
 		return
 	}
 
@@ -203,13 +210,79 @@ func ReplyFeedback(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("======= update err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13302, "message": "插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17205, "message":
+		"插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
 	if err != nil && err == mgo.ErrNotFound {
 		fmt.Println("======= not found : ")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13303, "message": "不存在此条数据", "err": err})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17206, "message": "不存在此条数据",
+			"err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+
+//TrackFeedback
+func TrackFeedback(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.FeedbackIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17301, "message": "数据格式错误",
+			"err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("======= 获得nms")
+
+	user := r.Context().Value("user")
+	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
+
+	u := model.User{}
+	err := nms.DB.C("user").FindId(bson.M{"_id": bson.ObjectIdHex(uid)}).One(&u)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17302, "message":
+		"查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("用户不存在 err:", err)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17303, "message": "数据库中并没有此用户," +
+			"用户不存在", "err": err})
+		return
+	}
+
+	if u.IsFrozen {
+		fmt.Println("phone user is frozen")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17304, "message":
+		"该用户已被冻结，请联系管理人员"})
+		return
+	}
+
+	upsertdata := bson.M{"$set": bson.M{"is_tracked": true}}
+	err = nms.DB.C("feedback").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
+
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("======= update err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 17305, "message":
+		"插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("======= not found : ")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 17306, "message": "不存在此条数据",
+			"err": err})
 		return
 	}
 
