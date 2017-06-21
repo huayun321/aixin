@@ -163,39 +163,39 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	// check if daily
 	dsr := now - vc.LastVerifyDay
 	fmt.Printf("GetVerifyCode now:%d-- vc.LastVerifyDay: %d = %d \n", now, vc.LastVerifyDay, dsr)
-	if dsr < 60*60*24 {
-		if vc.TimesRemainDay < 1 {
-			fmt.Println("今天已经发送了5条，不能发送了")
-			util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10105, "message": "GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
-			return
-		}
-		//时间是同一天，次数有剩余
-		change := mgo.Change{
-			Update:    bson.M{"$inc": bson.M{"times_remain_day": -1}, "$set": bson.M{"verify_timestamp": now, "verify_code": code}},
-			ReturnNew: false,
-		}
-		vcr := model.VerifyCode{}
-		_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
-		if err != nil {
-			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10106,
-				"message": "插入数据库时遇到内部错误!"})
-			return
-		}
-	} else {
-		//时间不是同一天，剩余次数和日期重制
-		vc.TimesRemainDay = 4
-		change := mgo.Change{
-			Update:    bson.M{"$inc": bson.M{"times_remain_day": 4}, "$set": bson.M{"last_verify_day": now, "verify_timestamp": now, "verify_code": code}},
-			ReturnNew: false,
-		}
-		vcr := model.VerifyCode{}
-		_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
-		if err != nil {
-			util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10107,
-				"message": "插入数据库时遇到内部错误!"})
-			return
-		}
-	}
+	//if dsr < 60*60*24 {
+	//	if vc.TimesRemainDay < 1 {
+	//		fmt.Println("今天已经发送了5条，不能发送了")
+	//		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10105, "message": "GetVerifyCode 今天的验证码使用次数已经用完，明天再来吧。"})
+	//		return
+	//	}
+	//	//时间是同一天，次数有剩余
+	//	change := mgo.Change{
+	//		Update:    bson.M{"$inc": bson.M{"times_remain_day": -1}, "$set": bson.M{"verify_timestamp": now, "verify_code": code}},
+	//		ReturnNew: false,
+	//	}
+	//	vcr := model.VerifyCode{}
+	//	_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
+	//	if err != nil {
+	//		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10106,
+	//			"message": "插入数据库时遇到内部错误!"})
+	//		return
+	//	}
+	//} else {
+	//	//时间不是同一天，剩余次数和日期重制
+	//	vc.TimesRemainDay = 4
+	//	change := mgo.Change{
+	//		Update:    bson.M{"$inc": bson.M{"times_remain_day": 4}, "$set": bson.M{"last_verify_day": now, "verify_timestamp": now, "verify_code": code}},
+	//		ReturnNew: false,
+	//	}
+	//	vcr := model.VerifyCode{}
+	//	_, err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Apply(change, &vcr)
+	//	if err != nil {
+	//		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10107,
+	//			"message": "插入数据库时遇到内部错误!"})
+	//		return
+	//	}
+	//}
 	//todo send sms
 	go sendSMS(code, vcf.Phone)
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "verify_code": code})
