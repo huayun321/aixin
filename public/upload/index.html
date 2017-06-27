@@ -7,9 +7,10 @@
 <body>
 <div class="container">
     <h1>File Upload Demo</h1>
-    <label>set token before upload</label>
-    <input id="token" type="text" size="100">
-
+    <p>
+        <label>set token before upload</label>
+        <input id="token" type="text" size="100">
+    </p>
     <form name="upf" class="form-signin" method="post" action="/v1/client/upload?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MDExMzU0MTUsImlkIjoiNTkyM2NhMDRhOWFkNWIzZGU0ZjUzNjM4Iiwibmlja25hbWUiOiIiLCJyb2xlIjoiYWRtaW4ifQ.ePH_MBLNPqz-KBRv8-p9LHXrBuIqxIrXtNtJ3_j0Cww" enctype="multipart/form-data">
         <fieldset>
             <input type="file" name="myfiles" id="myfiles" multiple="multiple">
@@ -40,5 +41,6 @@
         ev.preventDefault();
     }, false);
 </script>
+//https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects
 </body>
 </html>
