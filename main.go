@@ -54,7 +54,8 @@ func main() {
 
 		Extractor: jwtmiddleware.FromFirst(jwtmiddleware.FromAuthHeader,
 			jwtmiddleware.FromParameter("token"),
-			jwtmiddleware.FromJSON("token")),
+			jwtmiddleware.FromJSON("token"),
+		),
 
 		Debug: true,
 	})
@@ -97,6 +98,7 @@ func main() {
 	subRouter.HandleFunc("/feedback/list", handler.GetFeedbacks).Methods("POST")
 	subRouter.HandleFunc("/feedback/reply", handler.ReplyFeedback).Methods("POST")
 	subRouter.HandleFunc("/feedback/track", handler.TrackFeedback).Methods("POST")
+	subRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
@@ -120,6 +122,8 @@ func main() {
 	clientRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 	clientRouter.HandleFunc("/feedback/create", handler.CreateFeedback).Methods("POST")
 	clientRouter.HandleFunc("/feedback/list-by-user-id", handler.GetFeedbacks).Methods("POST")
+	clientRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
+
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
