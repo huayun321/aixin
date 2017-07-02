@@ -37,6 +37,14 @@
       }
     },
     {
+      "name": "guest",
+      "description": "Operations about guest",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "https://immense-lowlands-91960.herokuapp.com"
+      }
+    },
+    {
       "name": "article",
       "description": "Operations about article",
       "externalDocs": {
@@ -186,6 +194,43 @@
               "$ref": "#/definitions/WxForm"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SignInSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "/user/signin-guest": {
+      "post": {
+        "tags": [
+          "guest",
+          "client"
+        ],
+        "summary": "游客登陆",
+        "description": "游客获取临时token",
+        "operationId": "SignGuest",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
         ],
         "responses": {
           "200": {

@@ -25,6 +25,7 @@ import (
 
 const (
 	JWTEXP = 60 * 60 * 24 * 30
+	GUESTJWTEXP = 60 * 60 * 24 * 1
 	SMSURL = "https://limitless-spire-42314.herokuapp.com/sms"
 )
 
@@ -268,6 +269,7 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 	u.Nickname = uf.Nickname
 	u.IsFrozen = false
 	u.CreateTime = now
+	u.Role = "user"
 
 	h := md5.New()
 	io.WriteString(h, uf.Password)
@@ -350,6 +352,22 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//SignInGuest 游客登陆
+func SignInGuest(w http.ResponseWriter, r *http.Request) {
+
+	//token
+	tk, err := jwtSign("", "", "guest", time.Now().Unix()+GUESTJWTEXP)
+	if err != nil {
+		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11100, "message":
+		"生成token遇到错误!", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "登陆成功", "token": tk})
+	return
+}
+
 //SignInWithWx 通过微信登陆或者注册
 func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	// check params
@@ -382,6 +400,7 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 	u.WxUserInfo.Unionid = swf.WxUnionid
 	u.LastLoginTime = time.Now().Unix()
 	u.IsFrozen = false
+	u.Role = "user"
 
 	// check if verify code match
 	if swf.Phone != "" && swf.Password != "" && swf.Code != "" {

@@ -127,7 +127,17 @@ func main() {
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.HandlerFunc(middleware.IsUserM),
 		negroni.Wrap(clientRouter),
+	))
+
+	//guest
+	guestRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/guest").Subrouter().StrictSlash(true)
+	guestRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
+
+	router.PathPrefix(VERSION_ONE_PREFIX + "/guest").Handler(negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(guestRouter),
 	))
 
 	router.HandleFunc(VERSION_ONE_PREFIX+"/user/signin-phone", handler.SignInWithPhone).Methods("POST")
@@ -138,6 +148,7 @@ func main() {
 	router.HandleFunc(VERSION_ONE_PREFIX+"/user/forgot", handler.ForgotPassword).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX+"/news/list", handler.GetNews).Methods("POST")
 	router.HandleFunc(VERSION_ONE_PREFIX+"/article/list", handler.GetArticles).Methods("POST")
+	router.HandleFunc(VERSION_ONE_PREFIX+"/user/signin-guest", handler.SignInGuest).Methods("POST")
 	n.Use(nigronimgosession.NewDatabase(*dbAccessor).Middleware())
 	n.Use(c)
 	n.UseHandler(router)
