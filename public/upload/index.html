@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>File Upload Demo</title>
-    <link type="text/css" rel="stylesheet" href="/public/upload/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="/upload/css/style.css" />
 </head>
 <body>
 <div class="container">
@@ -11,7 +11,7 @@
         <label>set token before upload</label>
         <input id="token" type="text" size="100">
     </p>
-    <form name="upf" class="form-signin" method="post" action="/v1/guest/upload" enctype="multipart/form-data">
+    <form name="upf" class="form-signin" method="post" enctype="multipart/form-data">
         <fieldset>
             <input type="file" name="myfiles" id="myfiles" multiple="multiple">
             <input type="submit" name="submit" value="Submit">
@@ -19,7 +19,7 @@
     </form>
     <div></div>
 </div>
-<script src="/jquery-1.11.1.js"></script>
+<script src="/upload/js/jquery-1.11.1.js"></script>
 <script type="javascript">
     var form = document.forms.namedItem("upf");
     form.addEventListener('submit', function(ev) {
