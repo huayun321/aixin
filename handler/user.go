@@ -1028,3 +1028,39 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
+
+//Follow 用户
+func Follow(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.FollowIDForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11200, "message": "数据格式错误",
+			"err":	errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("=======SignWithWx 获得nms")
+
+	a := model.Follower{}
+	a.ID = bson.NewObjectId()
+	a.UserID = bson.ObjectIdHex(f.UserID)
+	a.FollowingID = bson.ObjectIdHex(f.FollowingID)
+	a.CreateTime = time.Now().Unix()
+
+	err := nms.DB.C("follower").Insert(a)
+	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message":
+		"插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+

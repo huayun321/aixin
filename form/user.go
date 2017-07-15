@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"regexp"
+	"fmt"
 )
 
 //todo password md5
@@ -633,6 +634,45 @@ func (o ResetPasswordForm) Validate(req *http.Request) error {
 	if !inp {
 		return binding.Errors{
 			binding.NewError([]string{"password_new"}, "FormatError", "新密码格式不正确，必须是6至30位alphabetic字母数字或者特殊字符。"),
+		}
+	}
+	return nil
+}
+
+//FollowIDForm 用户关注 取消关注表单
+type FollowIDForm struct {
+	UserID string `json:"user_id"`
+	FollowingID string `json:"following_id"`
+}
+
+// FieldMap 数据绑定
+func (o *FollowIDForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.UserID: binding.Field{
+			Form:         "user_id",
+			Required:     true,
+			ErrorMessage: "请提交用户id",
+		},
+		&o.FollowingID: binding.Field{
+			Form:         "following_id",
+			Required:     true,
+			ErrorMessage: "请提交目标用户id",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o FollowIDForm) Validate(req *http.Request) error {
+	fmt.Println(o)
+
+	if !bson.IsObjectIdHex(o.UserID) {
+		return binding.Errors{
+			binding.NewError([]string{"user_id"}, "format error", "user_id 格式不正确."),
+		}
+	}
+	if !bson.IsObjectIdHex(o.FollowingID) {
+		return binding.Errors{
+			binding.NewError([]string{"following_id"}, "format error", "following_id 格式不正确."),
 		}
 	}
 	return nil

@@ -36,6 +36,13 @@ type User struct {
 	Role          string        `json:"role,omitempty" bson:"role,omitempty"`
 }
 
+type Follower struct {
+	ID          bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	UserID      bson.ObjectId `json:"user_id" bson:"user_id,omitempty"`
+	FollowingID bson.ObjectId `json:"following_id" bson:"following_id,omitempty"`
+	CreateTime  int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
+}
+
 //定义微信信息
 type wxUserInfo struct {
 	OpenID     string `json:"openid" bson:"openid,omitempty"`
@@ -91,6 +98,6 @@ func (vc VerifyCode) Validate(req *http.Request) error {
 
 //SMSQuery 向短息服务发送到信息格式
 type SMSQuery struct {
-	Phone int `json:"phone"`
+	Phone int    `json:"phone"`
 	Code  string `json:"code"`
 }

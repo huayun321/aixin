@@ -750,6 +750,59 @@
         ]
       }
     },
+    "/client/user/follow": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "关注",
+        "description": "客户端关注用户，需要用户权限，即传token",
+        "operationId": "Follow",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FollowForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/client/article/create": {
       "post": {
         "tags": [
@@ -2548,6 +2601,21 @@
           "type": "string"
         },
         "content": {
+          "type": "string"
+        }
+      }
+    },
+    "FollowForm": {
+      "type": "object",
+      "required": [
+        "user_id",
+        "following_id"
+      ],
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "following_id": {
           "type": "string"
         }
       }
