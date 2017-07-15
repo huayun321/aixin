@@ -5,7 +5,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"regexp"
-	"fmt"
 )
 
 //todo password md5
