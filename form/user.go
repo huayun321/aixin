@@ -663,8 +663,6 @@ func (o *FollowIDForm) FieldMap(req *http.Request) binding.FieldMap {
 
 //Validate 数据格式验证
 func (o FollowIDForm) Validate(req *http.Request) error {
-	fmt.Println(o)
-
 	if !bson.IsObjectIdHex(o.UserID) {
 		return binding.Errors{
 			binding.NewError([]string{"user_id"}, "format error", "user_id 格式不正确."),
