@@ -348,6 +348,22 @@ func SignInWithPhone(w http.ResponseWriter, r *http.Request) {
 
 	udb.Password = ""
 
+	fl := []model.Follower{}
+	err = nms.DB.C("follower").Find(bson.M{"following_id": udb.ID}).All(&fl)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======user sign phone get follower err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13209, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	fll := []string{}
+
+	for _, fw := range fl {
+		fll = append(fll, fw.UserID.Hex())
+	}
+
+	udb.Followers = fll
+
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "登陆成功", "user": udb, "token": tk})
 	return
 }
@@ -496,6 +512,22 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			fl := []model.Follower{}
+			err = nms.DB.C("follower").Find(bson.M{"following_id": udbp.ID}).All(&fl)
+			if err != nil && err != mgo.ErrNotFound {
+				fmt.Println("=======user sign phone get follower err: ", err)
+				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13209, "message": "查询数据库时遇到内部错误", "err": err})
+				return
+			}
+
+			fll := []string{}
+
+			for _, fw := range fl {
+				fll = append(fll, fw.UserID.Hex())
+			}
+
+			udbp.Followers = fll
+
 			tk, err := jwtSign(udbp.ID.Hex(), udbp.Nickname, udbp.Role, time.Now().Unix()+JWTEXP)
 			if err != nil {
 				fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
@@ -552,6 +584,22 @@ func SignWithWx(w http.ResponseWriter, r *http.Request) {
 		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10313, "message": "插入数据库时遇到内部错误!"})
 		return
 	}
+
+	fl := []model.Follower{}
+	err = nms.DB.C("follower").Find(bson.M{"following_id": udb.ID}).All(&fl)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======user sign phone get follower err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13209, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	fll := []string{}
+
+	for _, fw := range fl {
+		fll = append(fll, fw.UserID.Hex())
+	}
+
+	udb.Followers = fll
 
 	tk, err := jwtSign(udb.ID.Hex(), udb.Nickname, udb.Role, time.Now().Unix()+JWTEXP)
 	if err != nil {

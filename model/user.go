@@ -34,6 +34,7 @@ type User struct {
 	FrozeReason   string        `json:"froze_reason,omitempty" bson:"froze_reason,omitempty"`
 	UnFrozeTime   int64         `json:"un_froze_time,omitempty" bson:"un_froze_time,omitempty"`
 	Role          string        `json:"role,omitempty" bson:"role,omitempty"`
+	Followers     []string      `json:"followers,omitempty" bson:"followers,omitempty"`
 }
 
 type Follower struct {
