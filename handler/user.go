@@ -1045,17 +1045,35 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
 	fmt.Println("=======SignWithWx 获得nms")
 
+	fw := model.Follower{}
+	err := nms.DB.C("follower").Find(bson.M{"user_id": bson.ObjectIdHex(f.UserID),
+		"following_id": bson.ObjectIdHex(f.FollowingID)}).One(&fw)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message":
+		"查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err == nil {
+		fmt.Println("user is already followed")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11202, "message":
+		"已经关注了该用户"})
+		return
+	}
+
 	a := model.Follower{}
 	a.ID = bson.NewObjectId()
 	a.UserID = bson.ObjectIdHex(f.UserID)
 	a.FollowingID = bson.ObjectIdHex(f.FollowingID)
 	a.CreateTime = time.Now().Unix()
 
-	err := nms.DB.C("follower").Insert(a)
+	err = nms.DB.C("follower").Insert(a)
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message":
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11203, "message":
 		"插入数据库时遇到内部错误", "err": err})
 		return
 	}
