@@ -1130,3 +1130,49 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//UnFollow 用户
+func UnFollow(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.FollowIDForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11200, "message": "数据格式错误",
+			"err":	errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("=======SignWithWx 获得nms")
+
+	fw := model.Follower{}
+	err := nms.DB.C("follower").Find(bson.M{"user_id": bson.ObjectIdHex(f.UserID),
+		"following_id": bson.ObjectIdHex(f.FollowingID)}).One(&fw)
+	// got err
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message":
+		"查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("ResetPassword err:", err)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11201, "message":
+		"未查到此关注数据", "err": err})
+		return
+	}
+
+	err = nms.DB.C("follower").Remove(bson.M{"user_id": f.UserID, "following_id": f.FollowingID})
+	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13702, "message":
+		"删除数据时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
