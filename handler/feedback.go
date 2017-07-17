@@ -179,7 +179,7 @@ func ReplyFeedback(w http.ResponseWriter, r *http.Request) {
 	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
 
 	u := model.User{}
-	err := nms.DB.C("user").FindId(bson.M{"_id": bson.ObjectIdHex(uid)}).One(&u)
+	err := nms.DB.C("user").FindId(bson.ObjectIdHex(uid)).One(&u)
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
@@ -248,7 +248,7 @@ func TrackFeedback(w http.ResponseWriter, r *http.Request) {
 	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
 
 	u := model.User{}
-	err := nms.DB.C("user").FindId(bson.M{"_id": bson.ObjectIdHex(uid)}).One(&u)
+	err := nms.DB.C("user").FindId( bson.ObjectIdHex(uid)).One(&u)
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
