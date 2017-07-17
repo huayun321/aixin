@@ -31,9 +31,10 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value("user")
 	uid := user.(*jwt.Token).Claims.(jwt.MapClaims)["id"].(string)
+	fmt.Println(uid)
 
 	u := model.User{}
-	err := nms.DB.C("user").FindId(bson.M{"_id": bson.ObjectIdHex(uid)}).One(&u)
+	err := nms.DB.C("user").FindId(bson.ObjectIdHex(uid)).One(&u)
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
