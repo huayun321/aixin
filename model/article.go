@@ -24,12 +24,12 @@ type Article struct {
 }
 
 type Reference struct {
-	ID          bson.ObjectId `json:"id" bson:"_id,omitempty"`
-	ArticleID   bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
-	AuthorID    bson.ObjectId `json:"author_id" bson:"author_id,omitempty"`
-	Content     string        `json:"content" bson:"content,omitempty"`
-	CreateTime  int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
-	Author      User          `json:"author" bson:"author,omitempty"`
+	ID         bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	ArticleID  bson.ObjectId `json:"article_id" bson:"article_id,omitempty"`
+	AuthorID   bson.ObjectId `json:"author_id" bson:"author_id,omitempty"`
+	Content    string        `json:"content" bson:"content,omitempty"`
+	CreateTime int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
+	Author     User          `json:"author" bson:"author,omitempty"`
 }
 
 //Comment 用户回复
@@ -41,7 +41,7 @@ type Comment struct {
 	ReferenceID bson.ObjectId `json:"reference_id,omitempty" bson:"reference_id,omitempty"`
 	CreateTime  int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	Author      User          `json:"author" bson:"author,omitempty"`
-	Reference   Reference       `json:"reference" bson:",omitempty"`
+	Reference   Reference     `json:"reference" bson:",omitempty"`
 }
 
 //Fan 喜欢的人

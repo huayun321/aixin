@@ -640,7 +640,7 @@ func (o ResetPasswordForm) Validate(req *http.Request) error {
 
 //FollowIDForm 用户关注 取消关注表单
 type FollowIDForm struct {
-	UserID string `json:"user_id"`
+	UserID      string `json:"user_id"`
 	FollowingID string `json:"following_id"`
 }
 

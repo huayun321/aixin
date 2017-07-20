@@ -2,15 +2,15 @@ package form
 
 import (
 	"github.com/mholt/binding"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"regexp"
-	"gopkg.in/mgo.v2/bson"
 )
 
 //NewsCreateForm news创建表单
 type NewsCreateForm struct {
 	Title    string `json:"title"`
-	Content  string `json:"content"`   //content string minLength 10 maxLength 10000
+	Content  string `json:"content"` //content string minLength 10 maxLength 10000
 	Image    string `json:"image"`
 	Position int    `json:"position"`
 }
@@ -89,8 +89,8 @@ func (o NewsCreateForm) Validate(req *http.Request) error {
 
 //NCommentCreateForm 文章创建表单
 type NCommentCreateForm struct {
-	Content     string `json:"content"` //content string minLength 10 maxLength 1000
-	NewsID   string `json:"news_id"`
+	Content string `json:"content"` //content string minLength 10 maxLength 1000
+	NewsID  string `json:"news_id"`
 }
 
 // FieldMap 数据绑定
@@ -159,12 +159,12 @@ func (o NewsIdForm) Validate(req *http.Request) error {
 
 //NewsListForm
 type NewsListForm struct {
-	Page       int    `json:"page"`
-	PageSize   int    `json:"page_size"`
-	IsPublished int   `json:"is_published"`
-	Title     string `json:"title"`
-	TimeStart int   `json:"time_start"`
-	TimeEnd int `json:"time_end"`
+	Page        int    `json:"page"`
+	PageSize    int    `json:"page_size"`
+	IsPublished int    `json:"is_published"`
+	Title       string `json:"title"`
+	TimeStart   int    `json:"time_start"`
+	TimeEnd     int    `json:"time_end"`
 }
 
 // FieldMap 数据绑定
@@ -211,11 +211,11 @@ func (o NewsListForm) Validate(req *http.Request) error {
 
 //NewsUpdateForm
 type NewsUpdateForm struct {
-	ID string `json:"id"`
-	Title     string `json:"title"`
-	Content string   `json:"content"`
-	Image string `json:"image"`
-	Position int `json:"position"`
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Image    string `json:"image"`
+	Position int    `json:"position"`
 }
 
 // FieldMap 数据绑定
@@ -289,7 +289,6 @@ func (o NewsUpdateForm) Validate(req *http.Request) error {
 			}
 		}
 	}
-
 
 	if !bson.IsObjectIdHex(o.ID) {
 		return binding.Errors{

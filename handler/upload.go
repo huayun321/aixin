@@ -1,15 +1,15 @@
 package handler
 
 import (
-	"net/http"
-	"image"
 	"github.com/disintegration/imaging"
-	"immense-lowlands-91960/util"
 	"github.com/satori/go.uuid"
+	"image"
+	"immense-lowlands-91960/util"
+	"net/http"
 )
 
 const url = "http://immense-lowlands-91960.herokuapp.com/upload/images/"
-const dir  = "./public/upload/images/"
+const dir = "./public/upload/images/"
 const suffix = ".jpg"
 
 //test
@@ -37,7 +37,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 20002, "message": "无法读取temp 文件", "err": err.Error()})
 				return
 			}
-			img, _,  err := image.Decode(file)
+			img, _, err := image.Decode(file)
 			if err != nil {
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 20003, "message": "无法解码图片文件", "err": err.Error()})
 				return
@@ -56,7 +56,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 			inames = append(inames, iname)
 		}
 		//display success message.
-		util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "上传成功", "urls":inames})
+		util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "上传成功", "urls": inames})
 		return
 	} else {
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 20000, "message": "只支持post"})

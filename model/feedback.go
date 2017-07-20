@@ -16,8 +16,7 @@ type Feedback struct {
 }
 
 type Reply struct {
-	Author  User   `json:"author,omitempty" bson:",omitempty"`
-	Content string `json:"content" bson:"content,omitempty"`
-	CreateTime int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
-
+	Author     User   `json:"author,omitempty" bson:",omitempty"`
+	Content    string `json:"content" bson:"content,omitempty"`
+	CreateTime int64  `json:"create_time,omitempty" bson:"create_time,omitempty"`
 }

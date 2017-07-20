@@ -2,9 +2,9 @@ package form
 
 import (
 	"github.com/mholt/binding"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"regexp"
-	"gopkg.in/mgo.v2/bson"
 )
 
 //ArticleCreateForm 文章创建表单
@@ -63,7 +63,7 @@ func (o FeedbackCreateForm) Validate(req *http.Request) error {
 
 //ReplyCreateForm 文章创建表单
 type ReplyCreateForm struct {
-	Content string `json:"content"` //content string minLength 10 maxLength 10000
+	Content    string `json:"content"` //content string minLength 10 maxLength 10000
 	FeedbackID string `json:"feedback_id"`
 }
 
@@ -98,10 +98,8 @@ func (o ReplyCreateForm) Validate(req *http.Request) error {
 		}
 	}
 
-
 	return nil
 }
-
 
 //FeedbackListForm
 type FeedbackListForm struct {

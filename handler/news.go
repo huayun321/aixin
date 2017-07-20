@@ -1,17 +1,17 @@
 package handler
 
 import (
-	"gopkg.in/mgo.v2/bson"
-	"time"
 	"fmt"
-	"net/http"
-	"github.com/mholt/binding"
-	"github.com/joeljames/nigroni-mgo-session"
-	"immense-lowlands-91960/model"
-	"immense-lowlands-91960/form"
-	"immense-lowlands-91960/util"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/joeljames/nigroni-mgo-session"
+	"github.com/mholt/binding"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+	"immense-lowlands-91960/form"
+	"immense-lowlands-91960/model"
+	"immense-lowlands-91960/util"
+	"net/http"
+	"time"
 )
 
 //CreateNews 添加资讯
@@ -47,8 +47,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16002, "message":
-		"插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16002, "message": "插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -77,8 +76,7 @@ func CreateNComment(w http.ResponseWriter, r *http.Request) {
 	err := nms.DB.C("user").Find(bson.M{"_id": bson.ObjectIdHex(uid)}).One(&u)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======获取文章列表 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16102, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16102, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 	u.Password = ""
@@ -96,8 +94,7 @@ func CreateNComment(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16103, "message":
-		"插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16103, "message": "插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -124,8 +121,7 @@ func GetNewsByID(w http.ResponseWriter, r *http.Request) {
 	err := nms.DB.C("news").Find(bson.M{"_id": bson.ObjectIdHex(f.ID)}).One(&a)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======获取文章列表 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16202, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16202, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -138,8 +134,7 @@ func GetNewsByID(w http.ResponseWriter, r *http.Request) {
 	err = nms.DB.C("user").Find(bson.M{"_id": a.AuthorId}).One(&u)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======获取文章列表 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16203, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16203, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 	u.Password = ""
@@ -149,8 +144,7 @@ func GetNewsByID(w http.ResponseWriter, r *http.Request) {
 	err = nms.DB.C("ncomment").Find(bson.M{"news_id": a.ID}).Sort("-create_time").All(&ncs)
 	if err != nil {
 		fmt.Println("=======获取文章列表数 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16204, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16204, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 	a.NComments = ncs
@@ -208,8 +202,7 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 	err := nms.DB.C("news").Find(q).Sort("-create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======获取文章列表 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16302, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16302, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -220,11 +213,9 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 	c, err := nms.DB.C("news").Find(q).Count()
 	if err != nil {
 		fmt.Println("=======获取文章列表数 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16303, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16303, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
-
 
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": c})
 	return
@@ -251,8 +242,7 @@ func PublishNews(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("======= update err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16402, "message":
-		"插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16402, "message": "插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -288,8 +278,7 @@ func UnPublishNews(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("======= update err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16502, "message":
-		"插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16502, "message": "插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -303,8 +292,6 @@ func UnPublishNews(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
-
-
 
 //UpdateNews
 func UpdateNews(w http.ResponseWriter, r *http.Request) {
@@ -344,8 +331,7 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("======= update err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16602, "message":
-		"插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16602, "message": "插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -380,8 +366,7 @@ func DeleteNews(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Println("======= update err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16702, "message":
-		"删除数据时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16702, "message": "删除数据时遇到内部错误", "err": err})
 		return
 	}
 

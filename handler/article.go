@@ -690,8 +690,7 @@ func GetArticleByID(w http.ResponseWriter, r *http.Request) {
 	err = nms.DB.C("comment").Find(bson.M{"article_id": a.ID}).Sort("-create_time").All(&ccl)
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("=======获取文章列表数 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14211, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14211, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -711,8 +710,7 @@ func GetArticleByID(w http.ResponseWriter, r *http.Request) {
 			if err != nil && err != mgo.ErrNotFound {
 				fmt.Println("=======获取文章列表数 err: ", err)
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 14213,
-					"message":
-					"查询数据库时遇到内部错误", "err": err})
+					"message": "查询数据库时遇到内部错误", "err": err})
 				return
 			}
 

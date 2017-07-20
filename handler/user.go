@@ -24,9 +24,9 @@ import (
 )
 
 const (
-	JWTEXP = 60 * 60 * 24 * 30
+	JWTEXP      = 60 * 60 * 24 * 30
 	GUESTJWTEXP = 60 * 60 * 24 * 1
-	SMSURL = "https://limitless-spire-42314.herokuapp.com/sms"
+	SMSURL      = "https://limitless-spire-42314.herokuapp.com/sms"
 )
 
 func getRandomString(l int) string {
@@ -66,7 +66,7 @@ func jwtSign(id, nickname, role string, exp int64) (string, error) {
 }
 
 func sendSMS(code, phone string) error {
-	p, err :=strconv.Atoi(phone)
+	p, err := strconv.Atoi(phone)
 	if err != nil {
 		fmt.Println("sendSMS str to int err:", err)
 		return err
@@ -375,8 +375,7 @@ func SignInGuest(w http.ResponseWriter, r *http.Request) {
 	tk, err := jwtSign("", "", "guest", time.Now().Unix()+GUESTJWTEXP)
 	if err != nil {
 		fmt.Println("=======SignWithWx 生成token 遇到错误 err: ", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11100, "message":
-		"生成token遇到错误!", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11100, "message": "生成token遇到错误!", "err": err})
 		return
 	}
 
@@ -1085,7 +1084,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11200, "message": "数据格式错误",
-			"err":	errs})
+			"err": errs})
 		return
 	}
 
@@ -1099,15 +1098,13 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
 	if err == nil {
 		fmt.Println("user is already followed")
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11202, "message":
-		"已经关注了该用户"})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11202, "message": "已经关注了该用户"})
 		return
 	}
 
@@ -1121,8 +1118,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11203, "message":
-		"插入数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11203, "message": "插入数据库时遇到内部错误", "err": err})
 		return
 	}
 
@@ -1138,7 +1134,7 @@ func UnFollow(w http.ResponseWriter, r *http.Request) {
 	if errs := binding.Bind(r, f); errs != nil {
 		fmt.Println("SignWithWx: bind err: ", errs)
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11200, "message": "数据格式错误",
-			"err":	errs})
+			"err": errs})
 		return
 	}
 
@@ -1152,15 +1148,13 @@ func UnFollow(w http.ResponseWriter, r *http.Request) {
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message":
-		"查询数据库时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 11201, "message": "查询数据库时遇到内部错误", "err": err})
 		return
 	}
 
 	if err != nil && err == mgo.ErrNotFound {
 		fmt.Println("ResetPassword err:", err)
-		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11201, "message":
-		"未查到此关注数据", "err": err})
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 11201, "message": "未查到此关注数据", "err": err})
 		return
 	}
 
@@ -1168,8 +1162,7 @@ func UnFollow(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(err)
 	if err != nil {
 		fmt.Println(err)
-		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13702, "message":
-		"删除数据时遇到内部错误", "err": err})
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13702, "message": "删除数据时遇到内部错误", "err": err})
 		return
 	}
 

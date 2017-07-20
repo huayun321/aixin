@@ -99,6 +99,11 @@ func main() {
 	subRouter.HandleFunc("/feedback/reply", handler.ReplyFeedback).Methods("POST")
 	subRouter.HandleFunc("/feedback/track", handler.TrackFeedback).Methods("POST")
 	subRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
+	subRouter.HandleFunc("/action/create", handler.CreateAction).Methods("POST")
+	subRouter.HandleFunc("/action/list", handler.GetActions).Methods("POST")
+	subRouter.HandleFunc("/action/delete", handler.DeleteAction).Methods("POST")
+	subRouter.HandleFunc("/action/update", handler.UpdateAction).Methods("POST")
+	subRouter.HandleFunc("/action/get-by-id", handler.GetActionByID).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
@@ -125,7 +130,6 @@ func main() {
 	clientRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
 	clientRouter.HandleFunc("/user/follow", handler.Follow).Methods("POST")
 	clientRouter.HandleFunc("/user/unfollow", handler.UnFollow).Methods("POST")
-
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
