@@ -104,6 +104,12 @@ func main() {
 	subRouter.HandleFunc("/action/delete", handler.DeleteAction).Methods("POST")
 	subRouter.HandleFunc("/action/update", handler.UpdateAction).Methods("POST")
 	subRouter.HandleFunc("/action/get-by-id", handler.GetActionByID).Methods("POST")
+	subRouter.HandleFunc("/attitude/create", handler.CreateAttitude).Methods("POST")
+	subRouter.HandleFunc("/attitude/list", handler.GetAttitudes).Methods("POST")
+	subRouter.HandleFunc("/attitude/delete", handler.DeleteAttitude).Methods("POST")
+	subRouter.HandleFunc("/attitude/update", handler.UpdateAttitude).Methods("POST")
+	subRouter.HandleFunc("/attitude/get-by-id", handler.GetAttitudeByID).Methods("POST")
+
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),

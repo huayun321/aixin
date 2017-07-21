@@ -9,6 +9,6 @@ type Attitude struct {
 	Name       string        `json:"name,omitempty" bson:"name,omitempty"`
 	Desc       string        `json:"desc,omitempty" bson:"symptom,omitempty"`
 	MainImg    string        `json:"main_img,omitempty" bson:"main_img,omitempty"`
-	IconImg    string        `json:"step_img,omitempty" bson:"step_img,omitempty"`
+	IconImg    string        `json:"icon_img,omitempty" bson:"icon_img,omitempty"`
 	CreateTime int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 }
