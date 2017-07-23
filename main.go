@@ -109,6 +109,7 @@ func main() {
 	subRouter.HandleFunc("/attitude/delete", handler.DeleteAttitude).Methods("POST")
 	subRouter.HandleFunc("/attitude/update", handler.UpdateAttitude).Methods("POST")
 	subRouter.HandleFunc("/attitude/get-by-id", handler.GetAttitudeByID).Methods("POST")
+	subRouter.HandleFunc("/plan/create", handler.GetAttitudeByID).Methods("POST")
 
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
@@ -119,18 +120,12 @@ func main() {
 	//client
 	clientRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/client").Subrouter().StrictSlash(true)
 	clientRouter.HandleFunc("/article/create", handler.CreateArticle).Methods("POST")
-	clientRouter.HandleFunc("/article/list", handler.GetArticles).Methods("POST")
 	clientRouter.HandleFunc("/article/like", handler.LikeArticle).Methods("POST")
 	clientRouter.HandleFunc("/article/unlike", handler.UnLikeArticle).Methods("POST")
-	clientRouter.HandleFunc("/article/add-view", handler.AddView).Methods("POST")
 	clientRouter.HandleFunc("/article/add-bookmark", handler.AddBookmark).Methods("POST")
 	clientRouter.HandleFunc("/article/un-bookmark", handler.UnBookmark).Methods("POST")
-	clientRouter.HandleFunc("/article/get-bookmarks", handler.GetBookmarks).Methods("POST")
-	clientRouter.HandleFunc("/article/get-article-by-id", handler.GetArticleByID).Methods("POST")
 	clientRouter.HandleFunc("/article/add-comment", handler.CreateComment).Methods("POST")
 	clientRouter.HandleFunc("/news/add-comment", handler.CreateNComment).Methods("POST")
-	clientRouter.HandleFunc("/news/get-news-by-id", handler.GetNewsByID).Methods("POST")
-	clientRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 	clientRouter.HandleFunc("/feedback/create", handler.CreateFeedback).Methods("POST")
 	clientRouter.HandleFunc("/feedback/list-by-user-id", handler.GetFeedbacks).Methods("POST")
 	clientRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
@@ -146,6 +141,12 @@ func main() {
 	//guest
 	guestRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/guest").Subrouter().StrictSlash(true)
 	guestRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
+	guestRouter.HandleFunc("/article/list", handler.GetArticles).Methods("POST")
+	guestRouter.HandleFunc("/article/add-view", handler.AddView).Methods("POST")
+	guestRouter.HandleFunc("/article/get-bookmarks", handler.GetBookmarks).Methods("POST")
+	guestRouter.HandleFunc("/article/get-article-by-id", handler.GetArticleByID).Methods("POST")
+	guestRouter.HandleFunc("/news/get-news-by-id", handler.GetNewsByID).Methods("POST")
+	guestRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/guest").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
