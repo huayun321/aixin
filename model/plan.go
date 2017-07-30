@@ -13,7 +13,7 @@ type Plan struct {
 	F3          int           `json:"f3,omitempty" bson:"f3,omitempty"`
 	Level       string        `json:"level,omitempty" bson:"level,omitempty"`
 	Feel        string        `json:"feel,omitempty" bson:"feel,omitempty"`
-	Weeks       []Week        `json:"week,omitempty" bson:"week,omitempty"`
+	Weeks       []Week        `json:"weeks,omitempty" bson:"weeks,omitempty"`
 	CreateTime  int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	IsRecommend bool          `json:"is_recommend,omitempty" bson:"is_recommend,omitempty"`
 }
