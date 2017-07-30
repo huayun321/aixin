@@ -162,8 +162,7 @@ type ActionUpdateForm struct {
 	People   string   `json:"people,omitempty"`
 	Notice   string   `json:"notice,omitempty"`
 	MainImg  string   `json:"main_img,omitempty"`
-	StepImg  []string `json:"step_img,omitempty"`
-	Key      string   `json:"key,omitempty"` //关键点
+	Subs  []string `json:"subs,omitempty"`
 	Images   []string `json:"images"`
 }
 

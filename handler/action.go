@@ -35,8 +35,7 @@ func CreateAction(w http.ResponseWriter, r *http.Request) {
 	a.People = f.People
 	a.Notice = f.Notice
 	a.MainImg = f.MainImg
-	a.StepImg = f.StepImg
-	a.Key = f.Key
+	a.Subs = f.Subs
 	a.CreateTime = time.Now().Unix()
 	a.AuthorId = bson.ObjectIdHex(f.AuthorID)
 
