@@ -161,8 +161,7 @@ type ActionUpdateForm struct {
 	People   string   `json:"people,omitempty"`
 	Notice   string   `json:"notice,omitempty"`
 	MainImg  string   `json:"main_img,omitempty"`
-	Subs  []string `json:"subs,omitempty"`
-	Images   []string `json:"images"`
+	Subs  []model.Sub `json:"subs,omitempty"`
 }
 
 // FieldMap 数据绑定
