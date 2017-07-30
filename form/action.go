@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"fmt"
+	"immense-lowlands-91960/model"
 )
 
 //==============================================================文章创建表单
@@ -18,8 +19,7 @@ type ActionCreateForm struct {
 	People   string   `json:"people,omitempty"`
 	Notice   string   `json:"notice,omitempty"`
 	MainImg  string   `json:"main_img,omitempty"`
-	StepImg  []string `json:"step_img,omitempty"`
-	Key      string   `json:"key,omitempty"` //关键点
+	Subs  []model.Sub `json:"subs,omitempty"`
 	Images   []string `json:"images"`
 }
 
@@ -61,15 +61,10 @@ func (o *ActionCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 			Required:     true,
 			ErrorMessage: "请填写动作主图",
 		},
-		&o.StepImg: binding.Field{
-			Form:         "step_img",
+		&o.Subs: binding.Field{
+			Form:         "subs",
 			Required:     true,
 			ErrorMessage: "请填写动作分解图",
-		},
-		&o.Key: binding.Field{
-			Form:         "key",
-			Required:     true,
-			ErrorMessage: "请填写动作关键点",
 		},
 	}
 }

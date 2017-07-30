@@ -12,7 +12,13 @@ type Action struct {
 	People     string        `json:"people,omitempty" bson:"people,omitempty"`
 	Notice     string        `json:"notice,omitempty" bson:"notice,omitempty"`
 	MainImg    string        `json:"main_img,omitempty" bson:"main_img,omitempty"`
-	StepImg    []string      `json:"step_img,omitempty" bson:"step_img,omitempty"`
+	Subs    []Sub      `json:"subs,omitempty" bson:"subs,omitempty"`
 	Key        string        `json:"key,omitempty" bson:"key,omitempty"` //关键点
 	CreateTime int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
+}
+
+type Sub struct {
+	ID         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	Img   bson.ObjectId `json:"img,omitempty" bson:"img,omitempty"`
+	key       string        `json:"key,omitempty" bson:"key,omitempty"`
 }
