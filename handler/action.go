@@ -171,11 +171,8 @@ func UpdateAction(w http.ResponseWriter, r *http.Request) {
 	if f.MainImg != "" {
 		q["main_img"] = f.MainImg
 	}
-	if len(f.StepImg) != 0 {
-		q["step_img"] = f.StepImg
-	}
-	if f.Key != "" {
-		q["key"] = f.Key
+	if len(f.Subs) != 0 {
+		q["subs"] = f.Subs
 	}
 	if f.AuthorID != "" {
 		q["author_id"] = bson.ObjectIdHex(f.AuthorID)
