@@ -20,7 +20,6 @@ type ActionCreateForm struct {
 	Notice   string   `json:"notice,omitempty"`
 	MainImg  string   `json:"main_img,omitempty"`
 	Subs  []model.Sub `json:"subs,omitempty"`
-	Images   []string `json:"images"`
 }
 
 // FieldMap 数据绑定

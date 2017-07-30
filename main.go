@@ -148,6 +148,8 @@ func main() {
 	//guest
 	guestRouter := mux.NewRouter().PathPrefix(VERSION_ONE_PREFIX + "/guest").Subrouter().StrictSlash(true)
 	guestRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
+	guestRouter.HandleFunc("/upload2", handler.Upload2).Methods("POST")
+
 	guestRouter.HandleFunc("/article/list", handler.GetArticles).Methods("POST")
 	guestRouter.HandleFunc("/article/add-view", handler.AddView).Methods("POST")
 	guestRouter.HandleFunc("/article/get-bookmarks", handler.GetBookmarks).Methods("POST")
