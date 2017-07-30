@@ -73,9 +73,17 @@ func Upload2(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//get the *fileheaders
-		file, _, err := r.FormFile("uploadfile")
+		//get a ref to the parsed multipart form
+		m := r.MultipartForm
 
+		//image names
+		inames := []string{}
+		//get the *fileheaders
+		files := m.File["file"]
+		for i, _ := range files {
+
+			//for each fileheader, get a handle to the actual file
+			file, err := files[i].Open()
 			defer file.Close()
 			if err != nil {
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 20002, "message": "无法读取temp 文件", "err": err.Error()})
@@ -97,10 +105,10 @@ func Upload2(w http.ResponseWriter, r *http.Request) {
 				util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 20004, "message": "无法保存图片文件：", "err": err.Error()})
 				return
 			}
-
-
+			inames = append(inames, iname)
+		}
 		//display success message.
-		util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "上传成功", "url": iname})
+		util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "上传成功", "urls": inames})
 		return
 	} else {
 		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 20000, "message": "只支持post"})
