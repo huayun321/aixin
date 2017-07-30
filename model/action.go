@@ -20,5 +20,5 @@ type Action struct {
 type Sub struct {
 	ID         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Img   bson.ObjectId `json:"img,omitempty" bson:"img,omitempty"`
-	key       string        `json:"key,omitempty" bson:"key,omitempty"`
+	Key       string        `json:"key,omitempty" bson:"key,omitempty"`
 }
