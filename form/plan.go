@@ -46,6 +46,14 @@ func (o *PlanCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 			Form:         "weeks",
 			ErrorMessage: "请填写计划周",
 		},
+		&o.Img: binding.Field{
+			Form:         "img",
+			ErrorMessage: "请填写计划周",
+		},
+		&o.Desc: binding.Field{
+			Form:         "desc",
+			ErrorMessage: "请填写计划周",
+		},
 
 	}
 }

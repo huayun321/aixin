@@ -40,6 +40,8 @@ func CreatePlan(w http.ResponseWriter, r *http.Request) {
 	a.IsRecommend = f.IsRecommend
 	a.CreateTime = time.Now().Unix()
 	a.AuthorId = bson.ObjectIdHex(f.AuthorID)
+	a.Img = f.Img
+	a.Desc = f.Desc
 
 	//store to db
 	err := nms.DB.C("plan").Insert(a)
