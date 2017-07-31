@@ -19,20 +19,27 @@ type Plan struct {
 }
 
 type Week struct {
-	ID   bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-	Days []Day         `json:"days,omitempty" bson:"days,omitempty"`
+	ID       bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	Days     []Day         `json:"days,omitempty" bson:"days,omitempty"`
+	Goal     Goal          `json:"goal,omitempty" bson:"goal,omitempty"`
+	Attitude Attitude      `json:"attitude,omitempty" bson:"attitude,omitempty"`
+}
+
+type Goal struct {
+	ID      bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	Content string        `json:"content,omitempty" bson:"content,omitempty"`
+	Mode    string        `json:"mode,omitempty" bson:"mode,omitempty"`
 }
 
 type Day struct {
 	ID         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	DayActions []DayAction   `json:"day_actions,omitempty" bson:"day_actions,omitempty"`
-	Goal       string        `json:"goal,omitempty" bson:"goal,omitempty"`
 }
 
 type DayAction struct {
 	ID         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Action     Action        `json:"action,omitempty" bson:"action,omitempty"`
-	GroupTime  int           `json:"group_time,omitempty" bson:"group_time,omitempty"`
+	Group      int           `json:"group,omitempty" bson:"group,omitempty"`
 	Time       int           `json:"time,omitempty" bson:"time,omitempty"`
 	NotifyTime int           `json:"notify_time,omitempty" bson:"notify_time,omitempty"`
 }
