@@ -22,7 +22,7 @@ type Week struct {
 	ID       bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Days     []Day         `json:"days,omitempty" bson:"days,omitempty"`
 	Goal     Goal          `json:"goal,omitempty" bson:"goal,omitempty"`
-	Attitude []Attitude      `json:"attitude,omitempty" bson:"attitude,omitempty"`
+	Attitudes []Attitude      `json:"attitudes,omitempty" bson:"attitudes,omitempty"`
 }
 
 type Goal struct {
