@@ -13,10 +13,10 @@ import (
 type PlanCreateForm struct {
 	AuthorID    string       `json:"author_id"` //user object id
 	Name        string       `json:"name"`
-	First       int       `json:"first"`
-	Second      int       `json:"second"`
-	F2          int       `json:"f2"`
-	F3          int       `json:"f3"`
+	First       model.Part       `json:"first"`
+	Second      model.Part       `json:"second"`
+	F2          model.Part       `json:"f2"`
+	F3          model.Part       `json:"f3"`
 	Level       string       `json:"level"`
 	Feel        string       `json:"feel"`
 	Weeks       []model.Week `json:"weeks"`
@@ -81,7 +81,7 @@ type PlanListForm struct {
 	Page     int    `json:"page"`
 	PageSize int    `json:"page_size"`
 	Name     string `json:"name"`
-	First     int `json:"first"`
+	First     model.Part `json:"first"`
 	IsRecommend int `json:"is_recommend"`
 }
 

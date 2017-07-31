@@ -7,10 +7,10 @@ type Plan struct {
 	ID          bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	AuthorId    bson.ObjectId `json:"author_id,omitempty" bson:"author_id,omitempty"`
 	Name        string        `json:"name,omitempty" bson:"name,omitempty"`
-	First       int           `json:"first,omitempty" bson:"first,omitempty"`
-	Second      int           `json:"second,omitempty" bson:"second,omitempty"`
-	F2          int           `json:"f2,omitempty" bson:"f2,omitempty"`
-	F3          int           `json:"f3,omitempty" bson:"f3,omitempty"`
+	First       Part           `json:"first,omitempty" bson:"first,omitempty"`
+	Second      Part           `json:"second,omitempty" bson:"second,omitempty"`
+	F2          Part           `json:"f2,omitempty" bson:"f2,omitempty"`
+	F3          Part           `json:"f3,omitempty" bson:"f3,omitempty"`
 	Level       string        `json:"level,omitempty" bson:"level,omitempty"`
 	Feel        string        `json:"feel,omitempty" bson:"feel,omitempty"`
 	Weeks       []Week        `json:"weeks,omitempty" bson:"weeks,omitempty"`
@@ -44,4 +44,9 @@ type DayAction struct {
 	Group      int           `json:"group,omitempty" bson:"group,omitempty"`
 	Time       int           `json:"time,omitempty" bson:"time,omitempty"`
 	NotifyTime int           `json:"notify_time,omitempty" bson:"notify_time,omitempty"`
+}
+
+type Part struct {
+	ID         int `json:"id,omitempty" bson:"_id,omitempty"`
+	Text string        `json:"text,omitempty" bson:"text,omitempty"`
 }

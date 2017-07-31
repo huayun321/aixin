@@ -86,8 +86,8 @@ func GetPlans(w http.ResponseWriter, r *http.Request) {
 		q["name"] = f.Name
 	}
 
-	if f.First != 0 {
-		q["first"] = f.First
+	if f.First.ID != 0{
+		q["first._id"] = f.First.ID
 	}
 
 	if f.IsRecommend == 1 {
