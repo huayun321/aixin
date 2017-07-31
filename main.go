@@ -111,7 +111,7 @@ func main() {
 	subRouter.HandleFunc("/attitude/get-by-id", handler.GetAttitudeByID).Methods("POST")
 	subRouter.HandleFunc("/plan/create", handler.CreatePlan).Methods("POST")
 	subRouter.HandleFunc("/plan/list", handler.GetPlans).Methods("POST")
-	subRouter.HandleFunc("/delete/delete", handler.DeleteAttitude).Methods("POST")
+	subRouter.HandleFunc("/plan/delete", handler.DeleteAttitude).Methods("POST")
 
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/admin").Handler(negroni.New(
