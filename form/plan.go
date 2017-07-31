@@ -42,18 +42,6 @@ func (o *PlanCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 			Form:         "first",
 			ErrorMessage: "请填写计划一级部位",
 		},
-
-
-		&o.Level: binding.Field{
-			Form:         "level",
-			Required:     true,
-			ErrorMessage: "请填写计划锻炼强度",
-		},
-		&o.Feel: binding.Field{
-			Form:         "feel",
-			Required:     true,
-			ErrorMessage: "请填写计划病情判断",
-		},
 		&o.Weeks: binding.Field{
 			Form:         "weeks",
 			ErrorMessage: "请填写计划周",
