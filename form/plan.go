@@ -42,21 +42,8 @@ func (o *PlanCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 			Form:         "first",
 			ErrorMessage: "请填写计划一级部位",
 		},
-		&o.Second: binding.Field{
-			Form:         "second",
-			Required:     true,
-			ErrorMessage: "请填写计划二级部位",
-		},
-		&o.F2: binding.Field{
-			Form:         "f2",
-			Required:     true,
-			ErrorMessage: "请填写计划二级部位f2",
-		},
-		&o.F3: binding.Field{
-			Form:         "f3",
-			Required:     true,
-			ErrorMessage: "请填写计划二级部位f3",
-		},
+
+
 		&o.Level: binding.Field{
 			Form:         "level",
 			Required:     true,
@@ -71,11 +58,7 @@ func (o *PlanCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 			Form:         "weeks",
 			ErrorMessage: "请填写计划周",
 		},
-		&o.IsRecommend: binding.Field{
-			Form:         "is_recommend",
-			Required:     true,
-			ErrorMessage: "请填写计划类型",
-		},
+
 	}
 }
 
