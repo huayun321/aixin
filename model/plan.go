@@ -47,6 +47,6 @@ type DayAction struct {
 }
 
 type Part struct {
-	ID         int `json:"id,omitempty" bson:"_id,omitempty"`
+	ID         string `json:"id,omitempty" bson:"_id,omitempty"`
 	Text string        `json:"text,omitempty" bson:"text,omitempty"`
 }
