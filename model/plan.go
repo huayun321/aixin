@@ -16,6 +16,8 @@ type Plan struct {
 	Weeks       []Week        `json:"weeks,omitempty" bson:"weeks,omitempty"`
 	CreateTime  int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 	IsRecommend bool          `json:"is_recommend,omitempty" bson:"is_recommend,omitempty"`
+	Desc        string        `json:"desc,omitempty" bson:"desc,omitempty"`
+	Img        string        `json:"img,omitempty" bson:"img,omitempty"`
 }
 
 type Week struct {

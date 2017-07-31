@@ -21,6 +21,8 @@ type PlanCreateForm struct {
 	Feel        string       `json:"feel"`
 	Weeks       []model.Week `json:"weeks"`
 	IsRecommend bool         `json:"is_recommend"`
+	Desc        string       `json:"desc"`
+	Img        string       `json:"img"`
 }
 
 // FieldMap 数据绑定
