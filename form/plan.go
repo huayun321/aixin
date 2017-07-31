@@ -112,3 +112,31 @@ func (o PlanListForm) Validate(req *http.Request) error {
 	return nil
 }
 
+
+//AttitudeIdForm
+type PlanIdForm struct {
+	ID string `json:"id"`
+}
+
+// FieldMap 数据绑定
+func (o *PlanIdForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.ID: binding.Field{
+			Form:         "id",
+			Required:     true,
+			ErrorMessage: "请提交文章id",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o PlanIdForm) Validate(req *http.Request) error {
+	if !bson.IsObjectIdHex(o.ID) {
+		return binding.Errors{
+			binding.NewError([]string{"id"}, "format error", "id 格式不正确."),
+		}
+	}
+	return nil
+}
+
+

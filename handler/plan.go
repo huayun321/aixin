@@ -120,3 +120,32 @@ func GetPlans(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": c})
 	return
 }
+
+
+//DeleteAttitude
+func DeletePlan(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.PlanIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 16701, "message": "数据格式错误",
+			"err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("======= 获得nms")
+
+	err := nms.DB.C("plan").RemoveId(bson.ObjectIdHex(f.ID))
+
+	if err != nil {
+		fmt.Println("======= update err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16702, "message": "删除数据时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
