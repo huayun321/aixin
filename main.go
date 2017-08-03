@@ -139,6 +139,7 @@ func main() {
 	clientRouter.HandleFunc("/upload", handler.Upload).Methods("POST")
 	clientRouter.HandleFunc("/user/follow", handler.Follow).Methods("POST")
 	clientRouter.HandleFunc("/user/un-follow", handler.UnFollow).Methods("POST")
+	clientRouter.HandleFunc("/user/update", handler.UpdateUser).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),

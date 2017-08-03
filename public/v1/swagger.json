@@ -398,6 +398,54 @@
         }
       }
     },
+    "/client/user/update": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "用户信息更新",
+        "description": "用户详细信息更新",
+        "operationId": "UpdateUser",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "用户参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserUpdateForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SignInSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        }
+      }
+    },
     "/admin/user/list": {
       "post": {
         "tags": [
@@ -2480,6 +2528,47 @@
           "type": "string",
           "minLength": 6,
           "maxLength": 30
+        }
+      }
+    },
+    "UserUpdateForm": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "integer"
+        },
+        "birthday": {
+          "type": "integer"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "height": {
+          "type": "integer"
+        },
+        "weight": {
+          "type": "integer"
+        },
+        "bmi": {
+          "type": "integer"
         }
       }
     },

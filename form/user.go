@@ -674,3 +674,94 @@ func (o FollowIDForm) Validate(req *http.Request) error {
 	}
 	return nil
 }
+
+
+
+//UpdateUserForm 用户手机注册表单
+type UpdateUserForm struct {
+	ID      string `json:"id"`
+	Phone    string `json:"phone"`
+	Avatar   string `json:"avatar"`
+	Nickname string `json:"nickname"`
+	Sex           uint8         `json:"sex"`
+	Birthday      int64         `json:"birthday"`
+	Signature     string        `json:"signature"`
+	City          string        `json:"city"`
+	Height        uint8         `json:"height"`
+	Weight        uint8         `json:"weight"`
+	BMI           int           `json:"bmi"`
+}
+
+// FieldMap 数据绑定
+func (o *UpdateUserForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.Phone: binding.Field{
+			Form:         "phone",
+			Required:     true,
+			ErrorMessage: "请提交手机号",
+		},
+		&o.Avatar: binding.Field{
+			Form:         "avatar",
+			Required:     true,
+			ErrorMessage: "请提交用户头像地址",
+		},
+		&o.Nickname: binding.Field{
+			Form:         "nickname",
+			Required:     true,
+			ErrorMessage: "请提交用户昵称",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o UpdateUserForm) Validate(req *http.Request) error {
+	//检查手机号长度
+	if len(o.Phone) < 11 || len(o.Phone) > 11 {
+		return binding.Errors{
+			binding.NewError([]string{"phone"}, "LengthError", "手机号必须是11位."),
+		}
+	}
+	//检查手机号格式
+	var validPhone = regexp.MustCompile(`^1[\d]{10}$`)
+	iv := validPhone.MatchString(o.Phone)
+	if !iv {
+		return binding.Errors{
+			binding.NewError([]string{"phone"}, "FormatError", "手机号格式不正确,必须是11位1开头数字。"),
+		}
+	}
+
+	//检查头像地址长度
+	if len(o.Avatar) < 10 || len(o.Avatar) > 300 {
+		return binding.Errors{
+			binding.NewError([]string{"avatar"}, "LengthError", "用户头像地址长度，必须大于等于10位，小于等于300位."),
+		}
+	}
+
+	//检查头像地址格式
+	validAvatar := regexp.MustCompile(`^http://|https://[0-9A-Za-z\-.]{1,100}\.([[:alpha:]]{2,10})(/[[:graph:]]*)*$`)
+	iva := validAvatar.MatchString(o.Avatar)
+	if !iva {
+		return binding.Errors{
+			binding.NewError([]string{"avatar"}, "FormatError", "头像地址不正确，正确地址例子：http://a.com/a.jpg or https://www.a.com/a.jpg."),
+		}
+	}
+
+	//检查昵称长度
+	if len(o.Nickname) < 1 || len(o.Nickname) > 30 {
+		return binding.Errors{
+			binding.NewError([]string{"nickname"}, "LengthError", "用户昵称长度，必须大于等于1位，小于等于30位."),
+		}
+	}
+
+	//检查昵称格式
+	validNickname := regexp.MustCompile(`^[a-z0-9A-Z\p{Han}]+(_[a-z0-9A-Z\p{Han}]+)*$`)
+	ivn := validNickname.MatchString(o.Nickname)
+	if !ivn {
+		return binding.Errors{
+			binding.NewError([]string{"nickname"}, "FormatError", "昵称格式不正确，正确地址例子：a_bc汉子_汉789字"),
+		}
+	}
+
+	return nil
+}
+

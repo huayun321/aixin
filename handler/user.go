@@ -1169,3 +1169,75 @@ func UnFollow(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
+
+//UpdateUser
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.UpdateUserForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 16601, "message": "数据格式错误",
+			"err": errs})
+		return
+	}
+
+	q := bson.M{}
+
+	if f.Phone != "" {
+		q["phone"] = f.Phone
+	}
+	if f.Avatar != "" {
+		q["avatar"] = f.Avatar
+	}
+	if f.Nickname != "" {
+		q["nickname"] = f.Nickname
+	}
+	if f.Sex != 0 {
+		q["sex"] = f.Sex
+	}
+	if f.Birthday != 0 {
+		q["birthday"] = f.Birthday
+	}
+	if f.Signature != "" {
+		q["signature"] = f.Signature
+	}
+	if f.City != "" {
+		q["city"] = f.City
+	}
+	if f.Height != 0 {
+		q["height"] = f.Height
+	}
+	if f.Weight != 0 {
+		q["weight"] = f.Weight
+	}
+	if f.BMI != 0 {
+		q["bmi"] = f.BMI
+	}
+
+	fmt.Println("update form:", q)
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("======= 获得nms")
+
+	upsertdata := bson.M{"$set": q}
+	err := nms.DB.C("user").UpdateId(bson.ObjectIdHex(f.ID), upsertdata)
+
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("======= update err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16602, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("======= not found : ")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 16603, "message": "不存在此条数据",
+			"err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}
+
