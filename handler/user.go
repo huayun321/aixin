@@ -1240,4 +1240,3 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
-
