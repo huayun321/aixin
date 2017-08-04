@@ -2742,6 +2742,63 @@
           }
         ]
       }
+    },
+    "/guest/plan/recommend-list": {
+      "post": {
+        "tags": [
+          "guest",
+          "plan",
+          "client"
+        ],
+        "summary": "推荐计划列表",
+        "description": "推荐计划列表， 可分页",
+        "operationId": "GuestPlanRecommendList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/PlanListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Plan"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
