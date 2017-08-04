@@ -141,7 +141,7 @@ func main() {
 	clientRouter.HandleFunc("/user/un-follow", handler.UnFollow).Methods("POST")
 	clientRouter.HandleFunc("/user/update", handler.UpdateUser).Methods("POST")
 	clientRouter.HandleFunc("/user/get-by-id", handler.GetUserByID).Methods("POST")
-
+	clientRouter.HandleFunc("/user/get-profile", handler.GetUserProfile).Methods("POST")
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),

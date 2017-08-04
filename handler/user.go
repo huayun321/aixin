@@ -1240,3 +1240,72 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
 	return
 }
+
+//getUserProfile
+func GetUserProfile(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.GetUserByIDForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10801, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("=======SignWithWx 获得nms")
+
+	udb := model.User{}
+	err := nms.DB.C("user").Find(bson.M{"_id": bson.ObjectIdHex(f.ID)}).One(&udb)
+
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======GetUserByID  err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10802, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======GetUserByID not found user: ")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10803, "message": "不存在此条数据", "err": err})
+		return
+	}
+
+	udb.Password = ""
+
+	//get funs count
+
+
+	fuc, err := nms.DB.C("follower").Find(bson.M{"following_id": bson.ObjectIdHex(f.ID)}).Count()
+	if err != nil {
+		fmt.Println("=======GetUsers 获取用户列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10503, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	//get follow count
+	foc, err := nms.DB.C("follower").Find(bson.M{"user_id": bson.ObjectIdHex(f.ID)}).Count()
+	if err != nil {
+		fmt.Println("=======GetUsers 获取用户列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10503, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	//get bookmarks
+	bc, err := nms.DB.C("bookmark").Find(bson.M{"user_id": bson.ObjectIdHex(f.ID)}).Count()
+	if err != nil {
+		fmt.Println("=======GetUsers 获取用户列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10503, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"message": "操作成功",
+		"fun_count": fuc,
+		"follow_count":foc,
+		"bookmark_count":bc,
+		"nickname":udb.Nickname,
+		"avatar":udb.Avatar})
+	return
+}

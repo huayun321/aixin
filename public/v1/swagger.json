@@ -499,6 +499,59 @@
         ]
       }
     },
+    "/client/user/get-profile": {
+      "post": {
+        "tags": [
+          "user",
+          "client"
+        ],
+        "summary": "获得个人中心",
+        "description": "获得个人中心",
+        "operationId": "GetUserProfile",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUserProfileSuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/admin/user/list": {
       "post": {
         "tags": [
@@ -2911,6 +2964,38 @@
         },
         "user": {
           "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "GetUserProfileSuccessModel": {
+      "type": "object",
+      "required": [
+        "message",
+        "code"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "fun_count": {
+          "type": "integer"
+        },
+        "follow_count": {
+          "type": "integer"
+        },
+        "bookmark_count": {
+          "type": "integer"
         }
       }
     },
