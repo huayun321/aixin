@@ -1441,8 +1441,64 @@
           "client"
         ],
         "summary": "文章列表",
-        "description": "后端管理 获取文章列表， 可分页， 可按条件搜索",
+        "description": "获取文章列表， 可分页， 可按条件搜索",
         "operationId": "ClientArticleList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ArticleListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Article"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/guest/article/list": {
+      "post": {
+        "tags": [
+          "article",
+          "guest"
+        ],
+        "summary": "文章列表",
+        "description": "获取文章列表， 可分页， 可按条件搜索",
+        "operationId": "GuestClientArticleList",
         "produces": [
           "application/json"
         ],
@@ -1499,6 +1555,63 @@
         "summary": "资讯列表",
         "description": "资讯章列表， 可分页， 可按条件搜索",
         "operationId": "ClientNewsList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/NewsListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/News"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/guest/news/list": {
+      "post": {
+        "tags": [
+          "news",
+          "guest",
+          "client"
+        ],
+        "summary": "资讯列表",
+        "description": "资讯章列表， 可分页， 可按条件搜索",
+        "operationId": "GuestClientNewsList",
         "produces": [
           "application/json"
         ],
@@ -1817,6 +1930,63 @@
         ]
       }
     },
+    "/guest/article/get-bookmarks": {
+      "post": {
+        "tags": [
+          "guest",
+          "article",
+          "client"
+        ],
+        "summary": "收藏的文章列表",
+        "description": "收藏的文章列表， 可分页",
+        "operationId": "GuestBookmarkList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/BookmarkListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Article"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/client/article/get-article-by-id": {
       "post": {
         "tags": [
@@ -1826,6 +1996,60 @@
         "summary": "获得指定文章",
         "description": "获得指定文章",
         "operationId": "GetArticleByID",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Article"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/guest/article/get-article-by-id": {
+      "post": {
+        "tags": [
+          "guest",
+          "user",
+          "client"
+        ],
+        "summary": "获得指定文章",
+        "description": "获得指定文章",
+        "operationId": "GuestGetArticleByID",
         "produces": [
           "application/json"
         ],
@@ -1932,6 +2156,60 @@
         "summary": "获得指定新闻",
         "description": "获得指定新闻",
         "operationId": "GetNewsByID",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/News"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/guest/news/get-news-by-id": {
+      "post": {
+        "tags": [
+          "guest",
+          "news",
+          "client"
+        ],
+        "summary": "获得指定新闻",
+        "description": "获得指定新闻",
+        "operationId": "GuestGetNewsByID",
         "produces": [
           "application/json"
         ],
