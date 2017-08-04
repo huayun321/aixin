@@ -2686,6 +2686,62 @@
           }
         ]
       }
+    },
+    "/client/plan/recommend-list": {
+      "post": {
+        "tags": [
+          "plan",
+          "client"
+        ],
+        "summary": "推荐计划列表",
+        "description": "推荐计划列表， 可分页",
+        "operationId": "ClientPlanRecommendList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/PlanListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Plan"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -2702,6 +2758,19 @@
     }
   },
   "definitions": {
+    "PlanListForm": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_size": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
     "UserListForm": {
       "type": "object",
       "properties": {
@@ -3676,6 +3745,276 @@
         },
         "author": {
           "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "Plan": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "author_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "计划名，10到1000字节"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "img": {
+          "type": "string"
+        },
+        "first": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "second": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "f2": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "f3": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "level": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "强度，10到1000字节"
+        },
+        "feel": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "自我判断，10到1000字节"
+        },
+        "weeks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Week"
+          }
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "is_recommend": {
+          "type": "boolean",
+          "description": "true false"
+        }
+      }
+    },
+    "Week": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "days": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Day"
+          }
+        },
+        "goal": {
+          "$ref": "#/definitions/Goal"
+        },
+        "attitudes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Attitude"
+          }
+        }
+      }
+    },
+    "Goal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000
+        },
+        "mode": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000
+        }
+      }
+    },
+    "Day": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "day_actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DayAction"
+          }
+        }
+      }
+    },
+    "DayAction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "action": {
+          "$ref": "#/definitions/Action"
+        },
+        "group": {
+          "type": "integer"
+        },
+        "time": {
+          "type": "integer"
+        },
+        "notify_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        }
+      }
+    },
+    "Part": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "部位名，10到1000字节"
+        }
+      }
+    },
+    "Action": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "author_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "动作名，10到1000字节"
+        },
+        "level": {
+          "type": "string",
+          "description": "难度"
+        },
+        "symptom": {
+          "type": "string",
+          "description": "适应症状"
+        },
+        "people": {
+          "type": "string",
+          "description": "适应人群"
+        },
+        "notice": {
+          "type": "string",
+          "description": "注意事项"
+        },
+        "main_img": {
+          "type": "string",
+          "description": "主图"
+        },
+        "key": {
+          "type": "string",
+          "description": "关键点"
+        },
+        "subs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Sub"
+          }
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        }
+      }
+    },
+    "Sub": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "img": {
+          "type": "string",
+          "description": "子图"
+        },
+        "key": {
+          "type": "string",
+          "description": "关键点"
+        }
+      }
+    },
+    "Attitude": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "author_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "态度名，10到1000字节"
+        },
+        "desc": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000
+        },
+        "main_img": {
+          "type": "string"
+        },
+        "icon_img": {
+          "type": "string"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
         }
       }
     },
