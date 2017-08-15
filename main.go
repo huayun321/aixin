@@ -143,6 +143,7 @@ func main() {
 	clientRouter.HandleFunc("/user/get-by-id", handler.GetUserByID).Methods("POST")
 	clientRouter.HandleFunc("/user/get-profile", handler.GetUserProfile).Methods("POST")
 	clientRouter.HandleFunc("/plan/recommend-list", handler.GetRecommendPlans).Methods("POST")
+	clientRouter.HandleFunc("/plan/search", handler.SearchPlans).Methods("POST")
 
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(
@@ -162,7 +163,6 @@ func main() {
 	guestRouter.HandleFunc("/news/list", handler.GetNews).Methods("POST")
 	guestRouter.HandleFunc("/plan/list", handler.GetRecommendPlans).Methods("POST")
 	guestRouter.HandleFunc("/plan/recommend-list", handler.GetRecommendPlans).Methods("POST")
-
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/guest").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),

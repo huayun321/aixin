@@ -2743,6 +2743,62 @@
         ]
       }
     },
+    "/client/plan/search": {
+      "post": {
+        "tags": [
+          "plan",
+          "client"
+        ],
+        "summary": "计划模糊搜索",
+        "description": "计划模糊搜索， 可分页",
+        "operationId": "ClientPlanSearchList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/PlanSearchForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Plan"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/guest/plan/recommend-list": {
       "post": {
         "tags": [
@@ -2825,6 +2881,22 @@
         "page_size": {
           "type": "integer",
           "minimum": 1
+        }
+      }
+    },
+    "PlanSearchForm": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "part": {
+          "type": "string"
         }
       }
     },

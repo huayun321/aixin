@@ -204,3 +204,59 @@ func GetRecommendPlans(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": c})
 	return
 }
+
+
+//GetPlans
+func SearchPlans(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.PlanSearchForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13201, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	q := bson.M{}
+	var page int
+	var pageSize int
+	page = 1
+	pageSize = 20
+
+	if f.Page != 0 {
+		page = f.Page
+	}
+
+	if f.PageSize != 0 {
+		pageSize = f.PageSize
+	}
+
+
+	if f.Part != "" {
+		q = bson.M{"$or": []interface{}{
+			bson.M{"first.text": bson.M{"$regex": bson.RegEx{`.*` + f.Part + `.*`, ""}}},
+			bson.M{"second.text": bson.M{"$regex": bson.RegEx{`.*` + f.Part + `.*`, ""}}},
+			bson.M{"f2.text": bson.M{"$regex": bson.RegEx{`.*` + f.Part + `.*`, ""}}},
+			bson.M{"f3.text": bson.M{"$regex": bson.RegEx{`.*` + f.Part + `.*`, ""}}},
+		}}
+		fmt.Println(bson.RegEx{"*" + f.Part + "*", ""})
+	}
+
+	l := []model.Plan{}
+	err := nms.DB.C("plan").Find(q).Sort("-create_time").Skip((page - 1) * pageSize).Limit(pageSize).All(&l)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13202, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 not found: ")
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": len(l)})
+	return
+}
