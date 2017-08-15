@@ -145,6 +145,7 @@ func main() {
 	clientRouter.HandleFunc("/plan/recommend-list", handler.GetRecommendPlans).Methods("POST")
 	clientRouter.HandleFunc("/plan/search", handler.SearchPlans).Methods("POST")
 	clientRouter.HandleFunc("/plan/get-by-id", handler.GetPlanByID).Methods("POST")
+	clientRouter.HandleFunc("/plan/get-by-user", handler.GetUserPlans).Methods("POST")
 
 
 	router.PathPrefix(VERSION_ONE_PREFIX + "/client").Handler(negroni.New(

@@ -23,6 +23,7 @@ type PlanCreateForm struct {
 	IsRecommend bool         `json:"is_recommend"`
 	Desc        string       `json:"desc"`
 	Img        string       `json:"img"`
+	UserId    string `json:"user_id"`
 }
 
 // FieldMap 数据绑定
@@ -66,6 +67,7 @@ func (o PlanCreateForm) Validate(req *http.Request) error {
 		}
 	}
 
+
 	return nil
 }
 
@@ -79,6 +81,7 @@ type PlanListForm struct {
 	Name     string `json:"name"`
 	First     model.Part `json:"first"`
 	IsRecommend int `json:"is_recommend"`
+	UserId   string `json:"user_id"`
 }
 
 // FieldMap 数据绑定

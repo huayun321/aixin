@@ -18,6 +18,7 @@ type Plan struct {
 	IsRecommend bool          `json:"is_recommend,omitempty" bson:"is_recommend,omitempty"`
 	Desc        string        `json:"desc,omitempty" bson:"desc,omitempty"`
 	Img        string        `json:"img,omitempty" bson:"img,omitempty"`
+	UserId    bson.ObjectId `json:"user_id,omitempty" bson:"user_id,omitempty"`
 }
 
 type Week struct {
