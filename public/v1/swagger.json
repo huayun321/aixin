@@ -2964,7 +2964,7 @@
     "/client/plan/user-create": {
       "post": {
         "tags": [
-          "feedback",
+          "plan",
           "client"
         ],
         "summary": "创建计划",
