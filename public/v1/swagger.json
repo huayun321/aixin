@@ -2799,6 +2799,59 @@
         ]
       }
     },
+    "/client/plan/get-by-id": {
+      "post": {
+        "tags": [
+          "plan",
+          "client"
+        ],
+        "summary": "获得计划",
+        "description": "获得计划， 可分页",
+        "operationId": "ClientPlanByID",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/IDForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Plan"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/guest/plan/recommend-list": {
       "post": {
         "tags": [

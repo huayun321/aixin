@@ -260,3 +260,36 @@ func SearchPlans(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": l, "total": len(l)})
 	return
 }
+
+//GetPlanByID
+func GetPlanByID(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.PlanIdForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 16201, "message": "数据格式错误",
+			"err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	a := model.Plan{}
+	err := nms.DB.C("plan").Find(bson.M{"_id": bson.ObjectIdHex(f.ID)}).One(&a)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16202, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("=======获取文章列表 not found: ")
+	}
+
+
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": a})
+	return
+}
