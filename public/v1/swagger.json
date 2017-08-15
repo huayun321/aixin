@@ -2961,6 +2961,59 @@
         ]
       }
     },
+    "/client/plan/user-create": {
+      "post": {
+        "tags": [
+          "feedback",
+          "client"
+        ],
+        "summary": "创建计划",
+        "description": "客户端创建计划，需要用户权限，即传token",
+        "operationId": "CreateUserPlan",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "参数",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserPlanCreateForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessModel"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/guest/plan/recommend-list": {
       "post": {
         "tags": [
@@ -3434,6 +3487,77 @@
           "type": "string"
         },
         "content": {
+          "type": "string"
+        }
+      }
+    },
+    "UserPlanCreateForm": {
+      "type": "object",
+      "required": [
+        "name",
+        "user_id"
+      ],
+      "properties": {
+        "author_id": {
+          "type": "string",
+          "description": "id， db id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "计划名，10到1000字节"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "img": {
+          "type": "string"
+        },
+        "first": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "second": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "f2": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "f3": {
+          "type": "object",
+          "$ref": "#/definitions/Part"
+        },
+        "level": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "强度，10到1000字节"
+        },
+        "feel": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "自我判断，10到1000字节"
+        },
+        "weeks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Week"
+          }
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间，unix utc time"
+        },
+        "is_recommend": {
+          "type": "boolean",
+          "description": "true false"
+        },
+        "user_id": {
           "type": "string"
         }
       }
@@ -4107,6 +4231,9 @@
         "is_recommend": {
           "type": "boolean",
           "description": "true false"
+        },
+        "user_id": {
+          "type": "string"
         }
       }
     },

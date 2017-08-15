@@ -31,7 +31,6 @@ func (o *PlanCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&o.AuthorID: binding.Field{
 			Form:         "author_id",
-			Required:     true,
 			ErrorMessage: "请填写作者id",
 		},
 		&o.Name: binding.Field{
@@ -61,12 +60,6 @@ func (o *PlanCreateForm) FieldMap(req *http.Request) binding.FieldMap {
 
 //Validate 数据格式验证
 func (o PlanCreateForm) Validate(req *http.Request) error {
-	if !bson.IsObjectIdHex(o.AuthorID) {
-		return binding.Errors{
-			binding.NewError([]string{"author_id"}, "format error", "id 格式不正确."),
-		}
-	}
-
 
 	return nil
 }

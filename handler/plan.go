@@ -56,6 +56,57 @@ func CreatePlan(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//CreatePlan 添加动作
+func CreateUserPlan(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.PlanCreateForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("CreateArticle: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 13101, "message": "用户数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+
+	a := model.Plan{}
+	a.ID = bson.NewObjectId()
+	a.Name = f.Name
+	a.First = f.First
+	a.Second = f.Second
+	a.F2 = f.F2
+	a.F3 = f.F3
+	a.Level = f.Level
+	a.Feel = f.Feel
+	a.Weeks = f.Weeks
+	a.IsRecommend = f.IsRecommend
+	a.CreateTime = time.Now().Unix()
+	if f.AuthorID != "" {
+		a.AuthorId = bson.ObjectIdHex(f.AuthorID)
+	}
+
+	a.Img = f.Img
+	a.Desc = f.Desc
+	if a.UserId != "" {
+		a.UserId = bson.ObjectIdHex(f.UserId)
+	}
+
+
+	//store to db
+	err := nms.DB.C("plan").Insert(a)
+	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 13102, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": a})
+	return
+}
+
+
 //GetPlans
 func GetPlans(w http.ResponseWriter, r *http.Request) {
 	// check params
