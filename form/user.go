@@ -126,7 +126,6 @@ func (o *SignUpPhoneForm) FieldMap(req *http.Request) binding.FieldMap {
 		},
 		&o.Avatar: binding.Field{
 			Form:         "avatar",
-			Required:     true,
 			ErrorMessage: "请提交用户头像地址",
 		},
 		&o.Nickname: binding.Field{
@@ -176,20 +175,6 @@ func (o SignUpPhoneForm) Validate(req *http.Request) error {
 	}
 
 	//检查头像地址长度
-	if len(o.Avatar) < 10 || len(o.Avatar) > 300 {
-		return binding.Errors{
-			binding.NewError([]string{"avatar"}, "LengthError", "用户头像地址长度，必须大于等于10位，小于等于300位."),
-		}
-	}
-
-	//检查头像地址格式
-	validAvatar := regexp.MustCompile(`^http://|https://[0-9A-Za-z\-.]{1,100}\.([[:alpha:]]{2,10})(/[[:graph:]]*)*$`)
-	iva := validAvatar.MatchString(o.Avatar)
-	if !iva {
-		return binding.Errors{
-			binding.NewError([]string{"avatar"}, "FormatError", "头像地址不正确，正确地址例子：http://a.com/a.jpg or https://www.a.com/a.jpg."),
-		}
-	}
 
 	//检查昵称长度
 	if len(o.Nickname) < 1 || len(o.Nickname) > 30 {
