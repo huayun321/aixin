@@ -120,7 +120,7 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
 
 	vc := model.VerifyCode{}
-	err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).One(&vc)
+	err := nms.DB.C("verifycode").Find(bson.M{"phone": vcf.Phone}).Sort("create_time").One(&vc)
 	fmt.Println("GetVerifyCode vc finded : ", vc)
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
@@ -218,7 +218,7 @@ func SignUpWithPhone(w http.ResponseWriter, r *http.Request) {
 	vc := model.VerifyCode{}
 	ctx := r.Context()
 	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
-	err := nms.DB.C("verifycode").Find(bson.M{"phone": uf.Phone}).One(&vc)
+	err := nms.DB.C("verifycode").Find(bson.M{"phone": uf.Phone}).Sort("create_time").One(&vc)
 	// got err
 	if err != nil && err != mgo.ErrNotFound {
 		fmt.Println("SignInWithPhone err:", err)

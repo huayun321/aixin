@@ -65,6 +65,7 @@ type VerifyCode struct {
 	VerifyTimestamp int64  `json:"verify_timestamp,omitempty" bson:"verify_timestamp"` //验证码时间戳
 	TimesRemainDay  int    `bson:"times_remain_day,omitempty"`                         //每天限制发五条
 	LastVerifyDay   int64  `bson:"last_verify_day,omitempty"`                          //如果是新的一天则重制每天剩余条数
+	CreateTime    int64         `json:"create_time,omitempty" bson:"create_time,omitempty"`
 }
 
 //FieldMap 数据绑定验证
