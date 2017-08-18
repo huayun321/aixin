@@ -155,11 +155,11 @@ func GetVerifyCode(w http.ResponseWriter, r *http.Request) {
 	now := time.Now().Unix()
 	tsr := now - vc.VerifyTimestamp
 	fmt.Printf("GetVerifyCode now:%d-- vc.VerifyTimestamp: %d = %d \n", now, vc.VerifyTimestamp, tsr)
-	//if tsr < 60 {
-	//	fmt.Println("一分钟后才能发送")
-	//	util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10104, "message": "GetVerifyCode 一分钟后才能发送！"})
-	//	return
-	//}
+	if tsr < 60 {
+		fmt.Println("一分钟后才能发送")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10104, "message": "GetVerifyCode 一分钟后才能发送！"})
+		return
+	}
 
 	// check if daily
 	dsr := now - vc.LastVerifyDay
