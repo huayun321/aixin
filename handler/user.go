@@ -1309,3 +1309,69 @@ func GetUserProfile(w http.ResponseWriter, r *http.Request) {
 		"avatar":udb.Avatar})
 	return
 }
+
+
+//GetFollwers
+func GetFuns(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.GetUserByIDForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10801, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("=======SignWithWx 获得nms")
+	//
+
+	fl := []model.User{}
+	err := nms.DB.C("follower").Find(bson.M{"following_id": bson.ObjectIdHex(f.ID)}).All(&fl)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======GetUsers 获取用户列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10503, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"message": "操作成功",
+		"funs": fl,
+		})
+	return
+}
+
+func GetFollowing(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.GetUserByIDForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 10801, "message": "数据格式错误", "err": errs})
+		return
+	}
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("=======SignWithWx 获得nms")
+	//
+
+	fl := []model.User{}
+
+	//get follow count
+	err := nms.DB.C("follower").Find(bson.M{"user_id": bson.ObjectIdHex(f.ID)}).All(&fl)
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("=======GetUsers 获取用户列表数 err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 10503, "message": "查询数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"message": "操作成功",
+		"funs": fl,
+	})
+	return
+}
