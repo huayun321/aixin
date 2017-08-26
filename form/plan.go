@@ -24,6 +24,8 @@ type PlanCreateForm struct {
 	Desc        string       `json:"desc"`
 	Img        string       `json:"img"`
 	UserId    string `json:"user_id"`
+	DayIndex    int `json:"day_index"`
+
 }
 
 // FieldMap 数据绑定

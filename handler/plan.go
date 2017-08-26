@@ -88,6 +88,8 @@ func CreateUserPlan(w http.ResponseWriter, r *http.Request) {
 
 	a.Img = f.Img
 	a.Desc = f.Desc
+	a.DayIndex = f.DayIndex
+
 	if a.UserId != "" {
 		a.UserId = bson.ObjectIdHex(f.UserId)
 	}

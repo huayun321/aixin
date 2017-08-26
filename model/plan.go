@@ -19,6 +19,8 @@ type Plan struct {
 	Desc        string        `json:"desc,omitempty" bson:"desc,omitempty"`
 	Img        string        `json:"img,omitempty" bson:"img,omitempty"`
 	UserId    bson.ObjectId `json:"user_id,omitempty" bson:"user_id,omitempty"`
+	DayIndex    int `json:"day_index,omitempty" bson:"day_index,omitempty"`
+
 }
 
 type Week struct {
