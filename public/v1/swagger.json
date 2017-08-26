@@ -2855,6 +2855,118 @@
         ]
       }
     },
+    "/client/action/list": {
+      "post": {
+        "tags": [
+          "action",
+          "client"
+        ],
+        "summary": "动作列表",
+        "description": "动作列表， 可分页",
+        "operationId": "ClientActionList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ActionListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Action"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
+    "/client/attitude/list": {
+      "post": {
+        "tags": [
+          "attitude",
+          "client"
+        ],
+        "summary": "态度列表",
+        "description": "态度列表， 可分页",
+        "operationId": "ClientAttitudeList",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "列表参数",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/AttitudeListForm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Attitude"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          },
+          "500": {
+            "description": "internal error",
+            "schema": {
+              "$ref": "#/definitions/ErrorModel"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": []
+          }
+        ]
+      }
+    },
     "/client/plan/get-by-user": {
       "post": {
         "tags": [
@@ -3198,6 +3310,41 @@
     }
   },
   "definitions": {
+    "ActionListForm": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string"
+        }
+      }
+    },
+    "AttitudeListForm": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "PlanListForm": {
       "type": "object",
       "properties": {
