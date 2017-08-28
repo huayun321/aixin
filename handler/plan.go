@@ -432,3 +432,54 @@ func GetPlanUserLast(w http.ResponseWriter, r *http.Request) {
 	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功", "result": a})
 	return
 }
+
+
+//UpdatePlan
+func UpdatePlan(w http.ResponseWriter, r *http.Request) {
+	// check params
+	f := new(form.PlanUpdateForm)
+
+	if errs := binding.Bind(r, f); errs != nil {
+		fmt.Println("SignWithWx: bind err: ", errs)
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 16601, "message": "数据格式错误",
+			"err": errs})
+		return
+	}
+
+	a := model.Plan{}
+	a.Name = f.Name
+	a.First = f.First
+	a.Second = f.Second
+	a.F2 = f.F2
+	a.F3 = f.F3
+	a.Level = f.Level
+	a.Feel = f.Feel
+	a.Weeks = f.Weeks
+	a.IsRecommend = f.IsRecommend
+	a.Img = f.Img
+	a.Desc = f.Desc
+	a.DayIndex = f.DayIndex
+
+
+	ctx := r.Context()
+	nms := ctx.Value(nigronimgosession.KEY).(*nigronimgosession.NMS)
+	fmt.Println("======= 获得nms")
+
+	err := nms.DB.C("action").UpdateId(bson.ObjectIdHex(f.ID), a)
+
+	if err != nil && err != mgo.ErrNotFound {
+		fmt.Println("======= update err: ", err)
+		util.Ren.JSON(w, http.StatusInternalServerError, map[string]interface{}{"code": 16602, "message": "插入数据库时遇到内部错误", "err": err})
+		return
+	}
+
+	if err != nil && err == mgo.ErrNotFound {
+		fmt.Println("======= not found : ")
+		util.Ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"code": 16603, "message": "不存在此条数据",
+			"err": err})
+		return
+	}
+
+	util.Ren.JSON(w, http.StatusOK, map[string]interface{}{"code": 0, "message": "操作成功"})
+	return
+}

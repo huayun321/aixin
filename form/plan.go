@@ -187,4 +187,44 @@ func (o PlanSearchForm) Validate(req *http.Request) error {
 }
 
 
+//PlanUpdateForm 动作表单
+type PlanUpdateForm struct {
+	Name        string       `json:"name"`
+	First       model.Part       `json:"first"`
+	Second      model.Part       `json:"second"`
+	F2          model.Part       `json:"f2"`
+	F3          model.Part       `json:"f3"`
+	Level       string       `json:"level"`
+	Feel        string       `json:"feel"`
+	Weeks       []model.Week `json:"weeks"`
+	IsRecommend bool         `json:"is_recommend"`
+	Desc        string       `json:"desc"`
+	Img        string       `json:"img"`
+	UserId    string `json:"user_id"`
+	DayIndex    int `json:"day_index"`
+	ID string `json:"id"`
+}
+
+// FieldMap 数据绑定
+func (o *PlanUpdateForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&o.ID: binding.Field{
+			Form:         "id",
+			Required:     true,
+			ErrorMessage: "请填写id",
+		},
+	}
+}
+
+//Validate 数据格式验证
+func (o PlanUpdateForm) Validate(req *http.Request) error {
+	if !bson.IsObjectIdHex(o.ID) {
+		return binding.Errors{
+			binding.NewError([]string{"id"}, "format error", "id 格式不正确."),
+		}
+	}
+
+	return nil
+}
+
 
